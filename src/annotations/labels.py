@@ -1,0 +1,11 @@
+
+ORGAN = 'Organ'
+ORIENTATION = 'Orientation'
+PHASE = 'Phase'
+QUALITY = 'Quality'
+RATING = 'Rating'
+SEGMENTATION = 'Segmentation'
+SEGMENTATION_3VT = 'Segmentation (3VT)'
+SEGMENTATION_4CH = 'Segmentation (4CH)'
+SEGMENTATION_ABD = 'Segmentation (Abd)'
+VIEW = 'View'
