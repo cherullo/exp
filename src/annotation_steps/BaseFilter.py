@@ -1,6 +1,5 @@
 import pandas
-from arch import Base
-from helpers import Hasher
+from .. import Base
 
 class BaseFilter(Base):
 
