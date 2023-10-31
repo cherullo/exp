@@ -1,9 +1,8 @@
 import pandas
 import annotations.columns as cols
-from helpers import Hasher
-from .BaseFilter import BaseFilter
+from arch import Hasher, Step
 
-class IndexToRange(BaseFilter):
+class IndexToRange(Step):
 
     def __init__(self):
         pass
@@ -14,7 +13,7 @@ class IndexToRange(BaseFilter):
     def Description(self) -> str:
         return f'Converts rows where {cols.ANNOTATION_TYPE} is frame_label into frame_range_label rows.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         is_frame_label = (data[cols.ANNOTATION_TYPE] == 'frame_label')
 

@@ -10,25 +10,22 @@ import seaborn as sns
 from typing import List, Tuple
 from sklearn.metrics import classification_report, confusion_matrix
 import annotations.columns as cols
-from helpers import Hasher
+
+from arch import Hasher
 from helpers import main_helper
 from loaders import BaseLoader
-from loaders import RotationLoader
-from loaders import BrightLoader
-from loaders import ColorLoader
-from annotation_steps import BaseFilter
+from preprocessing_steps import Step
 from models.OneHot import OneHot
 
 from .SampleExtractor import SampleExtractor
 from .ReportPath import ReportPath
 from .DatasetGenerator import DatasetGenerator
-import arch.config as config
-
+from arch import config
 import arch.dataset_columns as dataset_columns
 
-def _process_steps(df: pandas.DataFrame, steps:List[BaseFilter]) -> pandas.DataFrame:
+def _process_steps(df: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
     for step in steps:
-        df = step.ProcessStep(df)
+        df = step.process(df)
 
     return df
 
@@ -68,22 +65,22 @@ class Experiment():
         self.str_final_hash = None
 
         self.input = None
-        self.preprocessing_steps: List[BaseFilter] = []
-        self.test_sets: List(List[BaseFilter], Tuple[BaseLoader]) = []
+        self.preprocessing_steps: List[Step] = []
+        self.test_sets: List(List[Step], Tuple[BaseLoader]) = []
         self.test_set = None
         self.test_set_generator = None
 
-        self.train_sets: List(List[BaseFilter], Tuple[BaseLoader]) = []
+        self.train_sets: List(List[Step], Tuple[BaseLoader]) = []
         self.train_set = None
         self.train_set_generator = None
 
         self.model = None
         self.encoding = None
 
-    def add_train_set( self, steps:List[BaseFilter], *loaders: BaseLoader ):
+    def add_train_set( self, steps:List[Step], *loaders: BaseLoader ):
         self.train_sets.append( (steps, loaders) )
 
-    def add_test_set( self, steps:List[BaseFilter], *loaders: BaseLoader ):
+    def add_test_set( self, steps:List[Step], *loaders: BaseLoader ):
         self.test_sets.append(  (steps, loaders) )
 
     def _print_dry_warning(self):
@@ -294,7 +291,7 @@ class Experiment():
             f.write (f'\n-- {model} model test set report:\n')
             f.write (test_set_report)
                 
-    def _print_steps(self, steps: List[BaseFilter], loaders:Tuple[BaseLoader]):
+    def _print_steps(self, steps: List[Step], loaders:Tuple[BaseLoader]):
         col1 = [x.ToString() for x in steps]
         col1_width = np.max([len(x) for x in col1]) + 3
         

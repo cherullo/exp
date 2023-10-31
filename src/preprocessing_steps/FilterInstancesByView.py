@@ -1,10 +1,9 @@
 import pandas
 from typing import List
 import annotations.columns as cols
-from helpers import Hasher
-from .BaseFilter import BaseFilter
+from arch import Hasher, Step
 
-class FilterInstancesByView(BaseFilter):
+class FilterInstancesByView(Step):
     def __init__(self, view:str):
         self.view = view
 
@@ -14,7 +13,7 @@ class FilterInstancesByView(BaseFilter):
     def Description(self) -> str:
         return f'Keeps all rows whose instanceUID is in the {self.view}.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         temp = data.loc[(data[cols.SEVERITY] == self.view) & (data[cols.ANNOTATION_TYPE] == 'instance_label')]
 

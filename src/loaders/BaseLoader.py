@@ -3,12 +3,10 @@ import skimage.io as io
 from skimage.util import img_as_float32
 from skimage.transform import rescale, resize, downscale_local_mean
 import matplotlib.pyplot as plt
-import cv2
+# import cv2
 
-
-from base.Base import Base
-from helpers import Hasher
-
+from arch import Base
+from arch import Hasher
 
 class BaseLoader(Base):
     def __init__(self, rows=None, columns=None):
@@ -77,11 +75,11 @@ class BaseLoader(Base):
         #plt.imshow(xhot)
         return img.reshape([self.rows, self.columns, 3])
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'BaseLoader({self.rows}x{self.columns})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return "Loads the image from disk as grayscale in the range [0,1] and resizes it to {self.rows} rows by {self.columns} columns."
 
-    def AddHash(self, h:Hasher):
+    def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__)

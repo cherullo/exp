@@ -1,10 +1,9 @@
 import pandas
 import numpy as np
 import annotations.columns as cols
-from .BaseFilter import BaseFilter
-from helpers.Hasher import Hasher
+from arch import Hasher, Step
 
-class FirstPercent(BaseFilter):
+class FirstPercent(Step):
     def __init__(self, percent):
 
         if percent < 0.0 or percent > 1.0:
@@ -18,7 +17,7 @@ class FirstPercent(BaseFilter):
     def Description(self) -> str:
         return f'Selects the first {self.percent * 100.0}% of images. Depends on IndexToRange and CreateFrameCountColumn.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         cumsum = data[cols.FRAME_COUNT].cumsum()
         total_images = int(cumsum.iloc[len(cumsum)-1])

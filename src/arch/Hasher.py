@@ -1,7 +1,7 @@
 import struct
 import zlib
 
-from base.Base import Base
+from arch import Base
 
 _ORDER = 'little'
 
@@ -34,19 +34,17 @@ def _to_bytearray(v):
     raise Exception(f'Cannot hash {type(v)}')
 
 class Hasher():
-
     def __init__(self, *args):
         self.value = 1
         self.ordered(*args)
 
     def ordered(self, *args):
-
         for v in args:
             if (v is None):
                 continue
 
             if (isinstance(v, Base)):
-                v.AddHash(self)
+                v.add_hash(self)
             else:
                 self.value = zlib.adler32(_to_bytearray(v), self.value)
             
@@ -60,7 +58,7 @@ class Hasher():
                 continue
 
             if (isinstance(v, Base)):
-                temp ^= v.AddHash(Hasher()).value
+                temp ^= v.add_hash(Hasher()).value
             else:
                 temp ^= zlib.adler32(_to_bytearray(v))
 

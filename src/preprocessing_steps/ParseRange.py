@@ -2,8 +2,7 @@ import ast
 import pandas
 import numpy as np
 import annotations.columns as cols
-from helpers import Hasher
-from .BaseFilter import BaseFilter
+from arch import Hasher, Step
 
 def parse_frameRange(x):
     ret = ast.literal_eval(x)
@@ -14,7 +13,7 @@ def parse_frameRange(x):
 
     return ret
 
-class ParseRange(BaseFilter):
+class ParseRange(Step):
 
     def __init__(self):
         pass
@@ -25,7 +24,7 @@ class ParseRange(BaseFilter):
     def Description(self) -> str:
         return f'Parses the {cols.FRAME_RANGE} column into a list of values.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         is_frame_range_label = (data[cols.ANNOTATION_TYPE] == 'frame_range_label')
         has_frame_range = pandas.notna(data[cols.FRAME_RANGE])

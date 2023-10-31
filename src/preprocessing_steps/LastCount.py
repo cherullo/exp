@@ -1,10 +1,9 @@
 import pandas
 import numpy as np
 import annotations.columns as cols
-from .BaseFilter import BaseFilter
-from helpers.Hasher import Hasher
+from arch import Hasher, Step
 
-class LastCount(BaseFilter):
+class LastCount(Step):
     def __init__(self, count):
         self.count = int(np.abs(count))
 
@@ -14,7 +13,7 @@ class LastCount(BaseFilter):
     def Description(self) -> str:
         return f'Selects the last {self.count} images. Depends on IndexToRange and CreateFrameCountColumn.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         if len(data) == 0:
             return data

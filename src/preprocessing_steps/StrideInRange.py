@@ -1,10 +1,9 @@
 import pandas
 import numpy as np
 import annotations.columns as cols
-from .BaseFilter import BaseFilter
-from helpers.Hasher import Hasher
+from arch import Hasher, Step
 
-class StrideInRange(BaseFilter):
+class StrideInRange(Step):
     def __init__(self, stride):
         self.stride = stride
 
@@ -14,7 +13,7 @@ class StrideInRange(BaseFilter):
     def Description(self) -> str:
         return f'Selects one frame every {self.stride} frames in frame_range_label rows. Keeps all other rows intact. Depends on ParseRange.'
 
-    def ProcessStep(self, data: pandas.DataFrame) -> pandas.DataFrame:
+    def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         new_rows = []
 
