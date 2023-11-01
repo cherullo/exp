@@ -3,14 +3,12 @@ from arch import Hasher, Preprocessing
 from preprocessing_steps import FilterColumn
 import columns as cols
 
-df = pandas.read_excel("src/examples/filtering/sampledatawinterathletes.xlsx", engine = "openpyxl")
-
 filter = Preprocessing()
-filter.add_step(FilterColumn(cols.NATIONALITY, ["Andorra"]))
-df = filter.process(df)
-
-print("Hash:", Hasher(filter))
+filter.add_step(FilterColumn(cols.NATIONALITY, ["Andorra", "Albania"]))
 print(filter)
+print("Hash:", Hasher(filter))
 
+df = pandas.read_excel("examples/filtering/sampledatawinterathletes.xlsx", engine = "openpyxl")
+df = filter.process(df)
 print(df)
 

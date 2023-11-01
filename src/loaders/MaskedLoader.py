@@ -3,7 +3,6 @@ import numpy as np
 from .BaseLoader import BaseLoader
 from helpers import Hasher
 
-
 class MaskedLoader(BaseLoader):
 
     def __init__(self, rows=None, columns=None):
@@ -29,11 +28,11 @@ class MaskedLoader(BaseLoader):
 
         return img
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'MaskedLoader({self.rows}x{self.columns})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return "Loads the image from disk as grayscale in the range [0,1] and resizes it to {self.rows} rows by {self.columns} columns, then apply a circular mask to leave only the fetus in the data."
 
-    def AddHash(self, h:Hasher):
+    def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__)

@@ -11,12 +11,12 @@ class FilterColumn(Step):
         self.values = [s for s in values if (s)]
 
     def __str__(self) -> str:
-        temp = ', '.join(self.values)
-        return f'FilterColumn["{self.column}" isin [{temp}]]'
+        temp = ', '.join([f'"{x}"' for x in self.values])
+        return f'FilterColumn("{self.column}", [{temp}])'
 
     def description(self) -> str:
-        temp = ', '.join(self.values)
-        return f'Keeps all rows where the column \'{self.column}\' has any of the following values: [{temp}]'
+        temp = ', '.join([f'"{x}"' for x in self.values])
+        return f'Keeps all rows where the column "{self.column}" has any of the following values: {temp}'
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
         return data[ data[self.column].isin(self.values) ]

@@ -1,6 +1,4 @@
-from .FilterSeverities import FilterSeverities
 from .FilterAnnotationTypes import FilterAnnotationTypes
-from .FilterLabels import FilterLabels
 from .FilterColumn import FilterColumn
 from .ChangeSeverity import ChangeSeverity
 from .IndexToRange import IndexToRange

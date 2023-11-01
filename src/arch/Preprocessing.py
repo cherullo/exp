@@ -22,12 +22,11 @@ class Preprocessing(Base):
         return data
 
     def description(self) -> str:
-        col1 = [str(x) for x in self._steps]
-        col1_width = np.max([len(x) for x in col1]) + 3
-        col2 = [x.description() for x in self._steps]
+        cols = [(str(x), x.description()) for x in self._steps]
+        col1_width = np.max([len(x) for (x, _) in cols]) + 3
 
         ret = ""
-        for col1, col2 in zip(col1, col2):
+        for col1, col2 in cols:
             ret = ret + ' ' + col1.ljust(col1_width) + col2 + "\n"
         
         return ret
