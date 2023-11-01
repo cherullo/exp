@@ -1,6 +1,6 @@
 from .FilterAnnotationTypes import FilterAnnotationTypes
 from .FilterColumn import FilterColumn
-from .ChangeSeverity import ChangeSeverity
+from .ChangeColumn import ChangeColumn
 from .IndexToRange import IndexToRange
 from .CreateFrameCountColumn import CreateFrameCountColumn
 from .FirstPercent import FirstPercent

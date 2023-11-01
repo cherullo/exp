@@ -16,6 +16,15 @@ class Preprocessing(Base):
         self._steps.append(step)
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
+        """ Applies this preprocessing step in the provided dataframe.
+
+        Args:
+            data (pandas.DataFrame): Data to be processed.
+
+        Returns:
+            pandas.DataFrame: The results of applying this preprocessing step in data.
+        """
+
         for step in self._steps:
             data = step.process(data)
 

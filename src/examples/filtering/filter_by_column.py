@@ -9,6 +9,4 @@ print(filter)
 print("Hash:", Hasher(filter))
 
 df = pandas.read_excel("examples/filtering/sampledatawinterathletes.xlsx", engine = "openpyxl")
-df = filter.process(df)
-print(df)
-
+print(filter.process(df))
