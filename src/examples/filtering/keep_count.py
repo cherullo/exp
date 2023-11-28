@@ -7,5 +7,5 @@ filter.add_step(KeepCount(5))
 print(filter)
 print("Hash:", Hasher(filter))
 
-df = pandas.read_excel("examples/filtering/sampledatawinterathletes.xlsx", engine = "openpyxl")
+df = pandas.read_excel("sampledatawinterathletes.xlsx", engine = "openpyxl")
 print(filter.process(df))

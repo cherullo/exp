@@ -1,17 +1,17 @@
-# Optional: data loading used by the examples
-openpyxl==3.1.2
-
-# Filtering
+# Dataset
 numpy==1.26.1
 pandas==2.1.1
 
-#Training
-#tensorflow-cpu==2.10
+# Opcional para carga de dataset em formato Excel
+openpyxl==3.1.2
 
-# Report Generation
+# Treinamento
+# tensorflow-cpu==2.10
+
+# Geração das imagens do relatório
 seaborn==0.13.0
 scikit-learn==1.3.2
 scikit-image==0.22.0 
 
-# Testing
+# Testes unitários
 pytest==7.4.3
