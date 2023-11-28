@@ -3,16 +3,16 @@ import pandas
 import numpy as np
 import matplotlib.pyplot as plt
 
-from base.Base import Base
+from .Base import Base
 import arch.dataset_columns as cols
 
-class DatasetGenerator(tf.keras.utils.Sequence, Base):
+class DatasetGenerator(Base, tf.keras.utils.Sequence):
     def __init__(self,
                  dataset: pandas.DataFrame=None,
                  encoding=None,
                  batch_size = 12,
                  shuffle = True):
-        
+                
         self.dataset = dataset
         self.encoding = encoding
         self.batch_size = batch_size
@@ -60,13 +60,13 @@ class DatasetGenerator(tf.keras.utils.Sequence, Base):
         print ('on_epoch_end: shuffle!')
         self.dataset = self.dataset.sample(frac=1).reset_index(drop=True)
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'DatasetGenerator(batch_size={self.batch_size}, shuffle={self.shuffle})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return f'Default DatasetGenerator with batch_size={self.batch_size} and shuffle={self.shuffle}'
 
-    def AddHash(self, h):
+    def add_hash(self, h):
         h.ordered(self.batch_size, self.shuffle)
         if self._apply_sample_centering is True:
             h.ordered(self._sample_center, self._sample_range)

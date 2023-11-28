@@ -1,5 +1,4 @@
 import pandas
-import annotations.columns as cols
 from arch import Hasher, Step
 
 class ChangeColumn(Step):

@@ -4,7 +4,7 @@ import pandas
 import numpy as np
 import matplotlib.pyplot as plt
 
-from base.Base import Base
+from .Base import Base
 import arch.dataset_columns as cols
 import helpers.image_centering 
 

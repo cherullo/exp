@@ -1,6 +1,5 @@
 import pandas
 import numpy as np
-import annotations.columns as cols
 from arch import Hasher, Step
 
 class FirstPercent(Step):
@@ -19,27 +18,27 @@ class FirstPercent(Step):
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
-        cumsum = data[cols.FRAME_COUNT].cumsum()
-        total_images = int(cumsum.iloc[len(cumsum)-1])
+        # cumsum = data[cols.FRAME_COUNT].cumsum()
+        # total_images = int(cumsum.iloc[len(cumsum)-1])
 
-        count_to_return = np.min([np.rint(total_images * self.percent), total_images])
+        # count_to_return = np.min([np.rint(total_images * self.percent), total_images])
 
-        if (count_to_return == 0):
-            return pandas.DataFrame(columns = data.columns)
+        # if (count_to_return == 0):
+        #     return pandas.DataFrame(columns = data.columns)
        
-        ret = data.loc[cumsum < count_to_return].copy(deep=True)
+        # ret = data.loc[cumsum < count_to_return].copy(deep=True)
 
-        temp = len(ret) # index of split row
-        so_far = 0 if temp == 0 else cumsum.iloc[temp-1]
-        remaining = count_to_return - so_far
+        # temp = len(ret) # index of split row
+        # so_far = 0 if temp == 0 else cumsum.iloc[temp-1]
+        # remaining = count_to_return - so_far
 
-        split_line = data.iloc[temp].copy(deep=True)
-        range = split_line[cols.FRAME_RANGE].copy()
-        range[1] = int(range[0] + remaining - 1)
-        split_line[cols.FRAME_RANGE] = range
-        split_line[cols.FRAME_COUNT] = int(remaining)
+        # split_line = data.iloc[temp].copy(deep=True)
+        # range = split_line[cols.FRAME_RANGE].copy()
+        # range[1] = int(range[0] + remaining - 1)
+        # split_line[cols.FRAME_RANGE] = range
+        # split_line[cols.FRAME_COUNT] = int(remaining)
 
-        ret = ret.append(split_line)
+        # ret = ret.append(split_line)
 
         return ret
 

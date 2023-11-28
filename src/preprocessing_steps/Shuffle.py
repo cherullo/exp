@@ -1,6 +1,5 @@
 import pandas
-import numpy as np
-import annotations.columns as cols
+
 from arch import Hasher, Step
 
 class Shuffle(Step):

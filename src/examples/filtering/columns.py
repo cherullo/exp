@@ -1,3 +1,5 @@
+# Columns in file sampledatawinterathletes.xlsx
+
 NAME = "Name"
 SPORT = "Sport"
 NATIONALITY = "Nationality"

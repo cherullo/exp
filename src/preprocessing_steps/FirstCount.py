@@ -1,49 +1,40 @@
 import pandas
 import numpy as np
-import annotations.columns as cols
 from arch import Hasher, Step
 
 class FirstCount(Step):
-    def __init__(self, count):
+    """ Keeps the first rows of the dataset.
+
+    Args:
+        Step (_type_): This is a preprocessing step.
+    """
+    def __init__(self, count: int):
+        """
+        Builds a preprocessing step which keeps the first count rows.
+
+        Args:
+            count (int): Number of rows to keep.
+        """
         self.count = int(np.abs(count))
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'FirstCount({self.count})'
 
-    def Description(self) -> str:
-        return f'Selects the first {self.count} images. Depends on IndexToRange and CreateFrameCountColumn.'
+    def description(self) -> str:
+        return f'Keeps the first {self.count} rows.'
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
         if len(data) == 0:
             return data
 
-        cumsum = data[cols.FRAME_COUNT].cumsum()
-        total_images = cumsum.iloc[len(cumsum)-1]
+        total_rows = len(data.index)
+        count_to_return = int(np.min([self.count, total_rows]))
 
-        count_to_return = int(np.min([self.count, total_images]))
+        if count_to_return != self.count:
+            print (f"{self.__class__.__name__}: kept less rows than asked for ({count_to_return} < {self.count})")
 
-        if (count_to_return == 0):
-            return pandas.DataFrame(columns = data.columns)
+        return data[0:count_to_return]
 
-        if (count_to_return == total_images):
-            return data
-       
-        ret = data.loc[cumsum < count_to_return].copy(deep=True)
-
-        temp = len(ret) # index of split row
-        so_far = 0 if temp == 0 else cumsum.iloc[temp-1]
-        remaining = count_to_return - so_far
-
-        split_line = data.iloc[temp].copy(deep=True)
-        range = split_line[cols.FRAME_RANGE].copy()
-        range[1] = int(range[0] + remaining - 1)
-        split_line[cols.FRAME_RANGE] = range
-        split_line[cols.FRAME_COUNT] = int(remaining)
-
-        ret = ret.append(split_line)
-
-        return ret
-
-    def AddHash(self, h:Hasher):
+    def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.count)

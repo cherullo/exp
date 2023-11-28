@@ -1,6 +1,5 @@
 import pandas
 import numpy as np
-import annotations.columns as cols
 from arch import Hasher, Step
 
 class LastPercent(Step):
@@ -19,28 +18,28 @@ class LastPercent(Step):
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
-        cumsum = data[cols.FRAME_COUNT].cumsum()
-        total_images = cumsum.iloc[len(cumsum)-1]
+        # cumsum = data[cols.FRAME_COUNT].cumsum()
+        # total_images = cumsum.iloc[len(cumsum)-1]
 
-        count_to_return = np.min([np.rint(total_images * self.percent), total_images])
+        # count_to_return = np.min([np.rint(total_images * self.percent), total_images])
 
-        if (count_to_return == 0):
-            return pandas.DataFrame(columns = data.columns)
+        # if (count_to_return == 0):
+        #     return pandas.DataFrame(columns = data.columns)
        
-        ret = data.loc[cumsum > total_images - count_to_return].copy(deep=True)
+        # ret = data.loc[cumsum > total_images - count_to_return].copy(deep=True)
 
-        temp = len(data) - len(ret) # index of split row
-        needed = cumsum.iloc[temp] - (total_images - count_to_return)
+        # temp = len(data) - len(ret) # index of split row
+        # needed = cumsum.iloc[temp] - (total_images - count_to_return)
 
-        split_line = ret.iloc[0].copy(deep=True)
-        excess = split_line[cols.FRAME_COUNT] - needed
+        # split_line = ret.iloc[0].copy(deep=True)
+        # excess = split_line[cols.FRAME_COUNT] - needed
 
-        range = split_line[cols.FRAME_RANGE].copy()
-        range[0] = int(range[1] - needed + 1)
-        split_line[cols.FRAME_RANGE] = range
+        # range = split_line[cols.FRAME_RANGE].copy()
+        # range[0] = int(range[1] - needed + 1)
+        # split_line[cols.FRAME_RANGE] = range
 
-        split_line[cols.FRAME_COUNT] = int(needed)
-        ret.iloc[0] = split_line
+        # split_line[cols.FRAME_COUNT] = int(needed)
+        # ret.iloc[0] = split_line
 
         return ret
 
