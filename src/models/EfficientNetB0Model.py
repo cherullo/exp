@@ -1,6 +1,6 @@
 from tensorflow.keras.optimizers import Adam
 from efficientnet.tfkeras import EfficientNetB0
-from base.Base import Base
+from arch import Base
 
 class EfficientNetB0Model(Base):
     def __init__(self):
@@ -17,11 +17,11 @@ class EfficientNetB0Model(Base):
         optimizer = Adam(learning_rate=self.learning_rate)
         self.model.compile(loss=self.loss, optimizer=optimizer, metrics=['acc'])
        
-    def ToString(self):
+    def __str__(self):
         return f'EfficientNetB0[loss={self.loss}, optimizer=Adam(learning_rate={self.learning_rate})]'
 
-    def Description(self):
+    def description(self):
         return f'EfficientNetB0 model'
 
-    def AddHash(self, h):
+    def add_hash(self, h):
         return h.ordered(self.__class__.__name__, self.loss, 'adam', self.learning_rate)

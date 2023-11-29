@@ -1,4 +1,3 @@
-import os
 import time
 from contextlib import redirect_stdout
 
@@ -9,12 +8,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import List, Tuple
 from sklearn.metrics import classification_report, confusion_matrix
-import annotations.columns as cols
 
 from arch import Hasher
 from helpers import main_helper
 from loaders import BaseLoader
-from preprocessing_steps import Step
+from arch import Step
 from models.OneHot import OneHot
 
 from .SampleExtractor import SampleExtractor
@@ -29,15 +27,15 @@ def _process_steps(df: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
 
     return df
 
-def _generate_histogram(df: pandas.DataFrame, group_col:str, sum_col:str):
-    hist = df.groupby(group_col)[sum_col].agg('sum')
+def _generate_histogram(df: pandas.DataFrame, group_col:str): #, sum_col:str):
+    hist = df.groupby(group_col).count() # [sum_col].agg('sum')
     hist.sort_index(axis=0, inplace=True)
 
     return hist
 
 def _generate_dataset_histogram(df: pandas.DataFrame):
     columns = df[dataset_columns.INPUT_LOADER].unique() 
-    columns = np.unique([input.ToString() for input in columns])
+    columns = np.unique([str(input) for input in columns])
     indexes = df[dataset_columns.OUTPUT].unique()
 
     ret = pandas.DataFrame(columns=columns, index=indexes)
@@ -47,7 +45,7 @@ def _generate_dataset_histogram(df: pandas.DataFrame):
     counts = df.groupby([ dataset_columns.OUTPUT, dataset_columns.INPUT_LOADER ]).count()
       
     for index, row in counts.iterrows():
-        ret.loc[ [index[0]], [index[1].ToString()] ] = row[0]
+        ret.loc[ [index[0]], [str(index[1])] ] = row[0]
         
     print (ret)
 
@@ -65,6 +63,8 @@ class Experiment():
         self.str_final_hash = None
 
         self.input = None
+        self.image_column = None
+        self.label_column = None
         self.preprocessing_steps: List[Step] = []
         self.test_sets: List(List[Step], Tuple[BaseLoader]) = []
         self.test_set = None
@@ -112,12 +112,16 @@ class Experiment():
         df.to_excel(self.report_path.get('preprocessed.xlsx'))
 
         # Generate preprocessed histogram
-        hist = _generate_histogram(df, cols.SEVERITY, cols.FRAME_COUNT)
+        hist = _generate_histogram(df, self.label_column) # cols.SEVERITY, cols.FRAME_COUNT)
+
+        print(hist)
 
         hist.plot(kind='bar')
 
-        for index, value in enumerate(list(hist)):
-            plt.text(index, value, str(value), ha='center')
+        for index, row in enumerate(hist.iterrows()):
+            label, row = row
+            
+            plt.text(index, row[self.image_column], str(label), ha='center')
 
         plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
 
@@ -255,12 +259,12 @@ class Experiment():
                    
         return hasher
 
-    def _extract_sets(self, df:pandas.DataFrame, sets ):
+    def _extract_sets(self, df:pandas.DataFrame, sets):
         if (len(sets) == 0):
             return pandas.DataFrame(columns=dataset_columns.all)
 
         datasets = []
-        extractor = SampleExtractor(self.base_images_path)
+        extractor = SampleExtractor(self.base_images_path, self.label_column, self.image_column)
         for (steps, loaders) in sets:
             samples = extractor.extract( _process_steps(df, steps) )
 
@@ -292,14 +296,14 @@ class Experiment():
             f.write (test_set_report)
                 
     def _print_steps(self, steps: List[Step], loaders:Tuple[BaseLoader]):
-        col1 = [x.ToString() for x in steps]
+        col1 = [str(x) for x in steps]
         col1_width = np.max([len(x) for x in col1]) + 3
         
-        for col1, col2 in zip(col1, [x.Description() for x in steps]):
+        for col1, col2 in zip(col1, [x.description() for x in steps]):
             print (' ', col1.ljust(col1_width), col2)
 
         for loader in loaders:
-            print ('   ', loader.ToString().ljust(col1_width - 2), loader.Description())
+            print ('   ', str(loader).ljust(col1_width - 2), loader.description())
 
         print ('')
 
@@ -345,11 +349,11 @@ class Experiment():
             self._print_steps(steps, loader)
 
         if (self.model is not None):
-            print (f'\n-- Model: {self.model.ToString()}')
+            print (f'\n-- Model: {self.model}')
             print ('-- Model Summary:')
             self.model.get().summary()
 
-        encoding_str = self.encoding.ToString() if self.encoding is not None else 'None'
+        encoding_str = str(self.encoding) if self.encoding is not None else 'None'
         print (f'\n-- Encoding: {encoding_str}')
         print (f'-- Final Hash: {self.str_final_hash}')
 

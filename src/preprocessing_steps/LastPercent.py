@@ -10,10 +10,10 @@ class LastPercent(Step):
 
         self.percent = percent
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'LastPercent({self.percent})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return f'Selects the last {self.percent * 100.0}% of images. Depends on CreateFrameCountColumn and ParseRange.'
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
@@ -41,7 +41,7 @@ class LastPercent(Step):
         # split_line[cols.FRAME_COUNT] = int(needed)
         # ret.iloc[0] = split_line
 
-        return ret
+        return data
 
-    def AddHash(self, h:Hasher):
+    def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.percent)

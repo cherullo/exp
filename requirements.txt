@@ -1,17 +1,18 @@
-# Dataset
+# Dataset handling
 numpy==1.26.1
 pandas==2.1.1
-
-# Opcional para carga de dataset em formato Excel
 openpyxl==3.1.2
 
-# Treinamento
+# Training
 # tensorflow-cpu==2.10
 
-# Geração das imagens do relatório
+# Samples
+efficientnet==1.1.1
+
+# Image generation
 seaborn==0.13.0
 scikit-learn==1.3.2
 scikit-image==0.22.0 
 
-# Testes unitários
+# Unit tests
 pytest==7.4.3

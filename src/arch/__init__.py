@@ -6,3 +6,4 @@ from .Base import Base
 from .Hasher import Hasher
 from .Step import Step
 from .Preprocessing import Preprocessing
+from .Experiment import Experiment

@@ -23,7 +23,7 @@ class ChangeColumn(Step):
         self.replacement = newValue
 
     def __str__(self) -> str:
-        return f'ChangeColumn[{self.original} -> {self.replacement}]'
+        return f'ChangeColumn({self.column}, {self.original}, {self.replacement})'
 
     def description(self) -> str:
         return f'In row "{self.column}", change "{self.original}" to "{self.replacement}"'

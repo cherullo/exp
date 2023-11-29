@@ -6,10 +6,10 @@ class LastCount(Step):
     def __init__(self, count):
         self.count = int(np.abs(count))
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'LastCount({self.count})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return f'Selects the last {self.count} images. Depends on IndexToRange and CreateFrameCountColumn.'
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
@@ -43,7 +43,7 @@ class LastCount(Step):
         # split_line[cols.FRAME_COUNT] = int(needed)
         # ret.iloc[0] = split_line
 
-        return ret
+        return data
 
-    def AddHash(self, h:Hasher):
+    def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.count)
