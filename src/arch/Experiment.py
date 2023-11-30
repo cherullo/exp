@@ -43,15 +43,9 @@ def _generate_dataset_histogram(df: pandas.DataFrame):
     ret.sort_index(axis=1, inplace=True)
 
     counts = df.groupby([ dataset_columns.OUTPUT, dataset_columns.INPUT_LOADER ]).count()
-    
-    print ("counts")
-    print (counts)
 
     for index, row in counts.iterrows():
         ret.loc[ [index[0]], [str(index[1])] ] = row[dataset_columns.INPUT]
-    
-    print("ret")
-    print (ret)
 
     return ret
 
@@ -128,6 +122,7 @@ class Experiment():
 
         # Generate validation set
         if (len(self.validation_sets) > 0):
+            print ("Creating validation set")
             self.validation_set = self._extract_sets(df.copy(deep=True), self.validation_sets)
 
             # Remove duplicates from validation set
@@ -147,10 +142,14 @@ class Experiment():
                 # Remove files in validation_set from train_set
                 if (self.validation_set is not None):
                     validation_images = self.validation_set[dataset_columns.INPUT]
-                    self.train_set = self.train_set.loc[ ~self.train_set[dataset_columns.INPUT].isin(validation_images) ]
-        
+                    
+                    print ("intersection")
+                    [print(f'{row["input"]}') for _, row in self.train_set[ self.train_set[dataset_columns.INPUT].isin(validation_images) ].iterrows()]
+                    
+                    self.train_set = self.train_set[ ~self.train_set[dataset_columns.INPUT].isin(validation_images) ]
+
                     if len(self.train_set) == 0:
-                        print ('All images in training set were also on the test set and were removed. This is a dry run.')
+                        print ('All images in training set were also on the validation set and were removed. This is a dry run.')
                         dry=True
 
             # Save training set
@@ -211,7 +210,7 @@ class Experiment():
         history = self.model.get().fit(
             self.train_set_generator,
             #class_weight=self.encoding.weights,
-            epochs=20,
+            epochs=80,
             validation_data = self.validation_set_generator,
             callbacks = custom_callbacks,
             steps_per_epoch=None, #len(self.train_set_generator),
@@ -266,7 +265,7 @@ class Experiment():
 
         datasets = []
         extractor = SampleExtractor(self.base_images_path, self.label_column, self.image_column)
-        for (steps, loaders) in sets:
+        for steps, loaders in sets:
             samples = extractor.extract( _process_steps(df, steps) )
 
             for loader in loaders:
@@ -277,9 +276,6 @@ class Experiment():
                 datasets.append (samples_for_loader)
 
         ret = pandas.concat(datasets, ignore_index=True)
-
-        print ("_extract_sets")
-        [print(f'{row["input"]}') for _, row in ret.iterrows()]
 
         return ret
 
@@ -293,13 +289,13 @@ class Experiment():
 
         self._run_redirecting_stdout(file, self._print_full_summary)
 
-    def _complement_summary(self, model, training_set_report, test_set_report):
+    def _complement_summary(self, model, training_set_report, validation_set_report):
         file = self.report_path.get('modelsummary.txt')
         with open(file, 'a') as f:
             f.write (f'\n-- {model} model training set report:\n')
             f.write (training_set_report)
-            f.write (f'\n-- {model} model test set report:\n')
-            f.write (test_set_report)
+            f.write (f'\n-- {model} model validation set report:\n')
+            f.write (validation_set_report)
                 
     def _print_steps(self, steps: List[Step], loaders:Tuple[BaseLoader]):
         col1 = [str(x) for x in steps]
@@ -350,7 +346,7 @@ class Experiment():
         for (steps, loader) in self.train_sets:
             self._print_steps(steps, loader)
 
-        print ('\n-- Test Set Steps:\n')
+        print ('\n-- Validation Set Steps:\n')
         for (steps, loader) in self.validation_sets:
             self._print_steps(steps, loader)
 

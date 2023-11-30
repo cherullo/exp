@@ -24,7 +24,7 @@ class LastPercent(Step):
 
         count_to_return = int(self.percent * total_rows)
 
-        return data[count_to_return:]
+        return data.iloc[-count_to_return:]
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.percent)

@@ -23,7 +23,7 @@ class LastCount(Step):
         if count_to_return is not self.count:
             print (f"{self.__class__.__name__}: kept less rows than asked for ({count_to_return} < {self.count})")
 
-        return data[count_to_return:]
+        return data[-count_to_return:]
 
 
     def add_hash(self, h:Hasher):
