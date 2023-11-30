@@ -235,14 +235,14 @@ class Experiment():
         self.model.get().save(self.report_path.get('final.h5'))
 
         training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_final_confusion.png"))
-        test_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("test_set_final_confusion.png"))
-        self._complement_summary('Final', training_set_report, test_set_report)
+        validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_final_confusion.png"))
+        self._complement_summary('Final', training_set_report, validation_set_report)
 
         self.model.model = tf.keras.models.load_model(self.report_path.get('checkpoint.h5'))
 
         training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_best_confusion.png"))
-        test_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("test_set_best_confusion.png"))
-        self._complement_summary('Best', training_set_report, test_set_report)
+        validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_best_confusion.png"))
+        self._complement_summary('Best', training_set_report, validation_set_report)
 
     def hash(self):
         hasher = Hasher()
@@ -252,7 +252,7 @@ class Experiment():
         hasher.ordered('train')
         hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.train_sets ] )
 
-        hasher.ordered('test')
+        hasher.ordered('validation')
         hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.validation_sets ] )
 
         hasher.ordered(self.encoding, self.model, self.train_set_generator, self.validation_set_generator)

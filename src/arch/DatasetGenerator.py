@@ -57,7 +57,6 @@ class DatasetGenerator(Base, tf.keras.utils.Sequence):
 
 
     def on_epoch_end(self):
-        print ('on_epoch_end: shuffle!')
         self.dataset = self.dataset.sample(frac=1).reset_index(drop=True)
 
     def __str__(self) -> str:

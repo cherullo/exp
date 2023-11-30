@@ -20,10 +20,10 @@ class BaseLoader(Base):
         return img
 
     def __str__(self) -> str:
-        return f'BaseLoader({self.rows}x{self.columns})'
+        return f'BaseLoader({self.resize})'
 
     def description(self) -> str:
-        return "Loads the image from disk as grayscale in the range [0,1] and resizes it to {self.rows} rows by {self.columns} columns."
+        return f'Loads the image from disk as grayscale in the range [0,1] and resizes it to {self.resize[0]} rows by {self.resize[1]} columns.'
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__)
