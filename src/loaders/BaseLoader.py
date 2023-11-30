@@ -12,9 +12,9 @@ class BaseLoader(Base):
         self.resize = resize
 
     def load(self, file: str) -> np.ndarray:
-        img = img_as_float32(io.imread(file))
+        img = img_as_float32(io.imread(file)) * 255.0
 
-        if (self.resize != None):
+        if self.resize != None:
             img = resize(img, (self.resize[0], self.resize[1]), anti_aliasing=True)
     
         return img

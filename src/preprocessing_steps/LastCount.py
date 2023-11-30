@@ -14,36 +14,17 @@ class LastCount(Step):
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
 
-        # if len(data) == 0:
-        #     return data
+        if len(data) == 0:
+            return data
 
-        # cumsum = data[cols.FRAME_COUNT].cumsum()
-        # total_images = cumsum.iloc[len(cumsum)-1]
+        total_rows = len(data.index)
+        count_to_return = int(np.min([self.count, total_rows]))
 
-        # count_to_return = int(np.min([self.count, total_images]))
+        if count_to_return is not self.count:
+            print (f"{self.__class__.__name__}: kept less rows than asked for ({count_to_return} < {self.count})")
 
-        # if (count_to_return == 0):
-        #     return pandas.DataFrame(columns = data.columns)
+        return data[count_to_return:]
 
-        # if (count_to_return == total_images):
-        #     return data
-       
-        # ret = data.loc[cumsum > total_images - count_to_return].copy(deep=True)
-
-        # temp = len(data) - len(ret) # index of split row
-        # needed = cumsum.iloc[temp] - (total_images - count_to_return)
-
-        # split_line = ret.iloc[0].copy(deep=True)
-        # excess = split_line[cols.FRAME_COUNT] - needed
-
-        # range = split_line[cols.FRAME_RANGE].copy()
-        # range[0] = int(range[1] - needed + 1)
-        # split_line[cols.FRAME_RANGE] = range
-
-        # split_line[cols.FRAME_COUNT] = int(needed)
-        # ret.iloc[0] = split_line
-
-        return data
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.count)

@@ -14,33 +14,17 @@ class FirstPercent(Step):
         return f'FirstPercent({self.percent})'
 
     def description(self) -> str:
-        return f'Selects the first {self.percent * 100.0}% of images. Depends on IndexToRange and CreateFrameCountColumn.'
+        return f'Selects the first {self.percent * 100.0}% of images.'
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
+        if len(data) == 0:
+            return data
 
-        # cumsum = data[cols.FRAME_COUNT].cumsum()
-        # total_images = int(cumsum.iloc[len(cumsum)-1])
+        total_rows = len(data.index)
 
-        # count_to_return = np.min([np.rint(total_images * self.percent), total_images])
+        count_to_return = int(self.percent * total_rows)
 
-        # if (count_to_return == 0):
-        #     return pandas.DataFrame(columns = data.columns)
-       
-        # ret = data.loc[cumsum < count_to_return].copy(deep=True)
-
-        # temp = len(ret) # index of split row
-        # so_far = 0 if temp == 0 else cumsum.iloc[temp-1]
-        # remaining = count_to_return - so_far
-
-        # split_line = data.iloc[temp].copy(deep=True)
-        # range = split_line[cols.FRAME_RANGE].copy()
-        # range[1] = int(range[0] + remaining - 1)
-        # split_line[cols.FRAME_RANGE] = range
-        # split_line[cols.FRAME_COUNT] = int(remaining)
-
-        # ret = ret.append(split_line)
-
-        return data
+        return data[0:count_to_return]
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.percent)

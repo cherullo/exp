@@ -43,10 +43,14 @@ def _generate_dataset_histogram(df: pandas.DataFrame):
     ret.sort_index(axis=1, inplace=True)
 
     counts = df.groupby([ dataset_columns.OUTPUT, dataset_columns.INPUT_LOADER ]).count()
-      
+    
+    print ("counts")
+    print (counts)
+
     for index, row in counts.iterrows():
-        ret.loc[ [index[0]], [str(index[1])] ] = row[0]
-        
+        ret.loc[ [index[0]], [str(index[1])] ] = row[dataset_columns.INPUT]
+    
+    print("ret")
     print (ret)
 
     return ret
@@ -66,9 +70,9 @@ class Experiment():
         self.image_column = None
         self.label_column = None
         self.preprocessing_steps: List[Step] = []
-        self.test_sets: List(List[Step], Tuple[BaseLoader]) = []
-        self.test_set = None
-        self.test_set_generator = None
+        self.validation_sets: List(List[Step], Tuple[BaseLoader]) = []
+        self.validation_set = None
+        self.validation_set_generator = None
 
         self.train_sets: List(List[Step], Tuple[BaseLoader]) = []
         self.train_set = None
@@ -80,8 +84,8 @@ class Experiment():
     def add_train_set( self, steps:List[Step], *loaders: BaseLoader ):
         self.train_sets.append( (steps, loaders) )
 
-    def add_test_set( self, steps:List[Step], *loaders: BaseLoader ):
-        self.test_sets.append(  (steps, loaders) )
+    def add_validation_set( self, steps:List[Step], *loaders: BaseLoader ):
+        self.validation_sets.append(  (steps, loaders) )
 
     def _print_dry_warning(self):
         print('-------------------------')
@@ -112,28 +116,25 @@ class Experiment():
         df.to_excel(self.report_path.get('preprocessed.xlsx'))
 
         # Generate preprocessed histogram
-        hist = _generate_histogram(df, self.label_column) # cols.SEVERITY, cols.FRAME_COUNT)
+        # hist = _generate_histogram(df, self.label_column)
 
-        print(hist)
+        # hist.plot(kind='bar')
 
-        hist.plot(kind='bar')
+        # for index, row in enumerate(hist.iterrows()):
+        #     label, row = row
+        #     plt.text(index, row[self.image_column], str(label), ha='center')
 
-        for index, row in enumerate(hist.iterrows()):
-            label, row = row
-            
-            plt.text(index, row[self.image_column], str(label), ha='center')
+        # plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
 
-        plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
+        # Generate validation set
+        if (len(self.validation_sets) > 0):
+            self.validation_set = self._extract_sets(df.copy(deep=True), self.validation_sets)
 
-        # Generate test set
-        if (len(self.test_sets) > 0):
-            self.test_set = self._extract_sets(df.copy(deep=True), self.test_sets)
+            # Remove duplicates from validation set
+            self.validation_set.drop_duplicates(subset=dataset_columns.INPUT, inplace=True)
 
-            # Remove duplicates from test set
-            self.test_set.drop_duplicates(subset=dataset_columns.INPUT, inplace=True)
-
-            self.test_set.to_excel(self.report_path.get('test_set.xlsx'))
-            self._plot_dataset(self.test_set, self.report_path.get('test_set_histogram.png'))
+            self.validation_set.to_excel(self.report_path.get('validation_set.xlsx'))
+            self._plot_dataset(self.validation_set, self.report_path.get('validation_set_histogram.png'))
 
         # Generate training set
         if (len(self.train_sets) > 0):
@@ -143,10 +144,10 @@ class Experiment():
                 print ('No images selected for training set. This is a dry run.')
                 dry = True
             else:
-                # Remove files in test_set from train_set
-                if (self.test_set is not None):
-                    test_images = self.test_set[dataset_columns.INPUT]
-                    self.train_set = self.train_set.loc[ ~self.train_set[dataset_columns.INPUT].isin(test_images) ]
+                # Remove files in validation_set from train_set
+                if (self.validation_set is not None):
+                    validation_images = self.validation_set[dataset_columns.INPUT]
+                    self.train_set = self.train_set.loc[ ~self.train_set[dataset_columns.INPUT].isin(validation_images) ]
         
                     if len(self.train_set) == 0:
                         print ('All images in training set were also on the test set and were removed. This is a dry run.')
@@ -176,10 +177,10 @@ class Experiment():
         self.train_set_generator.dataset = self.train_set
         self.train_set_generator.encoding = self.encoding
         
-        if self.test_set_generator is None:
-            self.test_set_generator = DatasetGenerator()
-        self.test_set_generator.dataset = self.test_set
-        self.test_set_generator.encoding = self.encoding
+        if self.validation_set_generator is None:
+            self.validation_set_generator = DatasetGenerator()
+        self.validation_set_generator.dataset = self.validation_set
+        self.validation_set_generator.encoding = self.encoding
 
         self.str_final_hash = self.hash()
 
@@ -207,15 +208,15 @@ class Experiment():
         
         startTime = time.time()
                 
-        history = self.model.get().fit_generator(
+        history = self.model.get().fit(
             self.train_set_generator,
-            class_weight=self.encoding.weights,
-            epochs=120,
-            validation_data = self.test_set_generator,
+            #class_weight=self.encoding.weights,
+            epochs=20,
+            validation_data = self.validation_set_generator,
             callbacks = custom_callbacks,
-            steps_per_epoch=len(self.train_set_generator),
-            validation_steps=len(self.test_set_generator),
-            shuffle=True
+            steps_per_epoch=None, #len(self.train_set_generator),
+            validation_steps=None, #len(self.validation_set_generator),
+            #shuffle=True
         )
 
         end = time.time()
@@ -235,13 +236,13 @@ class Experiment():
         self.model.get().save(self.report_path.get('final.h5'))
 
         training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_final_confusion.png"))
-        test_set_report = self._generate_confusion(self.test_set, self.model, self.encoding, self.report_path.get("test_set_final_confusion.png"))
+        test_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("test_set_final_confusion.png"))
         self._complement_summary('Final', training_set_report, test_set_report)
 
         self.model.model = tf.keras.models.load_model(self.report_path.get('checkpoint.h5'))
 
         training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_best_confusion.png"))
-        test_set_report = self._generate_confusion(self.test_set, self.model, self.encoding, self.report_path.get("test_set_best_confusion.png"))
+        test_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("test_set_best_confusion.png"))
         self._complement_summary('Best', training_set_report, test_set_report)
 
     def hash(self):
@@ -253,9 +254,9 @@ class Experiment():
         hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.train_sets ] )
 
         hasher.ordered('test')
-        hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.test_sets ] )
+        hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.validation_sets ] )
 
-        hasher.ordered(self.encoding, self.model, self.train_set_generator, self.test_set_generator)
+        hasher.ordered(self.encoding, self.model, self.train_set_generator, self.validation_set_generator)
                    
         return hasher
 
@@ -275,7 +276,12 @@ class Experiment():
 
                 datasets.append (samples_for_loader)
 
-        return pandas.concat(datasets, ignore_index=True)
+        ret = pandas.concat(datasets, ignore_index=True)
+
+        print ("_extract_sets")
+        [print(f'{row["input"]}') for _, row in ret.iterrows()]
+
+        return ret
 
     def _run_redirecting_stdout(self, file, func):
         with open(file, 'w') as f:
@@ -345,7 +351,7 @@ class Experiment():
             self._print_steps(steps, loader)
 
         print ('\n-- Test Set Steps:\n')
-        for (steps, loader) in self.test_sets:
+        for (steps, loader) in self.validation_sets:
             self._print_steps(steps, loader)
 
         if (self.model is not None):

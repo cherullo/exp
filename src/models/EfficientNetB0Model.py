@@ -12,7 +12,7 @@ class EfficientNetB0Model(Base):
         return self.model
 
     def compile(self, classes: int = 4):
-        self.model = EfficientNetB0(weights=None, input_shape=(292, 348, 1), classes=classes)
+        self.model = EfficientNetB0(weights=None, classes=classes)
 
         optimizer = Adam(learning_rate=self.learning_rate)
         self.model.compile(loss=self.loss, optimizer=optimizer, metrics=['acc'])

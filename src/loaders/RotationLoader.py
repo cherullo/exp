@@ -5,7 +5,7 @@ from .BaseLoader import BaseLoader
 from arch import Hasher
 
 class RotationLoader(BaseLoader):
-    def __init__(self, angle=10.0, spread=0.0, resize: tuple[int, int] = None):
+    def __init__(self, angle=0.0, spread=0.0, resize: tuple[int, int] = None):
         super().__init__(resize)
         self.angle = angle
         self.spread = spread

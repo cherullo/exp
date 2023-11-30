@@ -31,7 +31,7 @@ class DatasetGenerator(Base, tf.keras.utils.Sequence):
         base_idx = idx * bs
         rows = self.dataset[base_idx : base_idx+bs]
 
-        X = [ row[cols.INPUT_LOADER].Load(row[cols.INPUT]) for _,row in rows.iterrows() ]
+        X = [ row[cols.INPUT_LOADER].load(row[cols.INPUT]) for _,row in rows.iterrows() ]
 
         if self._apply_sample_centering is True:
             X = [self._center(x) for x in X]
