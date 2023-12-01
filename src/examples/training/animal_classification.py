@@ -22,10 +22,10 @@ exp.add_train_set([FilterColumn(columns.LABEL, [labels.SHEEP]), FirstPercent(0.8
 exp.add_validation_set([FilterColumn(columns.LABEL, [labels.COW]), LastPercent(0.2)], BaseLoader(resize=dimension))
 exp.add_validation_set([FilterColumn(columns.LABEL, [labels.SHEEP]), LastPercent(0.2)], BaseLoader(resize=dimension))
 
-exp.encoding = OneHot([labels.COW, labels.SHEEP], [1.0, 1.0])
+exp.encoding = OneHot([labels.COW, labels.SHEEP])
 
 exp.base_images_path = "dataset/"
 exp.image_column = columns.FILE
 exp.label_column = columns.LABEL
 exp.model = EfficientNetB0Model()
-exp.run(dry=True)
+exp.run()

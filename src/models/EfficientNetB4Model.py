@@ -1,17 +1,9 @@
 from tensorflow.keras.optimizers import Adam
 from efficientnet.tfkeras import EfficientNetB4
-from base.Base import Base
+from arch import Base
 
 class EfficientNetB4Model(Base):
-    def __init__(self, rows=None, columns=None):
-        if rows is None:
-            rows = 292
-
-        if columns is None:
-            columns = 348
-
-        self.rows = rows
-        self.columns = columns
+    def __init__(self):
         self.loss = 'categorical_crossentropy'
         self.learning_rate = 0.001
 
@@ -19,16 +11,16 @@ class EfficientNetB4Model(Base):
         return self.model
 
     def compile(self, classes: int = 4):
-        self.model = EfficientNetB4(weights=None, input_shape=(self.rows, self.columns, 3), classes=classes)
+        self.model = EfficientNetB4(weights=None, classes=classes)
 
         optimizer = Adam(learning_rate=self.learning_rate)
         self.model.compile(loss=self.loss, optimizer=optimizer, metrics=['acc'])
        
-    def ToString(self):
+    def __str__(self):
         return f'EfficientNetB4[loss={self.loss}, optimizer=Adam(learning_rate={self.learning_rate})]'
 
-    def Description(self):
+    def description(self):
         return f'EfficientNetB4 model'
 
-    def AddHash(self, h):
+    def add_hash(self, h):
         return h.ordered(self.__class__.__name__, self.loss, 'adam', self.learning_rate)

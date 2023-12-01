@@ -4,7 +4,6 @@ from arch import Base
 
 class EfficientNetB0Model(Base):
     def __init__(self):
-
         self.loss = 'categorical_crossentropy'
         self.learning_rate = 0.001
 

@@ -1,5 +1,5 @@
 import sys
-from os import path, chdir, getcwd
+import os
 
 def execfile(filepath, globals=None, locals=None):
     if globals is None:
@@ -13,18 +13,21 @@ def execfile(filepath, globals=None, locals=None):
 
 if (__name__ == "__main__"):
 
+    # Reduce tensorflow verbosity
+    os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
     # Add /src to PYTHON_PATH
-    myPath = path.dirname(__file__)
+    myPath = os.path.dirname(__file__)
     sys.path.append(myPath)
 
     # Get the path of the file to run and make it absolute
     toRun = sys.argv[1]
-    if (path.isabs(toRun) == False):
-        toRun = path.abspath(path.join(getcwd(), toRun))
+    if (os.path.isabs(toRun) == False):
+        toRun = os.path.abspath(os.path.join(os.getcwd(), toRun))
 
     # Change dir to file to run
-    toRunPath = path.dirname(toRun)
-    chdir(toRunPath)
+    toRunPath = os.path.dirname(toRun)
+    os.chdir(toRunPath)
     sys.path.append(toRunPath)
 
     execfile(toRun)

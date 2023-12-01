@@ -1,25 +1,23 @@
-import time
+from typing import List, Tuple
 from contextlib import redirect_stdout
+import time
 
 import pandas
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import List, Tuple
 from sklearn.metrics import classification_report, confusion_matrix
 
 from arch import Hasher
-from helpers import main_helper
-from loaders import BaseLoader
 from arch import Step
-from models.OneHot import OneHot
-
+from arch import DatasetGenerator
 from .SampleExtractor import SampleExtractor
 from .ReportPath import ReportPath
-from .DatasetGenerator import DatasetGenerator
-from arch import config
 import arch.dataset_columns as dataset_columns
+from helpers import main_helper
+from loaders import BaseLoader
+from models.OneHot import OneHot
 
 def _process_steps(df: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
     for step in steps:
@@ -27,8 +25,8 @@ def _process_steps(df: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
 
     return df
 
-def _generate_histogram(df: pandas.DataFrame, group_col:str): #, sum_col:str):
-    hist = df.groupby(group_col).count() # [sum_col].agg('sum')
+def _generate_histogram(df: pandas.DataFrame, group_col:str):
+    hist = df.groupby(group_col).count()
     hist.sort_index(axis=0, inplace=True)
 
     return hist
@@ -94,7 +92,7 @@ class Experiment():
         if (dry == True):
             self._print_dry_warning()
         self.str_hash = str( self.hash() )
-        self.base_images_path = self.base_images_path or config.get_images_path()
+        self.base_images_path = self.base_images_path
         self.report_path = ReportPath(self.base_report_path, f'{self.name}-{self.str_hash}')
 
         print (f'Starting experiment {self.name}-{self.str_hash}')
@@ -213,7 +211,7 @@ class Experiment():
         history = self.model.get().fit(
             self.train_set_generator,
             #class_weight=self.encoding.weights,
-            epochs=200,
+            epochs=20,
             validation_data = self.validation_set_generator,
             callbacks = custom_callbacks,
             steps_per_epoch=None, #len(self.train_set_generator),
@@ -314,11 +312,11 @@ class Experiment():
 
 
     def _generate_confusion(self, dataset, model, encoding, filename):
-        y = dataset['output'].tolist()
+        y = dataset[dataset_columns.OUTPUT].tolist()
 
-        generator = DatasetGenerator(dataset, encoding, batch_size=4, shuffle=False)
+        generator = DatasetGenerator(dataset, encoding, shuffle=False)
 
-        ypred = model.get().predict_generator(generator)
+        ypred = model.get().predict(generator)
         ypred = [encoding.decode(x) for x in ypred]
 
         cm = confusion_matrix(y, ypred, labels=encoding.labels)
@@ -330,7 +328,7 @@ class Experiment():
         sns.heatmap(cm, annot=True, annot_kws={"size": 12}, fmt="d") # font size
         plt.savefig(filename, dpi=200)
 
-        return classification_report(y, ypred)
+        return classification_report(y, ypred, zero_division=0)
 
 
     def _print_full_summary(self):
