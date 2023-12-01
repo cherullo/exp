@@ -110,15 +110,15 @@ class Experiment():
         df.to_excel(self.report_path.get('preprocessed.xlsx'))
 
         # Generate preprocessed histogram
-        # hist = _generate_histogram(df, self.label_column)
+        hist = _generate_histogram(df, self.label_column)
 
-        # hist.plot(kind='bar')
+        hist.plot(kind='bar')
 
-        # for index, row in enumerate(hist.iterrows()):
-        #     label, row = row
-        #     plt.text(index, row[self.image_column], str(label), ha='center')
+        for index, row in enumerate(hist.iterrows()):
+            label, row = row
+            plt.text(index, row[self.image_column], str(label), ha='center')
 
-        # plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
+        plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
 
         # Generate validation set
         if (len(self.validation_sets) > 0):
