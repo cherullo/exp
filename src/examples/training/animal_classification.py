@@ -28,4 +28,4 @@ exp.base_images_path = "dataset/"
 exp.image_column = columns.FILE
 exp.label_column = columns.LABEL
 exp.model = EfficientNetB0Model()
-exp.run()
+exp.run(dry=True)

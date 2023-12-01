@@ -3,7 +3,7 @@ import numpy as np
 from arch import Hasher, Step
 
 class FirstCount(Step):
-    """ Keeps the first rows of the dataset.
+    """ Keeps a set number of the first rows of the dataset.
 
     Args:
         Step (_type_): This is a preprocessing step.
@@ -36,5 +36,5 @@ class FirstCount(Step):
 
         return data[0:count_to_return]
 
-    def add_hash(self, h:Hasher):
+    def add_hash(self, h: Hasher):
         h.ordered(self.__class__.__name__, self.count)

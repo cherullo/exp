@@ -2,9 +2,6 @@ import pandas
 import os
 import arch.dataset_columns as dataset_columns
 
-# def _new_df(data=None) -> pandas.DataFrame:
-#     return pandas.DataFrame(data=data, columns=dataset_columns.all)
-
 class SampleExtractor():
     def __init__(self, base_path: str, label_column: str, image_column: str):
         self.base_path = base_path

@@ -122,7 +122,6 @@ class Experiment():
 
         # Generate validation set
         if (len(self.validation_sets) > 0):
-            print ("Creating validation set")
             self.validation_set = self._extract_sets(df.copy(deep=True), self.validation_sets)
 
             # Remove duplicates from validation set
@@ -143,10 +142,14 @@ class Experiment():
                 if (self.validation_set is not None):
                     validation_images = self.validation_set[dataset_columns.INPUT]
                     
-                    print ("intersection")
-                    [print(f'{row["input"]}') for _, row in self.train_set[ self.train_set[dataset_columns.INPUT].isin(validation_images) ].iterrows()]
+                    intersectionBools = self.train_set[dataset_columns.INPUT].isin(validation_images)
+                    intersection = self.train_set[ intersectionBools ]
+                    if len(intersection) > 0:
+                        print ("Found intersection between the training set and the validation set.")
+                        print ("Removing the following samples from the training set:")
+                        [print(f'{row["input"]}') for _, row in intersection.iterrows()]
                     
-                    self.train_set = self.train_set[ ~self.train_set[dataset_columns.INPUT].isin(validation_images) ]
+                        self.train_set = self.train_set[ ~intersectionBools ]
 
                     if len(self.train_set) == 0:
                         print ('All images in training set were also on the validation set and were removed. This is a dry run.')
@@ -210,7 +213,7 @@ class Experiment():
         history = self.model.get().fit(
             self.train_set_generator,
             #class_weight=self.encoding.weights,
-            epochs=80,
+            epochs=200,
             validation_data = self.validation_set_generator,
             callbacks = custom_callbacks,
             steps_per_epoch=None, #len(self.train_set_generator),
