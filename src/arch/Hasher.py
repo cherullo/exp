@@ -34,11 +34,18 @@ def _to_bytearray(v):
     raise Exception(f'Cannot hash {type(v)}')
 
 class Hasher():
+    """ Class that manages a rolling hash.
+    """
     def __init__(self, *args):
         self.value = 1
         self.ordered(*args)
 
     def ordered(self, *args):
+        """ Aggregates args in the hash, considering args as a list.
+
+        Returns:
+            Self: The hasher itself.
+        """
         for v in args:
             if (v is None):
                 continue
@@ -51,6 +58,11 @@ class Hasher():
         return self
 
     def unordered(self, *args):
+        """ Aggregates args in the hash, considering args as a set.
+
+        Returns:
+            Self: The hasher itself.
+        """
         temp = 0
 
         for v in args:
@@ -76,7 +88,7 @@ class Hasher():
         if isinstance(other, Hasher):
             return self.value == other.value
 
-        return False;
+        return False
 
 
 

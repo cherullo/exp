@@ -1,9 +1,5 @@
 import tensorflow as tf
 
-tf.debugging.set_log_device_placement(True)
-tf.enable_eager_execution()
+[print (device) for device in tf.config.list_physical_devices()]
 
-a = tf.constant([1.])
-b = tf.constant([2.])
-c = tf.add(a, b)
-print(c)
+print (f'Has GPU? {len(tf.config.list_physical_devices("GPU")) > 0}')

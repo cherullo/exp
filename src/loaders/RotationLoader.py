@@ -11,21 +11,24 @@ class RotationLoader(BaseLoader):
         self.spread = spread
 
     def load(self, file: str) -> np.ndarray:
+        """ Loads an image and rotates it.
+
+        Args:
+            file (str): Image file path.
+
+        Returns:
+            np.ndarray: The image ndarray.
+        """
         img = super().load(file)
 
         angle = self.angle + random.uniform(-1.0, 1.0) * self.spread
         return rotate(img, angle)
 
     def __str__(self) -> str:
-        spread_txt = f', spread={self.spread}' if self.spread != 0.0 else ''
-        return f'RotationLoader(angle={self.angle}{spread_txt})'
+        return f'RotationLoader(angle={self.angle}, spread={self.spread}, resize={self.resize})'
 
     def description(self) -> str:
-        resizeStr = ''
-        if (self.resize):
-            resizeStr = f', resizes it to {self.resize[0]} rows by {self.resize[1]} columns'
-
-        return f'Loads the image from disk{resizeStr} and then rotates by {self.angle} +- {self.spread} degrees.'
+        return f'{super().description()} and then rotates by {self.angle} +- {self.spread} degrees.'
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.angle, self.spread)

@@ -14,4 +14,12 @@ class Step(Base):
     """
     @abstractmethod
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:
+        """ Applies this preprocessing step in data and returns the results.
+
+        Args:
+            data (pandas.DataFrame): Data to process.
+
+        Returns:
+            pandas.DataFrame: Processed data.
+        """
         pass

@@ -11,20 +11,25 @@ class BrightLoader(BaseLoader):
         self.beta = beta
 
     def load(self, file: str) -> np.ndarray:
+        """ Loads an image and adjusts its brightness.
+
+        Args:
+            file (str): Image file path.
+
+        Returns:
+            np.ndarray: The image ndarray.
+        """
         img = super().Load(file)
         
         img = (img * self.alpha) + self.beta
 
-        return np.clip(img, 0, 1)
+        return np.clip(img, 0, 255)
 
     def __str__(self) -> str:
-        alpha_str = f'{self.alpha} * ' if self.alpha != 1.0 else ''
-        beta_str = f' + {self.beta}' if self.beta != 0.0 else ''
-
-        return f'BrightLoader({alpha_str}X{beta_str})'
+        return f'BrightLoader(alpha={self.alpha}, beta={self.beta}, resize={self.resize})'
 
     def description(self) -> str:
-        return f'Loads the image from disk as grayscale in the range [0,1], resizes it to {self.rows} rows by {self.columns} columns and then multiplies each pixel by {self.alpha} and then adds {self.beta}.'
+        return f'{super().description()} and then multiplies each pixel by {self.alpha} and then adds {self.beta}.'
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__, self.alpha, self.beta)

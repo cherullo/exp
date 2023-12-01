@@ -8,10 +8,21 @@ from arch import Base
 from arch import Hasher
 
 class BaseLoader(Base):
+    """ 
+        Loads an image and optionally resizes it.
+    """
     def __init__(self, resize: tuple[int, int] = None):
         self.resize = resize
 
     def load(self, file: str) -> np.ndarray:
+        """ Loads an image.
+
+        Args:
+            file (str): Image file path.
+
+        Returns:
+            np.ndarray: The image ndarray.
+        """
         img = img_as_float32(io.imread(file)) * 255.0
 
         if self.resize != None:
@@ -20,10 +31,12 @@ class BaseLoader(Base):
         return img
 
     def __str__(self) -> str:
-        return f'BaseLoader({self.resize})'
+        return f'BaseLoader(resize={self.resize})'
 
     def description(self) -> str:
-        return f'Loads the image from disk as grayscale in the range [0,1] and resizes it to {self.resize[0]} rows by {self.resize[1]} columns.'
+        resizeStr = f' and resizes it to {self.resize[0]} rows by {self.resize[1]} columns.' if self.resize is not None else ''
+
+        return f'Loads the image from disk with values in the range [0, 255]{resizeStr}'
 
     def add_hash(self, h:Hasher):
         h.ordered(self.__class__.__name__)

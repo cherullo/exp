@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 from .Base import Base
 import arch.dataset_columns as cols
-import helpers.image_centering 
 
 class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
     def __init__(self,
@@ -27,10 +26,6 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
         self._epoch=0
         self._dataset_per_class: Dict[str, pandas.DataFrame] = None
         self.epoch_dataset: pandas.DataFrame = None
-
-        self._apply_sample_centering=False
-        self._sample_center=0.0
-        self._sample_range=0.0
             
     def __len__(self):
         dataset_per_class = self._get_dataset_per_class()
@@ -81,19 +76,11 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
 
         X = [ row[cols.INPUT_LOADER].Load(row[cols.INPUT]) for _,row in rows.iterrows() ]
 
-        if self._apply_sample_centering is True:
-            X = [image_centering.center(x, self._sample_center, self._sample_range) for x in X]
-
         X = np.array(X)
         y = np.array(self.encoding.encode(rows[cols.OUTPUT]))
 
         return X, y
 
-    def set_centering(self, center, range):
-        self._apply_sample_centering=True
-        self._sample_center=center
-        self._sample_range=range
-    
     def on_epoch_end(self):
         self._epoch += 1
         self.epoch_dataset = self.generate_epoch_dataset()
@@ -106,6 +93,3 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
 
     def AddHash(self, h):
         h.ordered('StratifiedDatasetGenerator', self.samples_per_class, self.seed, self.batch_size, self.shuffle)
-
-        if self._apply_sample_centering is True:
-            h.ordered(self._sample_center, self._sample_range)
