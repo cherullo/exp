@@ -4,11 +4,7 @@ O exp é um framework modular de apoio aos experimentos em treinamento de redes 
 
 Com ele é possível descrever de maneira sucinta as etapas de pré-processamento dos dados e os parâmetros de configuração da rede, e executar o treinamento, gerando um relatório que descreve todas as configurações do experimento e os resultados obtidos.
 
-Para começar a utilizar o framework, recomendamos realizar as etapas de instalação abaixo e experimentas com os exemplos disponíveis.
-
-[//]: # ( Pré-processamento de dados, incluindo leitura, normalização, seleção e distribuição nos conjuntos de treinamento, avaliação e testes. 
-A configuração da rede neural, incluindo dos parâmetros de treinamento e o do otimizador.
-A gravação dos resultados e geração de relatórios. )
+Para começar a utilizar o framework, recomendamos realizar as etapas de instalação abaixo e experimentar com os exemplos disponíveis.
 
 ## Instalação
 
