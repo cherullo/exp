@@ -72,6 +72,7 @@ class Experiment():
 
         self.model = None
         self.encoding = None
+        self.epochs = 20
 
     def add_train_set( self, steps:List[Step], *loaders: BaseLoader ):
         self.train_sets.append( (steps, loaders) )
@@ -210,13 +211,11 @@ class Experiment():
                 
         history = self.model.get().fit(
             self.train_set_generator,
-            #class_weight=self.encoding.weights,
-            epochs=20,
+            epochs=self.epochs,
             validation_data = self.validation_set_generator,
             callbacks = custom_callbacks,
-            steps_per_epoch=None, #len(self.train_set_generator),
-            validation_steps=None, #len(self.validation_set_generator),
-            #shuffle=True
+            steps_per_epoch=None,
+            validation_steps=None,
         )
 
         end = time.time()
@@ -256,7 +255,7 @@ class Experiment():
         hasher.ordered('validation')
         hasher.unordered( *[ Hasher().ordered(*x).ordered(*l) for x, l in self.validation_sets ] )
 
-        hasher.ordered(self.encoding, self.model, self.train_set_generator, self.validation_set_generator)
+        hasher.ordered(self.encoding, self.model, self.epochs, self.train_set_generator, self.validation_set_generator)
                    
         return hasher
 
@@ -358,6 +357,7 @@ class Experiment():
 
         encoding_str = str(self.encoding) if self.encoding is not None else 'None'
         print (f'\n-- Encoding: {encoding_str}')
+        print (f'-- Training epochs: {self.epochs}')
         print (f'-- Final Hash: {self.str_final_hash}')
 
     def _plot_dataset(self, df: pandas.DataFrame, filename:str):
