@@ -145,7 +145,7 @@ class Experiment():
                     if len(intersection) > 0:
                         print ("Found intersection between the training set and the validation set.")
                         print ("Removing the following samples from the training set:")
-                        [print(f'{row["input"]}') for _, row in intersection.iterrows()]
+                        [print(f'{row[dataset_columns.INPUT]}') for _, row in intersection.iterrows()]
                     
                         self.train_set = self.train_set[ ~intersectionBools ]
 
