@@ -1,2 +1,2 @@
 
-Sample Excel downloaded from https://www.contextures.com/xlsampledata01.html#winter
+Sample data downloaded from https://www.contextures.com/xlsampledata01.html#winter

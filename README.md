@@ -1,7 +1,10 @@
 # exp
 
-O exp é um framework modular de apoio ao treinamento de redes neurais convolucionais. Com ele é possível descrever de maneira sucinta as etapas de pré-processamento dos dados e os parâmetros de configuração da rede para treinamento.
-Em contrapartida, o framework executa o treinamento e gera um relatório único, descrevendo as etapas de pré-processamento, a rede utilizada e os resultados obtidos.
+O exp é um framework modular de apoio aos experimentos em treinamento de redes neurais convolucionais. Seu objetivo é fornecer documentação e reproducibilidade aos experimentos realizados.
+
+Com ele é possível descrever de maneira sucinta as etapas de pré-processamento dos dados e os parâmetros de configuração da rede, e executar o treinamento, gerando um relatório que descreve todas as configurações do experimento e os resultados obtidos.
+
+Para começar a utilizar o framework, recomendamos realizar as etapas de instalação abaixo e experimentas com os exemplos disponíveis.
 
 [//]: # ( Pré-processamento de dados, incluindo leitura, normalização, seleção e distribuição nos conjuntos de treinamento, avaliação e testes. 
 A configuração da rede neural, incluindo dos parâmetros de treinamento e o do otimizador.
@@ -17,16 +20,26 @@ pip install -r requirements.txt
 
 Como existem diversas maneiras de se instalar o Tensorflow, não incluímos essa dependência diretamente no requirements.txt.
 
-## Documentação
-
- - [Requisitos](docs/requisitos.md)
- - [Arquitetura](docs/arquitetura.md)
- - [Referência de Classes](docs/referencia.md)
-
 ## Exemplos
 
- - [Filtragem de dados](examples/filtering)
- - [Carregamento de imagens](examples/imageLoading)
+A fim de resolver questões de path e imports, é preciso utilizar a seguinte linha de comandos para executar os exemplos:
+
+```
+python src/run_sample.py [ARQUIVO PYTHON]
+```
+
+ - Selecionar as primeiras linhas de um dataset: [examples/filtering/first_count.py]()
+
+- Selecionar as linhas onde uma coluna possui determinado valor: [examples/filtering/filter_by_column.py]()
+
+- Como trocar o valor de uma coluna: [examples/filtering/change_column.py]()
+
+- Como treinar uma rede para classificar vacas e ovelhas: [examples/training/animal_classification.py]()
+
+## Documentação
+
+ - [Documentação](docs/documentacao.md)
+ - [Referência de Classes](docs/referencia.md)
 
 ## Licença
 

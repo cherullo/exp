@@ -4,10 +4,16 @@ from preprocessing_steps import FilterColumn
 import columns as cols
 
 filter = Preprocessing()
+
+# Keep only the rows where Nationality equals Andorra or Albania
 filter.add_step(FilterColumn(cols.NATIONALITY, ["Andorra", "Albania"]))
+
+# Manually load the dataset
 df = pandas.read_excel("sampledatawinterathletes.xlsx", engine = "openpyxl")
 
+# Print the preprocessing steps
 print(filter)
+# Filter the dataset and print the results
 print(filter.process(df))
 
 # Expected output:
