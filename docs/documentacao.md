@@ -73,7 +73,7 @@ Para definir o arquivo Excel de entrada, o usuário do framework só precisa for
 
 Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância realizará uma alteração simples em uma tabela, e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. Em Python:
 
-```
+```python
 def _process_steps(dataset: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
     for step in steps:
         dataset = step.process(dataset)
@@ -86,7 +86,7 @@ O pré-processamento global irá gerar um *dataset* pré-processado, que será u
 
 Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com a assinatura abaixo:
 
-```
+```python
     def add_train_set(steps:List[Step], *loaders: BaseLoader) -> None
 
     def add_validation_set(steps:List[Step], *loaders: BaseLoader) -> None
@@ -100,7 +100,7 @@ Quando um treinamento é executado, as etapas de pré-processamento são aplicad
 
 A geração do *dataset* de treinamento pode ser simplificadamente entendida pelo seguinte código Python:
 
-```
+```python
 # Carrega o dataset do disco
 dataset: pandas.DataFrame = pandas.read_excel(self.input)
 
