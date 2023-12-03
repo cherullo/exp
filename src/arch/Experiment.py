@@ -50,7 +50,7 @@ def _generate_dataset_histogram(df: pandas.DataFrame):
 class Experiment():
 
     def __init__(self, name:str = None):
-        self.name = name or main_helper.get_main_basename_extless();
+        self.name = name or main_helper.get_main_basename_extless()
         
         self.base_images_path = None
         self.base_report_path = 'reports/'
@@ -74,10 +74,10 @@ class Experiment():
         self.encoding = None
         self.epochs = 20
 
-    def add_train_set( self, steps:List[Step], *loaders: BaseLoader ):
+    def add_train_set(self, steps:List[Step], *loaders: BaseLoader):
         self.train_sets.append( (steps, loaders) )
 
-    def add_validation_set( self, steps:List[Step], *loaders: BaseLoader ):
+    def add_validation_set(self, steps:List[Step], *loaders: BaseLoader):
         self.validation_sets.append(  (steps, loaders) )
 
     def _print_dry_warning(self):
@@ -100,7 +100,7 @@ class Experiment():
         print (f'Image path: {self.base_images_path}')
 
         # Load source XLS file
-        df: pandas.DataFrame = pandas.read_excel(self.input,engine = 'openpyxl')
+        df: pandas.DataFrame = pandas.read_excel(self.input, engine = 'openpyxl')
 
         # Apply preprocessing steps
         df = _process_steps(df, self.preprocessing_steps)
