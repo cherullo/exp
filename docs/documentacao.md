@@ -69,19 +69,19 @@ Em linhas gerais, um experimento é composto pelos seguintes itens, todos defini
 1. Um subconjunto do *dataset* para validação.
 1. Um modelo básico de rede neural a ser treinada.
 
-Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo `Experiment.input`.
+Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo `Experiment.input`. Neste instante, as colunas desta tabela são arbitrárias.
 
-Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância realizará uma alteração simples em uma tabela, e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. Em Python:
+Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância realizará uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. Em Python:
 
 ```python
-def _process_steps(dataset: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
+def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataFrame:
     for step in steps:
         dataset = step.process(dataset)
 
     return dataset
 ```
 
-O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação, são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de `Step`) associadas a um *loader*. *Loaders* são classes derivadas da classe `BaseLoader` e encarregadas de ler uma imagem do disco e aplicar uma transformação nelas. 
+O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de `Step`) associadas a um *loader*. *Loaders* são classes derivadas da classe `BaseLoader` e encarregadas de ler uma imagem do disco e aplicar uma transformação nelas. 
 
 
 Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com a assinatura abaixo:
@@ -96,13 +96,13 @@ Observe que vários *loaders* podem ser passados em cada chamada. Isso é equiva
 
 ![](images/Experimento.png)
 
-Quando um treinamento é executado, as etapas de pré-processamento são aplicadas ao *dataset* inicial, gerando o *dataset* pré-processado. Os *datasets* de treinamento e validação são gerados concatenando-se o resultado do processamento de cada uma de suas fatias, que consiste simplesmente em aplicar as respectivas etapas de processamento ao *dataset* pré-processado e anexar o respectivo loader.
+Quando um treinamento é executado, as etapas de pré-processamento são aplicadas ao *dataset* inicial, gerando o *dataset* pré-processado. Os *datasets* de treinamento e validação são gerados concatenando-se o resultado do processamento de cada uma de suas fatias, que consiste simplesmente em aplicar as respectivas etapas de processamento ao *dataset* pré-processado e anexar uma coluna contendo o respectivo loader.
 
 A geração do *dataset* de treinamento pode ser simplificadamente entendida pelo seguinte código Python:
 
 ```python
 # Carrega o dataset do disco
-dataset: pandas.DataFrame = pandas.read_excel(self.input)
+dataset = pandas.read_excel(self.input)
 
 # Aplica as etapas de pré-processamento globais
 ds_pre = _process_steps(dataset, self.preprocessing_steps)
@@ -117,13 +117,21 @@ for steps, loaders in training_slices:
         slice_set = _process_steps(ds_pre, steps) 
 
         # Adiciona uma coluna ao dataset com o loader
-        slice_set.loc[:, dataset_columns.INPUT_LOADER] = loader
+        slice_set.loc[:, 'loader'] = loader
 
         # Concatena o resultado desta fatia ao dataset de treinamento
         training_set.append (slice_set)
 ```
 
-O mesmo processo é realizado para gerar o subconjunto de validação.
+O mesmo processo é realizado para gerar o subconjunto de validação. Finalmente, para iniciar o treinamento, os datasets de treinamento e validação precisam são transformados em tabelas consolidadas, com formato padronizado, contendo apenas três colunas: 
+
+- `input`: contém o nome do arquivo de imagem;
+- `loader`: contém o *loader* a ser utilizado para carregar a referida imagem;
+- `label`: contém o *label*, ou classe a que esta imagem pertence.
+
+A coluna `loader` é adicionada automaticamente, já as colunas `input` e `label` precisam ser fornecidas pelo usuário. O nome da coluna contendo o nome dos arquivos de imagem precisa ser informada pelo usuário através do atributo `Experiment.image_column`, e o nome da coluna contendo os *labels* (ou classe da imagem) precisa ser informado através do atributo `Experiment.label_column`. A transformação consiste então em: renomear essas colunas respectivamente para `input` e `label`, manter a coluna `loader` e descartar as demais.
+
+O treinamento é realizado utilizando esse formato padronizado de dados. O modelo da rede neural a ser treinada deve ser informada através do atributo `Experiment.model`, e deve ser uma instância de classe derivada de `BaseModel`.
 
 ## Composição do Relatório
 

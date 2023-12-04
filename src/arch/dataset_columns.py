@@ -1,6 +1,6 @@
 
 INPUT = 'input'
-INPUT_LOADER = 'input_loader'
-OUTPUT = 'output'
+LOADER = 'loader'
+LABEL = 'label'
 
-all = [INPUT, INPUT_LOADER, OUTPUT]
+all = [INPUT, LOADER, LABEL]

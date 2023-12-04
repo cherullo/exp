@@ -1,8 +1,8 @@
 from tensorflow.keras.optimizers import Adam
 from efficientnet.tfkeras import EfficientNetB0
-from arch import Base
+from arch import BaseModel
 
-class EfficientNetB0Model(Base):
+class EfficientNetB0Model(BaseModel):
     def __init__(self):
         self.loss = 'categorical_crossentropy'
         self.learning_rate = 0.001

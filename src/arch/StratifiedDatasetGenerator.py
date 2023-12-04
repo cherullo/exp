@@ -41,7 +41,7 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
             temp:Dict[str, pandas.DataFrame]=dict()
 
             for label in self.encoding.labels:
-                temp[label] = self.dataset.loc[self.dataset[cols.OUTPUT] == label]
+                temp[label] = self.dataset.loc[self.dataset[cols.LABEL] == label]
 
             self._dataset_per_class=temp
 
@@ -73,10 +73,10 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
         base_idx = idx * bs
         rows = self.epoch_dataset[base_idx : base_idx+bs]
 
-        X = [ row[cols.INPUT_LOADER].Load(row[cols.INPUT]) for _,row in rows.iterrows() ]
+        X = [ row[cols.LOADER].Load(row[cols.INPUT]) for _,row in rows.iterrows() ]
 
         X = np.array(X)
-        y = np.array(self.encoding.encode(rows[cols.OUTPUT]))
+        y = np.array(self.encoding.encode(rows[cols.LABEL]))
 
         return X, y
 

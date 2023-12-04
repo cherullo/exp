@@ -42,6 +42,6 @@ exp.label_column = columns.LABEL
 # Load EfficientNetB0 model
 exp.model = EfficientNetB0Model()
 # Train for 20 epochs
-exp.epochs = 20
+exp.epochs = 1
 #
 exp.run()

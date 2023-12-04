@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
-from arch import Hasher
+from arch import BaseModel, Hasher
 from arch import Step
 from arch import DatasetGenerator
 from .SampleExtractor import SampleExtractor
@@ -19,7 +19,7 @@ from helpers import main_helper
 from loaders import BaseLoader
 from models.OneHot import OneHot
 
-def _process_steps(df: pandas.DataFrame, steps:List[Step]) -> pandas.DataFrame:
+def _process_steps(df: pandas.DataFrame, steps: List[Step]) -> pandas.DataFrame:
     for step in steps:
         df = step.process(df)
 
@@ -32,15 +32,15 @@ def _generate_histogram(df: pandas.DataFrame, group_col:str):
     return hist
 
 def _generate_dataset_histogram(df: pandas.DataFrame):
-    columns = df[dataset_columns.INPUT_LOADER].unique() 
+    columns = df[dataset_columns.LOADER].unique() 
     columns = np.unique([str(input) for input in columns])
-    indexes = df[dataset_columns.OUTPUT].unique()
+    indexes = df[dataset_columns.LABEL].unique()
 
     ret = pandas.DataFrame(columns=columns, index=indexes)
     ret.sort_index(axis=0, inplace=True)
     ret.sort_index(axis=1, inplace=True)
 
-    counts = df.groupby([ dataset_columns.OUTPUT, dataset_columns.INPUT_LOADER ]).count()
+    counts = df.groupby([ dataset_columns.LABEL, dataset_columns.LOADER ]).count()
 
     for index, row in counts.iterrows():
         ret.loc[ [index[0]], [str(index[1])] ] = row[dataset_columns.INPUT]
@@ -49,7 +49,7 @@ def _generate_dataset_histogram(df: pandas.DataFrame):
 
 class Experiment():
 
-    def __init__(self, name:str = None):
+    def __init__(self, name: str = None):
         self.name = name or main_helper.get_main_basename_extless()
         
         self.base_images_path = None
@@ -59,8 +59,8 @@ class Experiment():
         self.str_final_hash = None
 
         self.input = None
-        self.image_column = None
-        self.label_column = None
+        self.image_column = dataset_columns.INPUT
+        self.label_column = dataset_columns.LABEL
         self.preprocessing_steps: List[Step] = []
         self.validation_sets: List(List[Step], Tuple[BaseLoader]) = []
         self.validation_set = None
@@ -70,7 +70,7 @@ class Experiment():
         self.train_set = None
         self.train_set_generator = None
 
-        self.model = None
+        self.model: BaseModel = None
         self.encoding = None
         self.epochs = 20
 
@@ -164,7 +164,7 @@ class Experiment():
             dry = True
         else:
             if self.encoding is None:
-                unique_outputs = self.train_set[dataset_columns.OUTPUT].unique()
+                unique_outputs = self.train_set[dataset_columns.LABEL].unique()
 
                 if len(unique_outputs) == 0:
                     print ('No unique output values on training set. This is a dry run.')
@@ -271,7 +271,7 @@ class Experiment():
             for loader in loaders:
                 samples_for_loader = samples.copy(deep=True)
 
-                samples_for_loader.loc[:, dataset_columns.INPUT_LOADER] = loader
+                samples_for_loader.loc[:, dataset_columns.LOADER] = loader
 
                 datasets.append (samples_for_loader)
 
@@ -311,7 +311,7 @@ class Experiment():
 
 
     def _generate_confusion(self, dataset, model, encoding, filename):
-        y = dataset[dataset_columns.OUTPUT].tolist()
+        y = dataset[dataset_columns.LABEL].tolist()
 
         generator = DatasetGenerator(dataset, encoding, shuffle=False)
 

@@ -26,10 +26,10 @@ class DatasetGenerator(Base, tf.keras.utils.Sequence):
         base_idx = idx * bs
         rows = self.dataset[base_idx : base_idx+bs]
 
-        X = [ row[cols.INPUT_LOADER].load(row[cols.INPUT]) for _,row in rows.iterrows() ]
+        X = [ row[cols.LOADER].load(row[cols.INPUT]) for _,row in rows.iterrows() ]
 
         X = np.array(X)
-        y = np.array(self.encoding.encode(rows[cols.OUTPUT]))
+        y = np.array(self.encoding.encode(rows[cols.LABEL]))
 
         return X, y
 
