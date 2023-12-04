@@ -71,7 +71,9 @@ Em linhas gerais, um experimento é composto pelos seguintes itens, todos defini
 
 Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo `Experiment.input`. Neste instante, as colunas desta tabela são arbitrárias.
 
-Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância realizará uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. Em Python:
+Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância realizará uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. 
+
+Em Python:
 
 ```python
 def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataFrame:
@@ -81,15 +83,17 @@ def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataF
     return dataset
 ```
 
-O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de `Step`) associadas a um *loader*. *Loaders* são classes derivadas da classe `BaseLoader` e encarregadas de ler uma imagem do disco e aplicar uma transformação nelas. 
+O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de `Step`) associadas a um *loader*. *Loaders* são classes derivadas da classe `BaseLoader` e encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
 
 
-Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com a assinatura abaixo:
+Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com a assinaturas abaixo:
 
 ```python
-    def add_train_set(steps:List[Step], *loaders: BaseLoader) -> None
+    def add_train_set(steps:List[Step], *loaders: BaseLoader) -> None:
+        pass
 
-    def add_validation_set(steps:List[Step], *loaders: BaseLoader) -> None
+    def add_validation_set(steps:List[Step], *loaders: BaseLoader) -> None:
+        pass
 ``` 
 
 Observe que vários *loaders* podem ser passados em cada chamada. Isso é equivalente à chamar o método uma vez para cada *loader*, passando a mesma lista de etapas. Podemos entender esta organização graficamente abaixo:
@@ -116,7 +120,7 @@ for steps, loaders in training_slices:
         # Aplica as etapas de pré-processamento da fatia após o pré-processamento global
         slice_set = _process_steps(ds_pre, steps) 
 
-        # Adiciona uma coluna ao dataset com o loader
+        # Adiciona uma coluna com o loader
         slice_set.loc[:, 'loader'] = loader
 
         # Concatena o resultado desta fatia ao dataset de treinamento
@@ -129,9 +133,9 @@ O mesmo processo é realizado para gerar o subconjunto de validação. Finalment
 - `loader`: contém o *loader* a ser utilizado para carregar a referida imagem;
 - `label`: contém o *label*, ou classe a que esta imagem pertence.
 
-A coluna `loader` é adicionada automaticamente, já as colunas `input` e `label` precisam ser fornecidas pelo usuário. O nome da coluna contendo o nome dos arquivos de imagem precisa ser informada pelo usuário através do atributo `Experiment.image_column`, e o nome da coluna contendo os *labels* (ou classe da imagem) precisa ser informado através do atributo `Experiment.label_column`. A transformação consiste então em: renomear essas colunas respectivamente para `input` e `label`, manter a coluna `loader` e descartar as demais.
+Como visto acima, a coluna `loader` é adicionada automaticamente, já as colunas `input` e `label` precisam ser fornecidas pelo usuário. O nome da coluna contendo o nome dos arquivos de imagem precisa ser informado pelo usuário através do atributo `Experiment.image_column` (default "input"), e o nome da coluna contendo os *labels* (ou classe da imagem) precisa ser informado através do atributo `Experiment.label_column` (default "label"). A transformação consiste então em: renomear essas colunas respectivamente para `input` e `label`, manter a coluna `loader` e descartar as demais.
 
-O treinamento é realizado utilizando esse formato padronizado de dados. O modelo da rede neural a ser treinada deve ser informada através do atributo `Experiment.model`, e deve ser uma instância de classe derivada de `BaseModel`.
+O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de `BaseModel`, informado através do atributo `Experiment.model`.
 
 ## Composição do Relatório
 
