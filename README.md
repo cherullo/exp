@@ -35,12 +35,15 @@ python src/run_sample.py [ARQUIVO PYTHON]
 ## Documentação
 
  - [Documentação](docs/documentacao.md)
- - [Referência de Classes](docs/referencia.md)
+ - [Especificação Técnica](docs/especificacao_tecnica.md)
+ - [Possíveis Melhorias](docs/melhorias.md)
+
+## Observações
+
+ - A documentação contida neste repositório foi escrita como parte da disciplina Projeto Final de Programação, do curso de Doutorado em Ciências - Informática da PUC-Rio.
+
+ - Uma versão anterior do código contido neste repositório foi utilizada na elaboração do trabalho *Treating Dataset Imbalance in Fetal Echocardiography Classification* ([DOI](http://dx.doi.org/10.15439/2022F56)).
 
 ## Licença
 
 Licenciado sobre a [licença MIT](LICENSE).
-
-## Convenções
-
-Seguimos as convenções de código descritas em https://peps.python.org/pep-0008/
