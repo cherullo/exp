@@ -1,6 +1,6 @@
 import pandas
 from arch import Preprocessing
-from preprocessing_steps import ChangeColumn, FilterColumn
+from preprocessing_steps import ReplaceValueInColumn, FilterColumn
 import columns as cols
 
 filter = Preprocessing()
@@ -9,9 +9,9 @@ filter = Preprocessing()
 filter.add_step(FilterColumn(cols.NATIONALITY, ["Andorra", "Albania"]))
 
 # Replace "Alpine Skiing" with "Skiing" in the Sport column
-filter.add_step(ChangeColumn(cols.SPORT, "Alpine Skiing", "Skiing"))
+filter.add_step(ReplaceValueInColumn(cols.SPORT, "Alpine Skiing", "Skiing"))
 # Replace "Alpine Skiing" with "Cross-Country Skiing" in the Sport column
-filter.add_step(ChangeColumn(cols.SPORT, "Cross-Country Skiing", "Skiing"))
+filter.add_step(ReplaceValueInColumn(cols.SPORT, "Cross-Country Skiing", "Skiing"))
 
 # Manually load the dataset
 df = pandas.read_excel("sampledatawinterathletes.xlsx", engine = "openpyxl")

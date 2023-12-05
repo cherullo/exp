@@ -1,7 +1,7 @@
 import pandas
 from arch import Hasher, BaseStep
 
-class ChangeColumn(BaseStep):
+class ReplaceValueInColumn(BaseStep):
     """ 
     For each row, sets column to a new value if it has a certain value.
 
@@ -23,7 +23,7 @@ class ChangeColumn(BaseStep):
         self.replacement = newValue
 
     def __str__(self) -> str:
-        return f'ChangeColumn({self.column}, {self.original}, {self.replacement})'
+        return f'ReplaceValueInColumn({self.column}, {self.original}, {self.replacement})'
 
     def description(self) -> str:
         return f'In row "{self.column}", change "{self.original}" to "{self.replacement}"'

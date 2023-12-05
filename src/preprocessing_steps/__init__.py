@@ -1,5 +1,5 @@
 from .FilterColumn import FilterColumn
-from .ChangeColumn import ChangeColumn
+from .ReplaceValueInColumn import ReplaceValueInColumn
 from .FirstPercent import FirstPercent
 from .FirstCount import FirstCount
 from .LastPercent import LastPercent
