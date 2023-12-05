@@ -147,7 +147,7 @@ Como visto acima, a coluna `loader` é adicionada automaticamente. Já as coluna
 
 O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de `BaseModel`, informado através do atributo `Experiment.model`.
 
-### Regime de Treinamento
+## Regime de Treinamento
 
 Por padrão, o treinamento de redes neurais é feito efetuando-se diversas *epochs*. Em cada *epoch*, todas as imagens no *dataset* de treinamento são fornecidas à rede, aperfeiçoando seu aprendizado. Em seguida, a performance da rede é avaliada no *dataset* de validação.
 
@@ -227,7 +227,9 @@ Um exemplo de relatório pode ser visto em em [/src/examples/training/reports/](
 
 Abaixo listamos alguns cenários de utilização onde entendemos que o uso do framework exp é apropriado, e outros cenários onde seu uso não é recomendado.
 
-## Cenário Adequado: Treinamento com datasets desbalanceados
+## Cenários Adequados
+
+### Treinamento com datasets desbalanceados
 
 Duas características do framework o tornam adequados para o treinamento de redes neurais utilizando-se *datasets* desbalanceados:
 
@@ -235,15 +237,17 @@ Duas características do framework o tornam adequados para o treinamento de rede
 
 1. O `StratifiedDatasetGenerator` também é indicado para o treinamento de redes com *datasets* desbalanceados.
 
-## Cenário Adequado: Realização de diversos experimentos simultaneamente
+### Realização de diversos experimentos simultaneamente
 
 Se uma equipe de pesquisadores trabalhar criando e rodando experimentos de maneira não destrutiva (isso é, sem sobrescrever experimentos), os relatórios de todos os experimentos podem ser gravados em um mesmo repositório de versionamento de dados sem que esses sejam sobrescritos ou que aconteça conflitos de versão, preservando o histórico completo de experimentos e seus resultados.
 
-## Cenário Não-Adequado: Treinamento de redes geradoras de imagens
+## Cenários Não-Adequados
+
+### Treinamento de redes geradoras de imagens
 
 O framework, apesar de configurável, não é flexível o suficiente para treinar uma a rede que não seja para classificação. Seria necessário alterar como a saída esperada da rede é derivada/carregada de cada elemento do ambos os *datasets*. Hoje em dia isso é feito de maneira fixa, sem possibilidade de extensão.
 
-## Cenário Não-Adequado: Utilizar outras fontes de dados
+### Cenário Não-Adequado: Utilizar outras fontes de dados
 
 Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe `Experiment` para que ela receba uma tabela `pandas` já carregada, ao invés do arquivo Excel a ser carregado.
 
