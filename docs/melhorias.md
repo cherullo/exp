@@ -17,3 +17,7 @@ Desse modo, as classes derivadas de `BaseLoader` deveriam ser refatoradas, separ
 ## Refatorar a geração de relatórios
 
 Hoje a classe `Experiment` é responsável por muitas coisas. Uma forma relativamente fácil de mitigar esse problema seria refatorar a geração do relatório, extraindo esse código para outras classes, potencialmente permitindo melhor personalização.
+
+## Criar exemplo de treinamento desbalanceado
+
+A documentação descreve como o framework serve para o treinamento com *datasets* desbalanceados. Seria interessante criar um experimento de exemplo contemplando esse caso.
