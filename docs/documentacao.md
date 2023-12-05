@@ -52,8 +52,6 @@ Ao se utilizar o framework, cada experimento é representado por uma instância 
 
 A execução do experimento é feita através do  método `Experiment.run`. Durante a execução do experimento, o framework calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto `Experiment`. 
 
-
-
 O cálculo do *hash* é possível pois todas as classes do framework derivam da classe abstrata `Base`, dotada dos seguintes métodos:
 
 - `add_hash`: agrega o *hash* desta instância à uma instância da classe `Hasher`.
@@ -153,21 +151,69 @@ A classe `Experiment` permite diversas outras configurações, descritas na Espe
 
 ## Composição do Relatório
 
-Quais os arquivos gerados no relatório
+O relatório de cada experimento é formado pelos seguintes arquivos:
 
-# Especificação Técnica
+- modelsummary.txt
 
-## Descrição Funcional
+  É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
 
-Quais são as etapas de execução de um experimento
+- preprocessed.xlsx
 
-## Arquitetura
+  Tabela obtida ao se aplicar as etapas de pré-processamento global ao *dataset* original.
 
-Diagrama de classes
+- preprocessed_histogram.png
 
-## Documentação de Classes
+  Gráfico contendo quantos elementos de cada classe estão contidos no *dataset* pré-processado.
 
-[Documentação de classes](referencia.md)
+- training_set.xlsx
+
+  Tabela contendo o *dataset* de treinamento, no formato de três colunas: `input`, `loader`, `label`.
+
+- training_set_histogram.png
+
+  Histograma mostrando quantos elementos de cada classe estão contidos no *dataset* de treinamento, subdivididos pelo *loader* utilizado.
+
+- validation_set.xlsx
+
+  Tabela contendo o *dataset* de validação, no formato de três colunas: `input`, `loader`, `label`.
+
+- validation_set_histogram.png
+
+  Histograma mostrando quantos elementos de cada classe estão contidos no *dataset* de validação, subdivididos pelo *loader* utilizado.
+
+- history.png
+
+  Gráfico mostrando a evolução ao longo do treinamento: da função de perda no *dataset* de treinamento (*training loss*), da função de perda no *dataset* de validação (*validation loss*) e a acurácia da rede ao classificar o *dataset* de validação.
+
+- history.csv
+
+  Tabela contendo os dados do gráfico acima.
+
+- best.h5
+
+  A melhor rede neural obtida durante o treinamento, isso é, aquela que obteve o menor valor para a função de perda no *dataset* de validação.
+
+- training_set_best_confusion.png
+
+  Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da melhor rede obtida, classificando o *dataset* de treinamento.
+
+- validation_set_best_confusion.png
+
+  Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da melhor rede obtida, classificando o *dataset* de validação.
+
+- final.h5
+
+  A última rede neural obtida durante o treinamento, não necessariamente a melhor.
+
+- training_set_final_confusion.png
+
+  Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da última rede obtida, classificando o *dataset* de treinamento.
+
+- validation_set_final_confusion.png
+
+  Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da última rede obtida, classificando o *dataset* de validação.
+
+Um exemplo de relatório pode ser visto em em [/src/examples/training/reports/]().
 
 # Cenários de Uso
 

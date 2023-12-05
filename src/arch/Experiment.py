@@ -25,7 +25,7 @@ def _process_steps(df: pandas.DataFrame, steps: List[Step]) -> pandas.DataFrame:
 
     return df
 
-def _generate_histogram(df: pandas.DataFrame, group_col:str):
+def _generate_histogram(df: pandas.DataFrame, group_col: str):
     hist = df.groupby(group_col).count()
     hist.sort_index(axis=0, inplace=True)
 
@@ -187,9 +187,9 @@ class Experiment():
 
         custom_callbacks = [
             #tf.keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15),
-            tf.keras.callbacks.ModelCheckpoint(self.report_path.get('checkpoint.h5'), monitor='val_loss', save_best_only=True, mode='min'),
+            tf.keras.callbacks.ModelCheckpoint(self.report_path.get('best.h5'), monitor='val_loss', save_best_only=True, mode='min'),
             tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=7, min_lr=1e-9),
-            tf.keras.callbacks.CSVLogger(self.report_path.get('training.csv'))
+            tf.keras.callbacks.CSVLogger(self.report_path.get('history.csv'))
             ]
 
         if self.model is not None:
