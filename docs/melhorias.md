@@ -1,4 +1,4 @@
-# Melhorias
+# Oportunidades de Melhoria
 
 Neste documento, listamos algumas oportunidades de melhorias que vislumbramos.
 
@@ -21,3 +21,7 @@ Hoje a classe `Experiment` é responsável por muitas coisas. Uma forma relativa
 ## Criar exemplo de treinamento desbalanceado
 
 A documentação descreve como o framework serve para o treinamento com *datasets* desbalanceados. Seria interessante criar um experimento de exemplo contemplando esse caso.
+
+## Referência bidirecional entre Base e Hasher
+
+A classe `Hasher` conhece a classe abstrata `Base`, pois precisa saber chamar seu método `add_hash`. Em contrapartida, a classe `Base` conhece a classe `Hasher` por conta da assinatura do método `add_hash`. Isso gera uma referência circular, que é um problema de arquitetura que causa problemas de compilação, definição de módulos, etc.

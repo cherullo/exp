@@ -231,11 +231,13 @@ Abaixo listamos alguns cenários de utilização onde entendemos que o uso do fr
 
 ### Treinamento com datasets desbalanceados
 
-Duas características do framework o tornam adequados para o treinamento de redes neurais utilizando-se *datasets* desbalanceados:
+*Datasets* desbalanceados são aqueles que contém um número muito diferente de elementos nas diferentes classes. Por exemplo, um pesquisador pode estar treinando uma rede para distinguir entre motos e bicicletas, possuindo 1000 fotos de motos, mas apenas 50 fotos de bicicletas. Este é um cenário desafiador, mas bastante comum na academia.
+
+Duas características do framework o tornam adequado para o treinamento de redes neurais utilizando-se *datasets* desbalanceados:
 
 1. A possibilidade de se adicionar a mesma imagem diversas vezes ao *dataset* de treinamento utilizando  diferentes *loaders* permite que diversas técnicas de *data augmentation* sejam aplicadas facilmente ao experimento. 
 
-1. O `StratifiedDatasetGenerator` também é indicado para o treinamento de redes com *datasets* desbalanceados.
+1. O `StratifiedDatasetGenerator` implementa a técnica de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), também indicada para o treinamento de redes com *datasets* desbalanceados.
 
 ### Realização de diversos experimentos simultaneamente
 
@@ -245,11 +247,13 @@ Se uma equipe de pesquisadores trabalhar criando e rodando experimentos de manei
 
 ### Treinamento de redes geradoras de imagens
 
-O framework, apesar de configurável, não é flexível o suficiente para treinar uma a rede que não seja para classificação. Seria necessário alterar como a saída esperada da rede é derivada/carregada de cada elemento do ambos os *datasets*. Hoje em dia isso é feito de maneira fixa, sem possibilidade de extensão.
+O framework, apesar de configurável, não é flexível o suficiente para treinar uma rede que não seja para classificação. Seria necessário alterar como a saída esperada da rede é derivada/carregada de cada elemento de ambos os *datasets*. Hoje em dia isso é feito de maneira fixa, sem possibilidade de extensão.
+
+Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituindo a classe `OneHot`, mas esse cenário não é suportado, e geraria outros inconvenientes durate a geração dos relatórios.
 
 ### Cenário Não-Adequado: Utilizar outras fontes de dados
 
-Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe `Experiment` para que ela receba uma tabela `pandas` já carregada, ao invés do arquivo Excel a ser carregado.
+Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe `Experiment` para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
 
-Para permitir carregar imagens de outras formas que não o sistema de arquivos, seria necessário refatorar a classe `BaseLoader` e suas derivadas conforme descrito em [melhorias](docs/melhorias.md).
+Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe `BaseLoader` e suas derivadas conforme descrito em [melhorias](docs/melhorias.md).
 
