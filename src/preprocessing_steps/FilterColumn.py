@@ -2,9 +2,9 @@ from typing import List
 
 import pandas
 
-from arch import Hasher, Step
+from arch import Hasher, BaseStep
 
-class FilterColumn(Step):
+class FilterColumn(BaseStep):
     """
     Keeps all rows where the value of certaing column is in a given list.
 

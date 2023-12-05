@@ -10,8 +10,8 @@ import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
 from arch import BaseModel, Hasher
-from arch import Step
-from arch import DatasetGenerator
+from arch import BaseStep
+from generators import DatasetGenerator
 from .SampleExtractor import SampleExtractor
 from .ReportPath import ReportPath
 import arch.dataset_columns as dataset_columns
@@ -19,7 +19,7 @@ from helpers import main_helper
 from loaders import BaseLoader
 from models.OneHot import OneHot
 
-def _process_steps(df: pandas.DataFrame, steps: List[Step]) -> pandas.DataFrame:
+def _process_steps(df: pandas.DataFrame, steps: List[BaseStep]) -> pandas.DataFrame:
     for step in steps:
         df = step.process(df)
 
@@ -61,12 +61,12 @@ class Experiment():
         self.input = None
         self.image_column = dataset_columns.INPUT
         self.label_column = dataset_columns.LABEL
-        self.preprocessing_steps: List[Step] = []
-        self.validation_sets: List(List[Step], Tuple[BaseLoader]) = []
+        self.preprocessing_steps: List[BaseStep] = []
+        self.validation_sets: List(List[BaseStep], Tuple[BaseLoader]) = []
         self.validation_set = None
         self.validation_set_generator = None
 
-        self.train_sets: List(List[Step], Tuple[BaseLoader]) = []
+        self.train_sets: List(List[BaseStep], Tuple[BaseLoader]) = []
         self.train_set = None
         self.train_set_generator = None
 
@@ -74,10 +74,10 @@ class Experiment():
         self.encoding = None
         self.epochs = 20
 
-    def add_train_set(self, steps:List[Step], *loaders: BaseLoader):
+    def add_train_set(self, steps:List[BaseStep], *loaders: BaseLoader):
         self.train_sets.append( (steps, loaders) )
 
-    def add_validation_set(self, steps:List[Step], *loaders: BaseLoader):
+    def add_validation_set(self, steps:List[BaseStep], *loaders: BaseLoader):
         self.validation_sets.append(  (steps, loaders) )
 
     def _print_dry_warning(self):
@@ -297,7 +297,7 @@ class Experiment():
             f.write (f'\n-- {model} model validation set report:\n')
             f.write (validation_set_report)
                 
-    def _print_steps(self, steps: List[Step], loaders:Tuple[BaseLoader]):
+    def _print_steps(self, steps: List[BaseStep], loaders:Tuple[BaseLoader]):
         col1 = [str(x) for x in steps]
         col1_width = np.max([len(x) for x in col1]) + 3
         

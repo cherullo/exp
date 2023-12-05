@@ -1,18 +1,18 @@
 from typing import Dict
-import tensorflow as tf
+
 import pandas
 import numpy as np
 
-from .Base import Base
+from arch import BaseDatasetGenerator
 import arch.dataset_columns as cols
 
-class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
+class StratifiedDatasetGenerator(BaseDatasetGenerator):
     def __init__(self,
                  dataset: pandas.DataFrame=None,
                  encoding=None,
                  samples_per_class=500,
                  seed=42,
-                 batch_size = 12,
+                 batch_size = 16,
                  shuffle = True):
         
         self.dataset = dataset
@@ -54,7 +54,7 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
 
         for index, (label, class_dataset) in enumerate(dataset_per_class.items()):
             to_sample=min(len(class_dataset), self.samples_per_class)
-            random_state=self.seed + 5*self._epoch + 7*index
+            random_state = self.seed + 5*self._epoch + 7*index
             pieces.append(class_dataset.sample(n=to_sample, random_state=random_state))
 
         ret: pandas.DataFrame = pandas.concat(pieces, ignore_index=True, copy=True)
@@ -84,11 +84,11 @@ class StratifiedDatasetGenerator(tf.keras.utils.Sequence, Base):
         self._epoch += 1
         self.epoch_dataset = self.generate_epoch_dataset()
 
-    def ToString(self) -> str:
+    def __str__(self) -> str:
         return f'StratifiedDatasetGenerator(samples_per_class={self.samples_per_class}, seed={self.seed}, batch_size={self.batch_size}, shuffle={self.shuffle})'
 
-    def Description(self) -> str:
+    def description(self) -> str:
         return f'Stratified Dataset Generator which takes {self.samples_per_class} sampler per class each epoch, using seed={self.seed}, batch_size={self.batch_size} and shuffle={self.shuffle}'
 
-    def AddHash(self, h):
+    def add_hash(self, h):
         h.ordered('StratifiedDatasetGenerator', self.samples_per_class, self.seed, self.batch_size, self.shuffle)

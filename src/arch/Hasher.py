@@ -1,7 +1,7 @@
 import struct
 import zlib
 
-from arch import Base
+from .Base import Base
 
 _ORDER = 'little'
 

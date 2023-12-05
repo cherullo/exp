@@ -1,7 +1,7 @@
 import pandas
-from arch import Hasher, Step
+from arch import Hasher, BaseStep
 
-class FirstPercent(Step):
+class FirstPercent(BaseStep):
     """ Keeps a set number of the first rows of the dataset, defined as a percentage of the total number of rows.
 
     Args:

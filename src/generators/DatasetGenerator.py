@@ -2,14 +2,14 @@ import tensorflow as tf
 import pandas
 import numpy as np
 
-from .Base import Base
+from arch import BaseDatasetGenerator
 import arch.dataset_columns as cols
 
-class DatasetGenerator(Base, tf.keras.utils.Sequence):
+class DatasetGenerator(BaseDatasetGenerator):
     def __init__(self,
                  dataset: pandas.DataFrame=None,
                  encoding=None,
-                 batch_size = 12,
+                 batch_size = 16,
                  shuffle = True):
                 
         self.dataset = dataset

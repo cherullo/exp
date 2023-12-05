@@ -1,8 +1,8 @@
 import pandas
 
-from arch import Hasher, Step
+from arch import Hasher, BaseStep
 
-class Shuffle(Step):
+class Shuffle(BaseStep):
     """ Shuffles the dataset.
 
     Args:

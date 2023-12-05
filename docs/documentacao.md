@@ -14,7 +14,7 @@ O framework permite que o pesquisador descreva, de maneira sucinta e extensível
 
 O objetivo secundário do framework é facilitar que diversos experimentos sejam realizados simultaneamente, garantindo que os resultados dos experimentos não sejam sobrescritos e que os mesmos sejam facilmente reproduzíveis.
 
-Finalmente, o foco atual do framework é apoiar o treinamento de redes neurais para classificação de imagens.
+Finalmente, o foco atual do framework é apoiar o treinamento de [redes neurais convolucionais para classificação de imagens](https://www.ibm.com/br-pt/topics/convolutional-neural-networks).
 
 # Requisitos
 
@@ -147,7 +147,15 @@ Como visto acima, a coluna `loader` é adicionada automaticamente. Já as coluna
 
 O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de `BaseModel`, informado através do atributo `Experiment.model`.
 
-A classe `Experiment` permite diversas outras configurações, descritas na Especificação Técnica.
+### Regime de Treinamento
+
+Por padrão, o treinamento de redes neurais é feito efetuando-se diversas *epochs*. Em cada *epoch*, todas as imagens no *dataset* de treinamento são fornecidas à rede, aperfeiçoando seu aprendizado. Em seguida, a performance da rede é avaliada no *dataset* de validação.
+
+A fim de respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número fixo, menor de imagens. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado.
+
+No início de cada *epoch* também é comum se embaralhar o *dataset* de treinamento, a fim de evitar vícios oriundos da organização original dos dados. No framework, a classe `DatasetGenerator` é responsável por padrão em organizar o *dataset* de treinamento em batches de 16 imagens e por embaralhá-lo no início de cada *epoch*.
+
+É possível configurar esse comportamento criando-se manualmente uma instância desta classe e atribuindo em  `Experiment.train_set_generator`. Outros comportamentos mais elaborados podem ser obtidos escrevendo uma nova classe derivada de `BaseDatasetGenerator`. Por exemplo, a classe `StratifiedDatasetGenerator` implementa a estratégia de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), muito utilizada para treinamentos em *datasets* desbalanceados.
 
 ## Composição do Relatório
 

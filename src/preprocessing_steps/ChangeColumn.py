@@ -1,7 +1,7 @@
 import pandas
-from arch import Hasher, Step
+from arch import Hasher, BaseStep
 
-class ChangeColumn(Step):
+class ChangeColumn(BaseStep):
     """ 
     For each row, sets column to a new value if it has a certain value.
 

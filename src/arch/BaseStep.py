@@ -4,7 +4,7 @@ import pandas
 
 from arch import Base
 
-class Step(Base):
+class BaseStep(Base):
     """ 
     A data preprocessing step. Creates a new DataFrame based on an existing one.
     Should not alter the original DataFrame in any way.

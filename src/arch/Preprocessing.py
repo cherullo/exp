@@ -3,18 +3,18 @@ import numpy as np
 
 import pandas
 
-from arch import Base, Step
+from arch import Base, BaseStep
 
 class Preprocessing(Base):
     """ A set of preprocessing steps.
     """
     def __init__(self):
-        self._steps: List[Step] = []
+        self._steps: List[BaseStep] = []
 
     def __str__(self):
         return self.description()
 
-    def add_step(self, step: Step):
+    def add_step(self, step: BaseStep):
         self._steps.append(step)
 
     def process(self, data: pandas.DataFrame) -> pandas.DataFrame:

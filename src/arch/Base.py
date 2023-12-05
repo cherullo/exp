@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-class Base:
+class Base():
     """ 
     Base class for all architectural classes.
     Allows for easier hashing and reporting.
