@@ -23,7 +23,11 @@ O framework é organizado em 5 módulos principais: `arch`, `generators`, `loade
 
 ![](images/module_diagram.png)
 
-Não existem muitas dependências entre módulos pois cada classe possui uma responsabilidade bem definida e independente. Todos dependem do módulo `arch` pois este contém as classes abstratas implementadas nos módulos. A única exceção é a dependência do que o módulo `arch` tem do `generators`. Isso acontece porque a classe `generators.DatasetGenerator` é o gerenciador de *epoch* padrão do framework, e precisa ser instanciado automaticamente quanto um gerador não é informado.
+Não existem muitas dependências entre módulos pois cada classe possui uma responsabilidade bem definida e independente. Todos os módulos dependem do módulo `arch` pois este contém as classes abstratas implementadas nos módulos. A única exceção é a dependência do que o módulo `arch` tem do `generators`. 
+
+Isso acontece porque a classe `generators.DatasetGenerator` é o gerenciador de *epoch* padrão do framework, e precisa ser instanciado automaticamente quanto um gerador não é informado. Essa situação pode ser claramente visualizada no diagrama de classes abaixo:
+
+![](images/class_diagram.png)
 
 ## Referência de Classes
 
