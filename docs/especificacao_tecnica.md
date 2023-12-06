@@ -33,7 +33,7 @@ As principais oportunidades de extensão que o framework oferece consistem em im
 
 ## Referência de Classes
 
-### Módulo Arch
+### Módulo arch
 
 Este é o módulo fundamental do framework, contendo a classe [Experiment](#experiment) as classes abstratas (prefixadas com `Base`) que serão implementadas nos demais módulos.
 
@@ -56,6 +56,14 @@ Abstrato. Adiciona o estado configurável desta instância ao [Hasher](#hasher) 
 #### Classe BaseDatasetGenerator(Base)
 
 Classe abstrata de todos os gerenciadores de *epoch*.
+
+##### `BaseDatasetGenerator.encoding`
+
+Classe que será utilizada para codificar e decodificar as classes do *dataset* para a rede neural. Não existe uma definição formal de seu tipo. Por ora a melhor referência de implementação é a classe [OneHot](#classe-onehotbase).
+
+##### `BaseDatasetGenerator.dataset: pandas.DataFrame`
+
+O *dataset* gerenciado por esta instância. Esse atributo existe para permitir ao framework informar o *dataset* processado à uma instância de *generator* configurada pelo usuário.
 
 ##### `BaseDatasetGenerator.__len__() -> int`
         
@@ -140,6 +148,14 @@ Instância do modelo de rede neural a ser treinada neste experimento.
 Número de *epochs* de treinamento.
 > Default: 20.
 
+##### `Experiment.train_set_generator: BaseDatasetGenerator`
+
+Qual gerenciador de *epoch* será utilizado durante o treinamento. Se não for informado, uma instância classe [DatasetGenerator](#classe-datasetgeneratorbasegenerator) com os valores padrão será utilizada.
+
+Se uma instância personalizada for atribuída, não é preciso (nem possível) definir o atributo [dataset](#basedatasetgeneratordataset). Esse atributo deve permanecer como `None` que o framework atribuirá o *dataset* correto durante o treinamento.
+
+Além disso, se o *generator* informado não tiver uma valor definido no atributo [encoding](#basedatasetgeneratorencoding), o framework criará automaticamente uma instância da classe [OneHot](#classe-onehotbase) contemplando todas as classes únicas presentes no *dataset*.
+
 #### Classe Hasher
 
 Classe responsável por calcular e agregar *hashes*.
@@ -187,7 +203,50 @@ Processa um *dataset* por todas as etapas de pré-processamento que foram adicio
 
 ---
 
-### Módulo Loaders
+### Módulo generators
+
+Contém os gerenciadores de *epoch* padrão do framework. Os generators são classes que carregam e preparam cada entrada do *dataset* (imagem e classe) para o treinamento, de acordo com uma politica de seleção e agrupamento de linhas. Mais informações na seção [Regime de Treinamento](documentacao.md#regime-de-treinamento) da documentação.
+
+Observe que o *dataset* aqui já está totalmente processado, e possui apenas as colunas `input`, `loader` e `label`, como explicado ao final da seção [Descrição de um Experimento](documentacao.md#descrição-de-um-experimento) da documentação.
+
+Para personalizar o *generator* utilizado durante o treinamento, basta atribuir uma instância ao atributo [Experiment.train_set_generator](#experimenttrain_set_generator-basedatasetgenerator).
+
+#### Classe DatasetGenerator(BaseGenerator)
+
+É o gerenciador de *epoch* padrão do framework. Ele fornece todos os elementos do *dataset* por *epoch*, organizados em *batches* de tamanho fixo. Opcionalmente pode embaralhar o *dataset* antes de cada *epoch*.
+
+##### `DatasetGenerator.__init__(dataset: pandas.DataFrame,                 encoding: OneHot, batch_size: int, shuffle: bool)`
+
+Constrói uma nova instância da classe [DatasetGenerator](#classe-datasetgeneratorbasegenerator). 
+
+> `dataset` : O *dataset* a ser gerenciado. Opcional, pode ser alterado posteriormente através do atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). \
+> `encoding` : Instância da classe [OneHot](#classe-onehotbase) configurada para codificar e decodificar as classes do *dataset*. Opcional, pode ser alterado posteriormente através do atributo [encoding](#basedatasetgeneratorencoding). \
+> `batch_size` : O número de imagens por *batch*. Default: 16 \
+> `shuffle` : Determina se o *dataset* deve ser embaralhado no início de cada *epoch*. Default: True
+
+#### Classe StratifiedDatasetGenerator(BaseGenerator)
+
+Implementa uma estratégia estratificada de montagem das *epochs*, onde dado um número *N* de elementos por classe, as *epochs* são formadas da seguinte maneira:
+- *N* elementos aleatórios de cada classe são colocados em uma lista.
+- Essa lista é embaralhada em ordem aleatória.
+- A lista é quebrada em *batches* e submetida para treinamento.
+
+Desta maneira, o número de imagens utilizadas para treinamento por *epoch* pode ser muito menor do que o número de elementos no *dataset* total. Além disso, a rede é treinada toda *epoch* com o mesmo número de elementos por classe, melhorando seu treinamento com *datasets* desbalanceados, isso é, *datasets* onde existe uma diferença muito grande no número de elementos em cada classe.
+
+##### `StratifiedDatasetGenerator.__init__(dataset: pandas.DataFrame, encoding, samples_per_class: int, seed: int, batch_size: int, shuffle: bool) `
+
+Constrói uma nova instância da classe [StratifiedDatasetGenerator](#classe-stratifieddatasetgeneratorbasegenerator).
+
+> `dataset` : O *dataset* a ser gerenciado. Opcional, pode ser alterado posteriormente através do atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). \
+> `encoding` : Instância da classe [OneHot](#classe-onehotbase) configurada para codificar e decodificar as classes do *dataset*. Opcional, pode ser alterado posteriormente através do atributo [encoding](#basedatasetgeneratorencoding). \
+> `samples_per_class` : O número de elementos aleatórios de cada classe a serem selecionados por *epoch*.
+> `seed`: A [semente aleatória](https://en.wikipedia.org/wiki/Random_seed) utilizada na seleção e embaralhamento das linhas. É automaticamente alterado ao final de cada *epoch*. \
+> `batch_size` : O número de imagens por *batch*. Default: 16 \
+> `shuffle` : Determina se o *dataset* deve ser embaralhado no início de cada *epoch*. Default: True
+
+---
+
+### Módulo loaders
 
 Contém as classes responsáveis por carregar imagens do sistema de arquivos.
 
@@ -234,7 +293,7 @@ Constrói uma nova instância de [SimpleLoader](#classe-simpleloaderbaseloader).
 
 ---
 
-### Módulo Models
+### Módulo models
 
 Contém as implementações padrão da classe abstrata [BaseModel](#basemodelbase), ou seja, modelos de rede neural que podem ser treinados pelo framework.
 
@@ -301,7 +360,7 @@ Por exemplo, considerando-se as classes de exemplo acima, o resultado de se deco
 
 ---
 
-### Módulo Preprocessing Steps
+### Módulo preprocessing_steps
 
 Módulo contendo as implementações padrão da classe abstrata [BaseStep](#classe-basestepbase), ou seja, as etapas de pré-processamento do *dataset*. Seu uso será através do método [BaseStep.process](#basestepprocessdata-pandasdataframe---pandasdataframe).
 

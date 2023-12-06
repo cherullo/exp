@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
-from arch import BaseLoader, BaseModel, BaseStep
+from arch import BaseDatasetGenerator, BaseLoader, BaseModel, BaseStep
 from arch import Hasher 
 from generators import DatasetGenerator
 from .SampleExtractor import SampleExtractor
@@ -67,7 +67,7 @@ class Experiment():
 
         self.train_sets: List(List[BaseStep], Tuple[BaseLoader]) = []
         self.train_set = None
-        self.train_set_generator = None
+        self.train_set_generator : BaseDatasetGenerator = None
 
         self.model: BaseModel = None
         self.encoding = None

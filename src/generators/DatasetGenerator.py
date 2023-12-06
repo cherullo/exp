@@ -4,13 +4,14 @@ import numpy as np
 
 from arch import BaseDatasetGenerator
 import arch.dataset_columns as cols
+from models import OneHot
 
 class DatasetGenerator(BaseDatasetGenerator):
     def __init__(self,
-                 dataset: pandas.DataFrame=None,
-                 encoding=None,
-                 batch_size = 16,
-                 shuffle = True):
+                 dataset: pandas.DataFrame = None,
+                 encoding: OneHot = None,
+                 batch_size: int = 16,
+                 shuffle: bool = True):
                 
         self.dataset = dataset
         self.encoding = encoding

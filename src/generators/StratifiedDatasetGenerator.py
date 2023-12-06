@@ -8,12 +8,12 @@ import arch.dataset_columns as cols
 
 class StratifiedDatasetGenerator(BaseDatasetGenerator):
     def __init__(self,
-                 dataset: pandas.DataFrame=None,
-                 encoding=None,
-                 samples_per_class=500,
-                 seed=42,
-                 batch_size = 16,
-                 shuffle = True):
+                 dataset: pandas.DataFrame = None,
+                 encoding = None,
+                 samples_per_class: int = 500,
+                 seed: int = 42,
+                 batch_size: int = 16,
+                 shuffle: bool = True):
         
         self.dataset = dataset
         self.encoding = encoding

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+import pandas
 import tensorflow as tf
 import numpy as np
 
@@ -12,6 +13,11 @@ class BaseDatasetGenerator(Base, tf.keras.utils.Sequence):
         Base (_type_): This is a framework type.
         tf (_type_): Tensorflow sequence.
     """
+
+    def __init__(self):
+        self.encoding = None
+        self.dataset: pandas.DataFrame = None
+
     @abstractmethod
     def __len__(self) -> int:
         """
