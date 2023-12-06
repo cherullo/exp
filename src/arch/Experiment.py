@@ -116,7 +116,8 @@ class Experiment():
             label, row = row
             plt.text(index, row[self.image_column], str(label), ha='center')
 
-        plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200)
+        plt.title("Pre-Processed Samples")
+        plt.savefig(self.report_path.get('preprocessed_histogram.png'), dpi=200, bbox_inches='tight')
 
         # Generate validation set
         if (len(self.validation_sets) > 0):
@@ -126,7 +127,7 @@ class Experiment():
             self.validation_set.drop_duplicates(subset=dataset_columns.INPUT, inplace=True)
 
             self.validation_set.to_excel(self.report_path.get('validation_set.xlsx'))
-            self._plot_dataset(self.validation_set, self.report_path.get('validation_set_histogram.png'))
+            self._plot_dataset(self.validation_set, self.report_path.get('validation_set_histogram.png'), "Validation Set")
 
         # Generate training set
         if (len(self.train_sets) > 0):
@@ -155,7 +156,7 @@ class Experiment():
 
             # Save training set
             self.train_set.to_excel(self.report_path.get('training_set.xlsx'))
-            self._plot_dataset(self.train_set, self.report_path.get('training_set_histogram.png'))
+            self._plot_dataset(self.train_set, self.report_path.get('training_set_histogram.png'), "Training Set")
 
         # Select default enconding
         if (self.train_set is None):
@@ -228,19 +229,19 @@ class Experiment():
         plt.ylim([0, 3])
         plt.xlabel("epoch")
         plt.title("Training")
-        plt.legend()
-        plt.savefig(self.report_path.get('history.png'), dpi=200)
+        plt.savefig(self.report_path.get('history.png'), dpi=200, bbox_inches='tight')
 
-        self.model.get().save(self.report_path.get('final.h5'))
+        finalModel = self.model.get()
+        finalModel.save(self.report_path.get('final.h5'))
 
-        training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_final_confusion.png"))
-        validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_final_confusion.png"))
+        training_set_report = self._generate_confusion(self.train_set, finalModel, self.encoding, self.report_path.get("training_set_final_confusion.png"), "Final Model Confusion On Training Set")
+        validation_set_report = self._generate_confusion(self.validation_set, finalModel, self.encoding, self.report_path.get("validation_set_final_confusion.png"), "Final Model Confusion On Validation Set")
         self._complement_summary('Final', training_set_report, validation_set_report)
 
-        self.model.model = tf.keras.models.load_model(self.report_path.get('best.h5'))
+        bestModel = tf.keras.models.load_model(self.report_path.get('best.h5'))
 
-        training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_best_confusion.png"))
-        validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_best_confusion.png"))
+        training_set_report = self._generate_confusion(self.train_set, bestModel, self.encoding, self.report_path.get("training_set_best_confusion.png"), "Best Model Confusion On Training Set")
+        validation_set_report = self._generate_confusion(self.validation_set, bestModel, self.encoding, self.report_path.get("validation_set_best_confusion.png"), "Best Model Confusion On Validation Set")
         self._complement_summary('Best', training_set_report, validation_set_report)
 
     def hash(self):
@@ -309,12 +310,12 @@ class Experiment():
         print ('')
 
 
-    def _generate_confusion(self, dataset, model, encoding, filename):
+    def _generate_confusion(self, dataset, model, encoding, filename, graph_title):
         y = dataset[dataset_columns.LABEL].tolist()
 
         generator = DatasetGenerator(dataset, encoding, shuffle=False)
 
-        ypred = model.get().predict(generator)
+        ypred = model.predict(generator)
         ypred = [encoding.decode(x) for x in ypred]
 
         cm = confusion_matrix(y, ypred, labels=encoding.labels)
@@ -322,9 +323,9 @@ class Experiment():
 
         plt.clf()
         plt.figure(figsize = (10,10))
-
+        plt.title(graph_title)
         sns.heatmap(cm, annot=True, annot_kws={"size": 12}, fmt="d") # font size
-        plt.savefig(filename, dpi=200)
+        plt.savefig(filename, dpi=200, bbox_inches='tight')
 
         return classification_report(y, ypred, zero_division=0)
 
@@ -359,7 +360,7 @@ class Experiment():
         print (f'-- Training epochs: {self.epochs}')
         print (f'-- Final Hash: {self.str_final_hash}')
 
-    def _plot_dataset(self, df: pandas.DataFrame, filename:str):
+    def _plot_dataset(self, df: pandas.DataFrame, filename:str, graph_title: str):
         if (df.empty == True):
             return
 
@@ -376,4 +377,5 @@ class Experiment():
             plt.text(ct, value, str(value), ha='center')
             ct += 1
 
-        plt.savefig(filename, dpi=200)
+        plt.title(graph_title)
+        plt.savefig(filename, dpi=200, bbox_inches='tight')
