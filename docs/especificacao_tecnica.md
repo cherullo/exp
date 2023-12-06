@@ -156,6 +156,12 @@ Se uma instância personalizada for atribuída, não é preciso (nem possível) 
 
 Além disso, se o *generator* informado não tiver uma valor definido no atributo [encoding](#basedatasetgeneratorencoding), o framework criará automaticamente uma instância da classe [OneHot](#classe-onehotbase) contemplando todas as classes únicas presentes no *dataset*.
 
+##### `Experiment.run(dry: bool)`
+
+Realiza o treinamento e gera o relatório do experimento.
+
+> `dry` : Se True, realiza o pré-processamento do *dataset*, mas não realiza o treinamento propriamente dito. O relatório gerado é simplificado.  Default: False.
+
 #### Classe Hasher
 
 Classe responsável por calcular e agregar *hashes*.

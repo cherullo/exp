@@ -48,15 +48,15 @@ A fim de alcançar os objetivos definidos acima e considerando-se o contexto da 
 
 # Visão Geral de Uso
 
-Ao se utilizar o framework, cada experimento é representado por uma instância da classe `Experiment`. Essa classe é o cerne do framework, pois permite configurar todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
+Ao se utilizar o framework, cada experimento é representado por uma instância da classe [`Experiment`](especificacao_tecnica.md#classe-experiment). Essa classe é o cerne do framework, pois permite configurar todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
 
-A execução do experimento é feita através do  método `Experiment.run`. Durante a execução do experimento, o framework calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto `Experiment`. 
+A execução do experimento é feita através do  método [`Experiment.run`](especificacao_tecnica.md#experimentrundry-bool). Durante a execução do experimento, o framework calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). 
 
-O cálculo do *hash* é possível pois todas as classes do framework derivam da classe abstrata `Base`, dotada dos seguintes métodos:
+O cálculo do *hash* é possível pois todas as classes do framework derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), dotada dos seguintes métodos:
 
-- `add_hash`: agrega o *hash* desta instância à uma instância da classe `Hasher`.
-- `__str__`: retorna uma *string* contendo a chamada ao construtor da classe que gerou esta instância.
-- `description`: retorna uma descrição textual do que esta instância faz.
+- [`add_hash`](especificacao_tecnica.md#baseadd_hashhasher-hasher): agrega o *hash* desta instância à uma instância da classe [`Hasher`](especificacao_tecnica.md#classe-hasher).
+- [`__str__`](especificacao_tecnica.md#base__str__---str): retorna uma *string* contendo a chamada ao construtor da classe que gerou esta instância.
+- [`description`](especificacao_tecnica.md#basedescription---str): retorna uma descrição textual do que esta instância faz.
 
 Isso permite ao framework não só calcular o *hash* de todas as configurações do experimento, mas também gerar um relatório textual contendo uma descrição legível do que foi feito em cada etapa do experimento, bem como o código necessário para recriar essas etapas.
 
@@ -79,9 +79,9 @@ Em linhas gerais, um experimento é composto pelos seguintes itens, todos defini
 1. Um subconjunto do *dataset* para validação.
 1. Um modelo básico de rede neural a ser treinada.
 
-Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo `Experiment.input`. Neste instante, as colunas desta tabela são arbitrárias.
+Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias.
 
-Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe `Step` através do atributo `Experiment.preprocessing_steps`. Cada instância deve realizar uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. 
+Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe abstrata [`BaseStep`](especificacao_tecnica.md#classe-basestepbase) através do atributo [`Experiment.preprocessing_steps`](especificacao_tecnica.md#experimentpreprocessing_steps-listbasestep). Cada instância deve realizar uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. 
 
 Em Python:
 
@@ -93,7 +93,7 @@ def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataF
     return dataset
 ```
 
-O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de `Step`) associadas a um *loader*. *Loaders* são classes derivadas da classe `BaseLoader` e encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
+O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de [`BaseStep`](especificacao_tecnica.md#classe-basestepbase)) associadas a um *loader*. *Loaders* são classes derivadas da classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
 
 
 Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com as assinaturas abaixo:
@@ -143,9 +143,9 @@ O mesmo processo é realizado para gerar o *dataset* de validação. Finalmente,
 - `loader`: contém o *loader* a ser utilizado para carregar a referida imagem;
 - `label`: contém o *label*, ou classe a que esta imagem pertence.
 
-Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos `Experiment.image_column` e `Experiment.label_column`. As demais colunas do *dataset* são descartadas.
+Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos [`Experiment.image_column`](especificacao_tecnica.md#experimentimage_column-str) e [`Experiment.label_column`](especificacao_tecnica.md#experimentlabel_column-str). As demais colunas do *dataset* são descartadas.
 
-O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de `BaseModel`, informado através do atributo `Experiment.model`.
+O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de [`BaseModel`](especificacao_tecnica.md#classe-basemodelbase), informado através do atributo [`Experiment.model`](especificacao_tecnica.md#experimentmodel-basemodel).
 
 ## Regime de Treinamento
 
@@ -153,9 +153,9 @@ Por padrão, o treinamento de redes neurais é feito efetuando-se diversas *epoc
 
 A fim de respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número fixo, menor de imagens. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado.
 
-No início de cada *epoch* também é comum se embaralhar o *dataset* de treinamento, a fim de evitar vícios oriundos da organização original dos dados. No framework, a classe `DatasetGenerator` é responsável por padrão em organizar o *dataset* de treinamento em batches de 16 imagens e por embaralhá-lo no início de cada *epoch*.
+No início de cada *epoch* também é comum se embaralhar o *dataset* de treinamento, a fim de evitar vícios oriundos da organização original dos dados. No framework, a classe [`DatasetGenerator`](especificacao_tecnica.md#classe-datasetgeneratorbasedatasetgenerator) é responsável por padrão em organizar o *dataset* de treinamento em batches de 16 imagens e por embaralhá-lo no início de cada *epoch*.
 
-É possível configurar esse comportamento criando-se manualmente uma instância desta classe e atribuindo em  `Experiment.train_set_generator`. Outros comportamentos mais elaborados podem ser obtidos escrevendo uma nova classe derivada de `BaseDatasetGenerator`. Por exemplo, a classe `StratifiedDatasetGenerator` implementa a estratégia de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), muito utilizada para treinamentos em *datasets* desbalanceados.
+É possível configurar esse comportamento criando-se manualmente uma instância desta classe e atribuindo em [`Experiment.train_set_generator`](especificacao_tecnica.md#experimenttrain_set_generator-basedatasetgenerator). Outros comportamentos mais elaborados podem ser obtidos escrevendo uma nova classe derivada de [`BaseDatasetGenerator`](especificacao_tecnica.md#classe-basedatasetgeneratorbase). Por exemplo, a classe [`StratifiedDatasetGenerator`](especificacao_tecnica.md#classe-stratifieddatasetgeneratorbasedatasetgenerator) implementa a estratégia de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), muito utilizada para treinamentos em *datasets* desbalanceados.
 
 ## Composição do Relatório
 
@@ -237,7 +237,7 @@ Duas características do framework o tornam adequado para o treinamento de redes
 
 1. A possibilidade de se adicionar a mesma imagem diversas vezes ao *dataset* de treinamento utilizando  diferentes *loaders* permite que diversas técnicas de *data augmentation* sejam aplicadas facilmente ao experimento. 
 
-1. O `StratifiedDatasetGenerator` implementa a técnica de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), também indicada para o treinamento de redes com *datasets* desbalanceados.
+1. O [`StratifiedDatasetGenerator`](especificacao_tecnica.md#classe-stratifieddatasetgeneratorbasedatasetgenerator) implementa a técnica de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), também indicada para o treinamento de redes com *datasets* desbalanceados.
 
 ### Realização de diversos experimentos simultaneamente
 
@@ -249,11 +249,11 @@ Se uma equipe de pesquisadores trabalhar criando e rodando experimentos de manei
 
 O framework, apesar de configurável, não é flexível o suficiente para treinar uma rede que não seja para classificação. Seria necessário alterar como a saída esperada da rede é derivada/carregada de cada elemento de ambos os *datasets*. Hoje em dia isso é feito de maneira fixa, sem possibilidade de extensão.
 
-Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituindo a classe `OneHot`, mas esse cenário não é suportado, e geraria outros inconvenientes durate a geração dos relatórios.
+Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituindo a classe [`OneHot`](especificacao_tecnica.md#classe-onehotbase), mas esse cenário não é suportado, e geraria outros inconvenientes durate a geração dos relatórios.
 
 ### Cenário Não-Adequado: Utilizar outras fontes de dados
 
-Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe `Experiment` para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
+Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe [`Experiment`](especificacao_tecnica.md#classe-experiment) para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
 
-Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe `BaseLoader` e suas derivadas conforme descrito em [melhorias](docs/melhorias.md).
+Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e suas derivadas conforme descrito em [melhorias](docs/melhorias.md).
 
