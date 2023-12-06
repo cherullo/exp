@@ -39,15 +39,15 @@ Classe abstrata, base de todas as classes do framework. Facilita a geração dos
 
 ##### `Base.__str__() -> str`
 
-> Abstrato. Retorna, de maneira textual, o código contendo a chamada ao construtor desta classe, com todos os parâmetros necessários para reconstruir esta instância.
+Abstrato. Retorna, de maneira textual, o código contendo a chamada ao construtor desta classe, com todos os parâmetros necessários para reconstruir esta instância.
 
 ##### `Base.description() -> str`
 
-> Abstrato. Retorna uma descrição legível do que essa instância faz.
+Abstrato. Retorna uma descrição legível do que essa instância faz.
 
 ##### `Base.add_hash(hasher: Hasher)`
 
-> Abstrato. Adiciona o estado configurável desta instância ao [Hasher](#hasher) fornecido.
+Abstrato. Adiciona o estado configurável desta instância ao [Hasher](#hasher) fornecido.
 
 #### BaseDatasetGenerator(Base)
 
@@ -55,15 +55,15 @@ Classe abstrata de todos os gerenciadores de *epoch*.
 
 ##### `BaseDatasetGenerator.__len__() -> int`
         
-> Abstrato. Returna quantos *batches* existem neste *dataset*.
+Abstrato. Returna quantos *batches* existem neste *dataset*.
     
 ##### `BaseDatasetGenerator.__getitem__(index: int) -> (np.array, np.array)`
 
-> Abstrato. Retorna o conteúdo do i-ésimo *batch*, na forma de uma tupla contendo a lista das imagens e a lista das classes codificadas.
+Abstrato. Retorna o conteúdo do i-ésimo *batch*, na forma de uma tupla contendo a lista das imagens e a lista das classes codificadas.
 
 ##### `BaseDatasetGenerator.on_epoch_end():`
 
-> Abstrato. Esse método é chamado pela classe [Experiment](#experiment) ao final de cada *epoch*.
+Abstrato. Esse método é chamado pela classe [Experiment](#experiment) ao final de cada *epoch*.
 
 #### BaseLoader(Base)
 
@@ -71,19 +71,19 @@ Classe abstrata de todos os carregadores de imagens.
 
 ##### `BaseLoader.load(file: str) -> np.ndarray`
 
-> Abstrato. Carrega uma image do disco.
+Abstrato. Carrega uma image do disco.
 
 #### BaseModel(Base)
 
 Classe abstrata de todos os modelos de rede neural.
 
-##### `BaseModel.get()`
+##### `BaseModel.get() -> tensorflow.keras.Model`
 
-> Abstrato. Retorna a instância do modelo Keras de rede neural a ser treinada.
+Abstrato. Retorna a instância do modelo Keras de rede neural a ser treinada.
 
 ##### `BaseModel.compile(classes: int)`
 
-> Abstrato. A classe [Experiment](#experiment) chamará esse método informando o número de classes presentes no *dataset*.
+Abstrato. A classe [Experiment](#experiment) chamará esse método informando o número de classes presentes no *dataset*.
 
 #### BaseStep(Base)
 
@@ -99,39 +99,42 @@ Classe central do framework, que organiza e executa um experimento de treinament
 
 ##### `Experiment.__init__(name: str)`
 
-> Cria um novo experimento, fornecendo o nome do experimento.
+Cria um novo experimento, fornecendo o nome do experimento.
 
 ##### `Experiment.base_images_path: str`
 
-> Define de qual diretório as imagens do *dataset* devem ser carregadas.
+Define de qual diretório as imagens do *dataset* devem ser carregadas.
 
 ##### `Experiment.base_report_path: str`
 
-> Define em qual diretório os relatórios serão gravados. Default: reports/
+Define em qual diretório os relatórios serão gravados.
+> Default: 'reports/'
 
 ##### `Experiment.input: str`
 
-> Define o nome do arquivo Excel contendo o *dataset*.
+Define o nome do arquivo Excel contendo o *dataset*.
 
 ##### `Experiment.image_column: str`
 
-> Define qual é o nome da coluna do *dataset* contendo os nomes dos arquivos de imagem.
+Define qual é o nome da coluna do *dataset* contendo os nomes dos arquivos de imagem.
 
 ##### `Experiment.label_column: str`
 
-> Define qual é o nome da coluna do *dataset* contendo as classificações (ou *labels*).
+Define qual é o nome da coluna do *dataset* contendo as classificações (ou *labels*).
 
 ##### `Experiment.preprocessing_steps: List[BaseStep]`
 
-> Vetor contendo todas as etapas de pré-processamento global. Default: []
+Vetor contendo todas as etapas de pré-processamento global. 
+> Default: []
 
 ##### `Experiment.model: BaseModel`
 
-> Instância do modelo de rede neural a ser treinada neste experimento.
+Instância do modelo de rede neural a ser treinada neste experimento.
 
 ##### `Experiment.epochs: int`
 
-> Número de *epochs* de treinamento. Default: 20.
+Número de *epochs* de treinamento.
+> Default: 20.
 
 #### Hasher
 
@@ -139,27 +142,27 @@ Classe responsável por calcular e agregar *hashes*.
 
 ##### `Hasher.__init__(*args)`
 
-> Cria uma nova instância de Hasher. \
+Cria uma nova instância de Hasher. 
 > `*args` : Lista de elementos a agregar ao *hash*, já na construção. Os parâmetros são *hasheados* de maneira ordenada, vide [Hasher.ordered](#hasherorderedargs-hasher)
 
 ##### `Hasher.__str__()`
 
-> Retorna o *hash* agregado em texto, em hexadecimal. Exemplo: "%xABCDEF00"
+Retorna o *hash* agregado em texto, em hexadecimal. Exemplo: "%xABCDEF00"
 
 ##### `Hasher.__eq__(other)`
 
-> Compara o valor do *hash* acumulado com outro valor. \
+Compara o valor acumulado do *hash* com outro valor. 
 > `other` : Pode ser um `int` ou outra instância de [Hasher](#hasher).
 
 ##### `Hasher.ordered(*args): Hasher`
 
-> Calcula e agrega o *hash* dos parâmetros passados. Os parâmetros são entendidos como uma lista, ou seja, a ordem dos parâmetros passados influencia o valor do *hash* calculado. \
+Calcula e agrega o *hash* dos parâmetros passados. Os parâmetros são entendidos como uma lista, ou seja, a ordem dos parâmetros passados influencia o valor do *hash* calculado. 
 > `*args` : Pode ser qualquer um dos tipos básicos ou uma instância de [Base](#base). \
 > Retorna : a própria instância.
 
 ##### `Hasher.unordered(*args): Hasher`
 
-> Calcula e agrega o *hash* dos parâmetros passados. Os parâmetros são entendidos como um conjunto, ou seja, a ordem dos parâmetros passados NÃO influencia o valor do *hash* calculado. \
+ Calcula e agrega o *hash* dos parâmetros passados. Os parâmetros são entendidos como um conjunto, ou seja, a ordem dos parâmetros passados NÃO influencia o valor do *hash* calculado.
 > `*args` : Pode ser qualquer um dos tipos básicos ou uma instância de [Base](#base). \
 > Retorna : a própria instância.
 
@@ -169,12 +172,12 @@ Representa uma lista de etapas de pré-processamento (classes derivadas de [Base
 
 ##### `Preprocessing.add_step(step: BaseStep)`
 
-> Adiciona uma etapa de pré-processamento a esta lista. \
+Adiciona uma etapa de pré-processamento a esta lista. 
 > `step` : Instância de classe derivada de [BaseStep](#basestepbase)
 
 ##### `Preprocessing.process(data: pandas.DataFrame) -> pandas.DataFrame`
 
-> Processa um *dataset* por todas as etapas de pré-processamento que foram adicionadas à esta instância, na mesma ordem. \
+Processa um *dataset* por todas as etapas de pré-processamento que foram adicionadas à esta instância, na mesma ordem.
 > `data` : Uma tabela. \
 > Retorna : A tabela processada.
 
@@ -182,11 +185,69 @@ Representa uma lista de etapas de pré-processamento (classes derivadas de [Base
 
 ### Models
 
-#### EfficientNetB0Model
+Contém as implementações padrão da classe abstrata [BaseModel](#basemodelbase), ou seja, modelos de rede neural que podem ser treinados pelo framework.
 
-#### EfficientNetB4Model
+#### EfficientNetB0Model(BaseModel)
 
-#### OneHot
+Encapsula o modelo de redes neurais [EfficientNetB0](https://www.tensorflow.org/api_docs/python/tf/keras/applications/efficientnet/EfficientNetB0), configurado para utilizar o otimizador [Adam](https://keras.io/api/optimizers/adam/).
+
+##### `EfficientNetB0Model.learning_rate: float`
+
+Define a taxa de aprendizado da rede. 
+> Default: 0.001
+
+##### `EfficientNetB0Model.loss: str`
+
+ Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/.
+> Default: 'categorical_crossentropy'
+
+#### EfficientNetB4Model(BaseModel)
+
+Encapsula o modelo de redes neurais [EfficientNetB4](https://www.tensorflow.org/api_docs/python/tf/keras/applications/efficientnet/EfficientNetB4), configurado para utilizar o otimizador [Adam](https://keras.io/api/optimizers/adam/).
+
+##### `EfficientNetB4Model.learning_rate: float`
+
+ Define a taxa de aprendizado da rede. 
+> Default: 0.001
+
+##### `EfficientNetB4Model.loss: str`
+
+ Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/. \
+> Default: 'categorical_crossentropy'
+
+#### OneHot(Base)
+
+Classe auxiliar utilizada para codificar, com a estratégia [one-hot](https://en.wikipedia.org/wiki/One-hot), a classe de uma imagem em um vetor numérico. 
+
+Por exemplo, se as classes de um *dataset* são "gato", "taco", "cabra", "queijo", "pizza", uma possível codificação em one-hot seria:
+
+```
+ "gato"    [1, 0, 0, 0, 0]
+ "taco"    [0, 1, 0, 0, 0]
+ "cabra"   [0, 0, 1, 0, 0]
+ "queijo"  [0, 0, 0, 1, 0]
+ "pizza"   [0, 0, 0, 0, 1]
+```
+
+##### `OneHot.__init__(labels: [str])`
+
+Cria uma nova instância capaz de codificar as classes informadas. Não é possível trocar as classes da codificação após a construção da classe.
+
+##### `OneHot.encode(labels: str | [str]) -> [number] | [[number]]`
+
+Codifica a classe ou classes informadas. 
+> `labels` : Uma classe ou uma lista de classes. \
+> Retorna : Um vetor numérico codificando a classe informada, ou um vetor de vetores numéricos codificando cada classe informada.
+
+##### `OneHot.decode(pred: [number]) -> str`
+
+Descodifica a predição realizada pela rede neural em uma das classes do *dataset*, no caso, retorna a classe referente ao índice com o maior valor no vetor informado.
+
+Por exemplo, considerando-se as classes de exemplo acima, o resultado de se decodificar o vetor `[0.03, 0.52, 0.04, 0.21, 0.95]` seria "pizza", pois o último valor do vetor é o maior de todos, referente à última classe informada no construtor.
+
+> `pred`: vetor numérico contendo a predição da rede neural, onde cada valor significa a probabilidade da imagem classificada pertencer à respectiva classe. \
+> Retorna : String contendo o nome da classe predita pela rede.
+
 
 ---
 

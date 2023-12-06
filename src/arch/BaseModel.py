@@ -1,4 +1,6 @@
 from abc import abstractmethod
+import tensorflow as tf
+
 from arch import Base
 
 class BaseModel(Base):
@@ -10,7 +12,7 @@ class BaseModel(Base):
     """
 
     @abstractmethod
-    def get(self):
+    def get(self) -> tf.keras.Model:
         """ 
         Returns the compiled Keras neural network model.
         """

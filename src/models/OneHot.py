@@ -6,7 +6,7 @@ class OneHot(Base):
     """Class receives a panda.Series object 
     and return one hot numpy array."""
     def __init__(self, labels):
-        self.labels = labels
+        self.labels = labels # We should duplicate this array
         
         self.labels2Y = dict(zip(self.labels, to_categorical(range(0, len(self.labels)))))
 

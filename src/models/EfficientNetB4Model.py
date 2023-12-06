@@ -1,5 +1,7 @@
+import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 from efficientnet.tfkeras import EfficientNetB4
+
 from arch import BaseModel
 
 class EfficientNetB4Model(BaseModel):
@@ -7,7 +9,7 @@ class EfficientNetB4Model(BaseModel):
         self.loss = 'categorical_crossentropy'
         self.learning_rate = 0.001
 
-    def get(self):
+    def get(self) -> tf.keras.Model:
         return self.model
 
     def compile(self, classes: int = 4):
