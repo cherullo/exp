@@ -215,7 +215,7 @@ Para personalizar o *generator* utilizado durante o treinamento, basta atribuir 
 
 É o gerenciador de *epoch* padrão do framework. Ele fornece todos os elementos do *dataset* por *epoch*, organizados em *batches* de tamanho fixo. Opcionalmente pode embaralhar o *dataset* antes de cada *epoch*.
 
-##### `DatasetGenerator.__init__(dataset: pandas.DataFrame,                 encoding: OneHot, batch_size: int, shuffle: bool)`
+##### `DatasetGenerator.__init__(dataset: pandas.DataFrame, encoding: OneHot, batch_size: int, shuffle: bool)`
 
 Constrói uma nova instância da classe [DatasetGenerator](#classe-datasetgeneratorbasegenerator). 
 
@@ -239,7 +239,7 @@ Constrói uma nova instância da classe [StratifiedDatasetGenerator](#classe-str
 
 > `dataset` : O *dataset* a ser gerenciado. Opcional, pode ser alterado posteriormente através do atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). \
 > `encoding` : Instância da classe [OneHot](#classe-onehotbase) configurada para codificar e decodificar as classes do *dataset*. Opcional, pode ser alterado posteriormente através do atributo [encoding](#basedatasetgeneratorencoding). \
-> `samples_per_class` : O número de elementos aleatórios de cada classe a serem selecionados por *epoch*.
+> `samples_per_class` : O número de elementos aleatórios de cada classe a serem selecionados por *epoch*. \
 > `seed`: A [semente aleatória](https://en.wikipedia.org/wiki/Random_seed) utilizada na seleção e embaralhamento das linhas. É automaticamente alterado ao final de cada *epoch*. \
 > `batch_size` : O número de imagens por *batch*. Default: 16 \
 > `shuffle` : Determina se o *dataset* deve ser embaralhado no início de cada *epoch*. Default: True
