@@ -303,16 +303,77 @@ Por exemplo, considerando-se as classes de exemplo acima, o resultado de se deco
 
 ### Módulo Preprocessing Steps
 
-#### Classe FilterColumn
+Módulo contendo as implementações padrão da classe abstrata [BaseStep](#classe-basestepbase), ou seja, as etapas de pré-processamento do *dataset*. Seu uso será através do método [BaseStep.process](#basestepprocessdata-pandasdataframe---pandasdataframe).
 
-#### Classe FirstCount
+#### Classe FilterColumn(BaseStep)
 
-#### Classe FirstPercent
+Etapa de pré-processamento que filtra as linhas em função do valor em uma determinada coluna.
 
-#### Classe LastCount
+##### `FilterColumn.__init__(column: str, values: List[str])`
 
-#### Classe LastPercent
+Constrói uma nova instância da classe [FilterColumn](#classe-filtercolumnbasestep).
 
-#### Classe ReplaceValueInColumn
+> `column`: Coluna a ser utilizada pelo filtro. \
+> `values`: Vetor contendo os valores permitidos para a coluna `column`. Apenas linhas contendo esses valores serão preservadas.
 
-#### Classe Shuffle
+#### Classe FirstCount(BaseStep)
+
+Etapa de pré-processamento que preserva um número determinado das primeiras linhas do *dataset*.
+
+##### `FirstCount.__init__(count: int)`
+
+Constrói uma nova instância da classe [FirstCount](#classe-firstcountbasestep).
+
+> `count` : O número de linhas do início do *dataset* a serem preservadas.
+
+#### Classe FirstPercent(BaseStep)
+
+Etapa de pré-processamento que preserva um certo número das primeiras linhas do *dataset*, informado como uma percentagem do número total de linhas.
+
+##### `FirstPercent.__init__(precent: float)`
+
+Constrói uma nova instância da classe [FirstPercent](#classe-firstpercentbasestep).
+
+> `percent` : O número de linhas do início do *dataset* a serem preservadas, como percentual do total de linhas do *dataset*.
+
+#### Classe LastCount(BaseStep)
+
+Etapa de pré-processamento que preserva um número determinado das últimas linhas do *dataset*.
+
+##### `LastCount.__init__(count: int)`
+
+Constrói uma nova instância da classe [LastCount](#classe-lastcountbasestep).
+
+> `count` : O número de linhas do final do *dataset* a serem preservadas.
+
+#### Classe LastPercent(BaseStep)
+
+Etapa de pré-processamento que preserva um certo número das últimas linhas do *dataset*, informado como uma percentagem do número total de linhas.
+
+##### `LastPercent.__init__(precent: float)`
+
+Constrói uma nova instância da classe [LastPercent](#classe-lastpercentbasestep).
+
+> `percent` : O número de linhas do final do *dataset* a serem preservadas, como percentual do total de linhas do *dataset*.
+
+#### Classe ReplaceValueInColumn(BaseStep)
+
+Etapa de pré-processamento que substitui determinados valores em uma coluna do *dataset*.
+
+##### `ReplaceValueInColumn.__init__(column: str, originalValue: str, newValue: str)`
+
+Constrói uma instância da classe [ReplaceValueInColumn](#classe-replacevalueincolumnbasestep).
+
+> `column` : Coluna do *dataset* a ser alterada. \
+> `originalValue` : Valor da coluna `column` a ser substituído. \
+> `newValue` : Valor a ser aplicado à coluna `column` se seu valor for igual à `originalValue`.
+
+#### Classe Shuffle(BaseStep)
+
+Etapa de pré-processamento que embaralha as linhas do *dataset*.
+
+##### `Shuffle.__init__(seed: int)`
+
+Constrói uma nova instância da classe [Shuffle](#classe-shufflebasestep).
+
+> `seed`: A [semente aleatória](https://en.wikipedia.org/wiki/Random_seed) utilizada no embaralhamento das linhas.
