@@ -165,7 +165,7 @@ Classe responsável por calcular e agregar *hashes*.
 
 #### Preprocessing(Base)
 
-Representa uma lista de etapas de pré-processamento (classes derivadas de [Step](#basestepbase)). Facilita a geração textual dessas etapas e o processamento de *dataset*.
+Representa uma lista de etapas de pré-processamento (classes derivadas de [BaseStep](#basestepbase)). Facilita a geração textual dessas etapas e o processamento de *dataset*.
 
 ##### `Preprocessing.add_step(step: BaseStep)`
 
