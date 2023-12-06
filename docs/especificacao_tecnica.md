@@ -139,6 +139,24 @@ Define qual é o nome da coluna do *dataset* contendo as classificações (ou *l
 Vetor contendo todas as etapas de pré-processamento global. 
 > Default: []
 
+##### `Experiment.add_train_set(steps: List[BaseStep], *loaders: BaseLoader)`
+
+Define uma "fatia" do *dataset* de treinamento, como descrito na seção [Descrição de um Experimento](documentacao.md#descrição-de-um-experimento), associando uma lista de etapas de pré-processamento à uma lista de carregadores de imagem.
+
+Essas etapas de pré-processamento serão aplicadas ao *dataset* após as etapas de pré-processamento globais serem aplicadas. Os elementos resultantes farão parte do *dataset* de treinamento, sendo carregados pelos *loaders* informados, em multiplicidade. 
+
+> `steps` : Lista de etapas de pré-processamento. \
+> `loaders` : Lista de *loaders*.
+
+##### `Experiment.add_validation_set(steps: List[BaseStep], *loaders: BaseLoader)`
+
+Define uma "fatia" do *dataset* de validação, como descrito na seção [Descrição de um Experimento](documentacao.md#descrição-de-um-experimento), associando uma lista de etapas de pré-processamento à uma lista de carregadores de imagem.
+
+Essas etapas de pré-processamento serão aplicadas ao *dataset* após as etapas de pré-processamento globais serem aplicadas. Os elementos resultantes farão parte do *dataset* de validação, sendo carregados pelos *loaders* informados, em multiplicidade. 
+
+> `steps` : Lista de etapas de pré-processamento. \
+> `loaders` : Lista de *loaders*.
+
 ##### `Experiment.model: BaseModel`
 
 Instância do modelo de rede neural a ser treinada neste experimento.

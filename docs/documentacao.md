@@ -95,8 +95,7 @@ def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataF
 
 O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de [`BaseStep`](especificacao_tecnica.md#classe-basestepbase)) associadas a um *loader*. *Loaders* são classes derivadas da classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
 
-
-Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos `Experiment.add_train_set` e `Experiment.add_validation_set`, com as assinaturas abaixo:
+Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos [`Experiment.add_train_set`](especificacao_tecnica.md#experimentadd_train_setsteps-listbasestep-loaders-baseloader) e [`Experiment.add_validation_set`](especificacao_tecnica.md#experimentadd_validation_setsteps-listbasestep-loaders-baseloader), com as assinaturas abaixo:
 
 ```python
     def add_train_set(steps: List[Step], *loaders: BaseLoader) -> None:
@@ -255,5 +254,5 @@ Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituind
 
 Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe [`Experiment`](especificacao_tecnica.md#classe-experiment) para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
 
-Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e suas derivadas conforme descrito em [melhorias](docs/melhorias.md).
+Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e suas derivadas conforme descrito em [melhorias](melhorias.md).
 
