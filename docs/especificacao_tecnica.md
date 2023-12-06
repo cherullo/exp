@@ -29,11 +29,15 @@ Isso acontece porque a classe `generators.DatasetGenerator` é o gerenciador de 
 
 ![](images/class_diagram.png)
 
+As principais oportunidades de extensão que o framework oferece consistem em implementar classes derivadas das classes abstratas `BaseGenerator`, `BaseLoader`, `BaseModel` e `BaseStep`, com funcionalidades bem definidas e reusáveis.
+
 ## Referência de Classes
 
-### Arch
+### Módulo Arch
 
-#### Base
+Este é o módulo fundamental do framework, contendo a classe [Experiment](#experiment) as classes abstratas (prefixadas com `Base`) que serão implementadas nos demais módulos.
+
+#### Classe Base
 
 Classe abstrata, base de todas as classes do framework. Facilita a geração dos relatórios textuais dos experimentos e o cálculo do seu *hash*.
 
@@ -49,7 +53,7 @@ Abstrato. Retorna uma descrição legível do que essa instância faz.
 
 Abstrato. Adiciona o estado configurável desta instância ao [Hasher](#hasher) fornecido.
 
-#### BaseDatasetGenerator(Base)
+#### Classe BaseDatasetGenerator(Base)
 
 Classe abstrata de todos os gerenciadores de *epoch*.
 
@@ -65,7 +69,7 @@ Abstrato. Retorna o conteúdo do i-ésimo *batch*, na forma de uma tupla contend
 
 Abstrato. Esse método é chamado pela classe [Experiment](#experiment) ao final de cada *epoch*.
 
-#### BaseLoader(Base)
+#### Classe BaseLoader(Base)
 
 Classe abstrata de todos os carregadores de imagens.
 
@@ -73,7 +77,7 @@ Classe abstrata de todos os carregadores de imagens.
 
 Abstrato. Carrega uma image do disco.
 
-#### BaseModel(Base)
+#### Classe BaseModel(Base)
 
 Classe abstrata de todos os modelos de rede neural.
 
@@ -85,7 +89,7 @@ Abstrato. Retorna a instância do modelo Keras de rede neural a ser treinada.
 
 Abstrato. A classe [Experiment](#experiment) chamará esse método informando o número de classes presentes no *dataset*.
 
-#### BaseStep(Base)
+#### Classe BaseStep(Base)
 
 Classe abstrata de todas as etapas de pré-processamento.
 
@@ -93,7 +97,7 @@ Classe abstrata de todas as etapas de pré-processamento.
 
 Aplica esta etapa de pré-processamento à tabela provida e retorna o resultado.
 
-#### Experiment
+#### Classe Experiment
 
 Classe central do framework, que organiza e executa um experimento de treinamento de redes neurais.
 
@@ -136,7 +140,7 @@ Instância do modelo de rede neural a ser treinada neste experimento.
 Número de *epochs* de treinamento.
 > Default: 20.
 
-#### Hasher
+#### Classe Hasher
 
 Classe responsável por calcular e agregar *hashes*.
 
@@ -166,7 +170,7 @@ Calcula e agrega o *hash* dos parâmetros passados. Os parâmetros são entendid
 > `*args` : Pode ser qualquer um dos tipos básicos ou uma instância de [Base](#base). \
 > Retorna : a própria instância.
 
-#### Preprocessing(Base)
+#### Classe Preprocessing(Base)
 
 Representa uma lista de etapas de pré-processamento (classes derivadas de [BaseStep](#basestepbase)). Facilita a geração textual dessas etapas e o processamento de *dataset*.
 
@@ -183,11 +187,58 @@ Processa um *dataset* por todas as etapas de pré-processamento que foram adicio
 
 ---
 
-### Models
+### Módulo Loaders
+
+Contém as classes responsáveis por carregar imagens do sistema de arquivos.
+
+#### Classe BrightLoader(SimpleLoader)
+
+Carrega uma imagem interpretando cada componente de cor dos pixels como valores no intervalo `[0, 255]`, e ajusta seu brilho, aplicando a seguinte equação à cada componente de cada pixel:
+
+`X = alpha * X + beta`
+
+Onde `alpha` e `beta` são coeficientes informados no construtor. Opcionalmente redimensiona a imagem ao carregá-la.
+
+##### `BrightLoader.__init__(alpha: float, beta: float, resize: tuple[int, int])`
+
+Constrói uma nova instância de [BrightLoader](#brightloadersimpleloader).
+> `alpha`: Coeficiente multiplicativo. Default: 1.0 \
+> `beta`: Coeficiente aditivo. Default: 0.0 \
+> `resize`: Dimensões (linhas, colunas) usados para redimensionar a image. Opcional.
+
+#### Classe RotationLoader(SimpleLoader)
+
+Carrega uma imagem e a rotaciona pelo ponto central, interpretando cada componente de cor dos pixels como valores no intervalo `[0, 255]`. O ângulo utilizado é aleatório, escolhido dentro do intervalo:
+
+ `[angle - spread, angle + spread]`
+
+ Onde `angle` e `spread` são valores informados no construtor. Opcionalmente redimensiona a imagem ao carregá-la.
+
+##### `RotationLoader.__init__(angle: float = 0.0, spread: float = 0.0, resize: tuple[int, int])`
+
+Constrói uma nova instância de [RotationLoader](#rotationloadersimpleloader).
+
+> `angle` : Ângulo base de rotação. Default: 0.0 \
+> `spread` : Largura do intervalo aleatório em torno de `angle`. Default: 0.0 \
+> `resize`: Dimensões (linhas, colunas) usados para redimensionar a image. Opcional.
+
+#### Classe SimpleLoader(BaseLoader)
+
+Carrega uma imagem do sistema de arquivos, interpretando cada componente de cor dos pixels como valores no intervalo `[0, 255]`. Opcionalmente redimensiona a imagem ao carregá-la.
+
+##### `SimpleLoader.__init__(resize: tuple[int, int])`
+
+Constrói uma nova instância de [SimpleLoader](#classe-simpleloaderbaseloader).
+
+> `resize`: Dimensões (linhas, colunas) usados para redimensionar a image. Opcional.
+
+---
+
+### Módulo Models
 
 Contém as implementações padrão da classe abstrata [BaseModel](#basemodelbase), ou seja, modelos de rede neural que podem ser treinados pelo framework.
 
-#### EfficientNetB0Model(BaseModel)
+#### Classe EfficientNetB0Model(BaseModel)
 
 Encapsula o modelo de redes neurais [EfficientNetB0](https://www.tensorflow.org/api_docs/python/tf/keras/applications/efficientnet/EfficientNetB0), configurado para utilizar o otimizador [Adam](https://keras.io/api/optimizers/adam/).
 
@@ -198,24 +249,24 @@ Define a taxa de aprendizado da rede.
 
 ##### `EfficientNetB0Model.loss: str`
 
- Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/.
+Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/.
 > Default: 'categorical_crossentropy'
 
-#### EfficientNetB4Model(BaseModel)
+#### Classe EfficientNetB4Model(BaseModel)
 
 Encapsula o modelo de redes neurais [EfficientNetB4](https://www.tensorflow.org/api_docs/python/tf/keras/applications/efficientnet/EfficientNetB4), configurado para utilizar o otimizador [Adam](https://keras.io/api/optimizers/adam/).
 
 ##### `EfficientNetB4Model.learning_rate: float`
 
- Define a taxa de aprendizado da rede. 
+Define a taxa de aprendizado da rede. 
 > Default: 0.001
 
 ##### `EfficientNetB4Model.loss: str`
 
- Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/. \
+Define qual função de perda será utilizada durante o treinamento. Para conhecer os valores possíveis, visite https://keras.io/api/losses/.
 > Default: 'categorical_crossentropy'
 
-#### OneHot(Base)
+#### Classe OneHot(Base)
 
 Classe auxiliar utilizada para codificar, com a estratégia [one-hot](https://en.wikipedia.org/wiki/One-hot), a classe de uma imagem em um vetor numérico. 
 
@@ -248,31 +299,20 @@ Por exemplo, considerando-se as classes de exemplo acima, o resultado de se deco
 > `pred`: vetor numérico contendo a predição da rede neural, onde cada valor significa a probabilidade da imagem classificada pertencer à respectiva classe. \
 > Retorna : String contendo o nome da classe predita pela rede.
 
-
 ---
 
-### Loaders
+### Módulo Preprocessing Steps
 
-#### BaseLoader
+#### Classe FilterColumn
 
-#### BrightLoader
+#### Classe FirstCount
 
-#### RotationLoader
+#### Classe FirstPercent
 
----
+#### Classe LastCount
 
-### Preprocessing Steps
+#### Classe LastPercent
 
-#### ChangeColumn
+#### Classe ReplaceValueInColumn
 
-#### FilterColumn
-
-#### FirstCount
-
-#### FirstPercent
-
-#### LastCount
-
-#### LastPercent
-
-#### Shuffle
+#### Classe Shuffle

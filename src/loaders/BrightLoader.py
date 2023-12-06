@@ -5,7 +5,7 @@ from .SimpleLoader import SimpleLoader
 
 class BrightLoader(SimpleLoader):
 
-    def __init__(self, alpha=1.0, beta=0.0, resize: tuple[int, int] = None):
+    def __init__(self, alpha: float = 1.0, beta: float = 0.0, resize: tuple[int, int] = None):
         super().__init__(resize)
         self.alpha = alpha
         self.beta = beta
