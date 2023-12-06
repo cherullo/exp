@@ -4,10 +4,10 @@ import skimage.io as io
 from skimage.util import img_as_float32
 from skimage.transform import resize
 
-from arch import Base
+from arch import BaseLoader
 from arch import Hasher
 
-class BaseLoader(Base):
+class SimpleLoader(BaseLoader):
     """ 
         Loads an image and optionally resizes it.
     """

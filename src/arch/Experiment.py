@@ -9,14 +9,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
-from arch import BaseModel, Hasher
-from arch import BaseStep
+from arch import BaseLoader, BaseModel, BaseStep
+from arch import Hasher 
 from generators import DatasetGenerator
 from .SampleExtractor import SampleExtractor
 from .ReportPath import ReportPath
 import arch.dataset_columns as dataset_columns
 from helpers import main_helper
-from loaders import BaseLoader
 from models.OneHot import OneHot
 
 def _process_steps(df: pandas.DataFrame, steps: List[BaseStep]) -> pandas.DataFrame:
@@ -238,7 +237,7 @@ class Experiment():
         validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_final_confusion.png"))
         self._complement_summary('Final', training_set_report, validation_set_report)
 
-        self.model.model = tf.keras.models.load_model(self.report_path.get('checkpoint.h5'))
+        self.model.model = tf.keras.models.load_model(self.report_path.get('best.h5'))
 
         training_set_report = self._generate_confusion(self.train_set, self.model, self.encoding, self.report_path.get("training_set_best_confusion.png"))
         validation_set_report = self._generate_confusion(self.validation_set, self.model, self.encoding, self.report_path.get("validation_set_best_confusion.png"))

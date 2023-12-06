@@ -1,10 +1,11 @@
 import random
 import numpy as np
 from skimage.transform import rotate
-from .BaseLoader import BaseLoader
-from arch import Hasher
 
-class RotationLoader(BaseLoader):
+from arch import Hasher
+from .SimpleLoader import SimpleLoader
+
+class RotationLoader(SimpleLoader):
     def __init__(self, angle=0.0, spread=0.0, resize: tuple[int, int] = None):
         super().__init__(resize)
         self.angle = angle

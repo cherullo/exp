@@ -1,5 +1,5 @@
 from arch import Experiment
-from loaders import BaseLoader, RotationLoader
+from loaders import SimpleLoader, RotationLoader
 from models import OneHot
 from models.EfficientNetB0Model import EfficientNetB0Model
 from preprocessing_steps import FilterColumn, FirstPercent, LastPercent
@@ -25,9 +25,9 @@ exp.add_train_set([FilterColumn(columns.LABEL, [labels.COW]), FirstPercent(0.8)]
 exp.add_train_set([FilterColumn(columns.LABEL, [labels.SHEEP]), FirstPercent(0.8)], RotationLoader(resize=dimension, spread=10.0))
 
 # Add the last 20% of cow images to the validation set, without augmentation
-exp.add_validation_set([FilterColumn(columns.LABEL, [labels.COW]), LastPercent(0.2)], BaseLoader(resize=dimension))
+exp.add_validation_set([FilterColumn(columns.LABEL, [labels.COW]), LastPercent(0.2)], SimpleLoader(resize=dimension))
 # Add the last 20% of sheep images to the validation set, without augmentation
-exp.add_validation_set([FilterColumn(columns.LABEL, [labels.SHEEP]), LastPercent(0.2)], BaseLoader(resize=dimension))
+exp.add_validation_set([FilterColumn(columns.LABEL, [labels.SHEEP]), LastPercent(0.2)], SimpleLoader(resize=dimension))
 
 # Use OneHot encoding for the labels ([1, 0] and [0, 1])
 exp.encoding = OneHot([labels.COW, labels.SHEEP])
