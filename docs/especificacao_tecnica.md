@@ -295,7 +295,7 @@ Carrega uma imagem e a rotaciona pelo ponto central, interpretando cada componen
 
  `[angle - spread, angle + spread]`
 
- Onde `angle` e `spread` são valores informados no construtor. Opcionalmente redimensiona a imagem ao carregá-la.
+ Onde `angle` e `spread` são valores informados no construtor, em graus. Opcionalmente redimensiona a imagem ao carregá-la.
 
 ##### `RotationLoader.__init__(angle: float = 0.0, spread: float = 0.0, resize: tuple[int, int])`
 

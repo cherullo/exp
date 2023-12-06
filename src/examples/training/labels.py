@@ -1,4 +1,4 @@
-BUTTERFLY = "buttefly"
+BUTTERFLY = "butterfly"
 COW = "cow"
 SHEEP = "sheep"
 SQUIRREL = "squirrel"

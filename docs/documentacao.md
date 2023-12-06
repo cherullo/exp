@@ -250,9 +250,8 @@ O framework, apesar de configurável, não é flexível o suficiente para treina
 
 Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituindo a classe [`OneHot`](especificacao_tecnica.md#classe-onehotbase), mas esse cenário não é suportado, e geraria outros inconvenientes durate a geração dos relatórios.
 
-### Cenário Não-Adequado: Utilizar outras fontes de dados
+### Utilizar outras fontes de dados
 
 Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe [`Experiment`](especificacao_tecnica.md#classe-experiment) para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
 
 Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e suas derivadas conforme descrito em [melhorias](melhorias.md).
-

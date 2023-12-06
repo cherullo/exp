@@ -23,11 +23,20 @@ class SimpleLoader(BaseLoader):
         Returns:
             np.ndarray: The image ndarray.
         """
+
         img = img_as_float32(io.imread(file)) * 255.0
 
+        originalShape = np.shape(img)
+
+        # Strip alpha channel
+        if originalShape[2] > 3:
+            img = img[:,:,:3]
+        
         if self.resize != None:
             img = resize(img, (self.resize[0], self.resize[1]), anti_aliasing=True)
     
+        #print (f'Loading {file} {originalShape} --> {np.shape(img)}')
+
         return img
 
     def __str__(self) -> str:
