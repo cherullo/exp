@@ -35,17 +35,11 @@ Isso acontece porque a classe `generators.DatasetGenerator` é o gerenciador de 
 
 #### Base
 
-```
-def __str__():
-```
+##### `__str__()`
 
-```
-description() -> str
-```
+##### `description() -> str`
 
-```
-add_hash(hasher)
-```
+##### `add_hash(hasher)`
 
 #### DatasetGenerator
 
