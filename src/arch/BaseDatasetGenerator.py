@@ -5,6 +5,13 @@ import numpy as np
 from .Base import Base
 
 class BaseDatasetGenerator(Base, tf.keras.utils.Sequence):
+    """
+    Abstract class of all dataset generators.
+
+    Args:
+        Base (_type_): This is a framework type.
+        tf (_type_): Tensorflow sequence.
+    """
     @abstractmethod
     def __len__(self) -> int:
         """

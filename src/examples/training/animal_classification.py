@@ -29,9 +29,6 @@ exp.add_validation_set([FilterColumn(columns.LABEL, [labels.COW]), LastPercent(0
 # Add the last 20% of sheep images to the validation set, without augmentation
 exp.add_validation_set([FilterColumn(columns.LABEL, [labels.SHEEP]), LastPercent(0.2)], SimpleLoader(resize=dimension))
 
-# Use OneHot encoding for the labels ([1, 0] and [0, 1])
-exp.encoding = OneHot([labels.COW, labels.SHEEP])
-
 # Configure the base path from where images will be loaded
 exp.base_images_path = "dataset/"
 # Configure which column of the dataset contains the image file path
