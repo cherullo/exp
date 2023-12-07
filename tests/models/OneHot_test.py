@@ -1,9 +1,7 @@
-# import pandas as pd
-# import arch.DatasetGenerator as DG
-
 import numpy as np
 import pandas
-from models.OneHot import OneHot
+
+from exp.models.OneHot import OneHot
 
 LABEL1 = 'label_1'
 LABEL2 = 'label_2'
@@ -26,11 +24,3 @@ def test_encoding_series():
 
 def test_decoding_works():
     assert onehot.decode([1.0, 0.0, 0.0, 0.0]) == LABEL1
-
-#def test_integrated():
-#
-#    df = pd.read_excel("reports\efficient_baseline-db583958\dataset.xlsx")
-#
-#    Dataset=DG(df,batch_size=100)
-#    y=Dataset[10]
-#    print('Encoding sucessfull: ',y)

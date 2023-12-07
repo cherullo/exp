@@ -1,6 +1,6 @@
 import pandas
 import os
-import arch.dataset_columns as dataset_columns
+import exp.arch.dataset_columns as dataset_columns
 
 class SampleExtractor():
     def __init__(self, base_path: str, label_column: str, image_column: str):

@@ -1,8 +1,7 @@
-from arch import Experiment
-from loaders import SimpleLoader, RotationLoader
-
-from models.EfficientNetB0Model import EfficientNetB0Model
-from preprocessing_steps import FilterColumn, FirstPercent, LastPercent
+from exp.arch import Experiment
+from exp.loaders import SimpleLoader, RotationLoader
+from exp.models import EfficientNetB0Model
+from exp.preprocessing_steps import FilterColumn, FirstPercent, LastPercent
 
 import columns
 import labels

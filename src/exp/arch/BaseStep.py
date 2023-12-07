@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import pandas
 
-from arch import Base
+from .Base import Base
 
 class BaseStep(Base):
     """ 

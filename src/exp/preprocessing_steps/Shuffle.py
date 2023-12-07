@@ -1,6 +1,6 @@
 import pandas
 
-from arch import Hasher, BaseStep
+from exp.arch import Hasher, BaseStep
 
 class Shuffle(BaseStep):
     """ Shuffles the dataset.

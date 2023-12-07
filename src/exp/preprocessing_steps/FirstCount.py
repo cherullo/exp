@@ -1,6 +1,7 @@
 import pandas
 import numpy as np
-from arch import Hasher, BaseStep
+
+from exp.arch import Hasher, BaseStep
 
 class FirstCount(BaseStep):
     """ Keeps a set number of the first rows of the dataset.

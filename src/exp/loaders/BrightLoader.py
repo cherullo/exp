@@ -1,6 +1,6 @@
 import numpy as np
 
-from arch import Hasher
+from exp.arch import Hasher
 from .SimpleLoader import SimpleLoader
 
 class BrightLoader(SimpleLoader):

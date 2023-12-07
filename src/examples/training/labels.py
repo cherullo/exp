@@ -1,3 +1,5 @@
+# Labels in file dataset/animals.xlsx
+
 BUTTERFLY = "butterfly"
 COW = "cow"
 SHEEP = "sheep"

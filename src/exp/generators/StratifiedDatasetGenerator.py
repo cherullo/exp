@@ -3,8 +3,8 @@ from typing import Dict
 import pandas
 import numpy as np
 
-from arch import BaseDatasetGenerator
-import arch.dataset_columns as cols
+from exp.arch import BaseDatasetGenerator
+import exp.arch.dataset_columns as cols
 
 class StratifiedDatasetGenerator(BaseDatasetGenerator):
     def __init__(self,

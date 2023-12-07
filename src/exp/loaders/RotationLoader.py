@@ -2,7 +2,7 @@ import random
 import numpy as np
 from skimage.transform import rotate
 
-from arch import Hasher
+from exp.arch import Hasher
 from .SimpleLoader import SimpleLoader
 
 class RotationLoader(SimpleLoader):
