@@ -21,13 +21,17 @@ O framework é organizado em 5 módulos principais: `arch`, `generators`, `loade
 
 - [`preprocessing_steps`](#módulo-preprocessing_steps): contém as etapas de pré-processamento do *dataset*. São as implementações de [`BaseStep`](#classe-basestepbase).
 
-![](images/module_diagram.png)
+<p align="center">
+  <img src="images/module_diagram.png" width="50%">
+</p>
 
 Não existem muitas dependências entre módulos pois cada classe possui uma responsabilidade bem definida e independente. Todos os módulos dependem do módulo [`arch`](#módulo-arch) pois este contém as classes abstratas implementadas nos módulos. A única exceção é a dependência que o módulo [`arch`](#módulo-arch) tem do módulo [`generators`](#módulo-generators). 
 
 Isso acontece porque a classe [`DatasetGenerator`](#classe-datasetgeneratorbasegenerator) é o gerenciador de *epoch* padrão do framework, e precisa ser instanciado automaticamente quanto um gerador não é informado. Essa situação pode ser claramente visualizada no diagrama de classes abaixo:
 
-![](images/class_diagram.png)
+<p align="center">
+  <img src="images/class_diagram.png" width="80%">
+</p>
 
 As principais oportunidades de extensão que o framework oferece consistem em implementar classes derivadas das classes abstratas [`BaseDatasetGenerator`](#classe-basedatasetgeneratorbase), [`BaseLoader`](#classe-baseloaderbase), [`BaseModel`](#classe-basemodelbase) e [`BaseStep`](#classe-basestepbase), com funcionalidades bem definidas e reusáveis.
 

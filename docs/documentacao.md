@@ -107,7 +107,7 @@ Essas fatias são definidas pelo usuário através de sucessivas chamadas aos m�
 
 Observe que vários *loaders* podem ser passados em cada chamada. Isso é equivalente à chamar o método uma vez para cada *loader*, passando a mesma lista de etapas de pré-processamento. Podemos visualizar esta configuração graficamente abaixo:
 
-![](images/Experimento.png)
+<p align="center"><img src="images/Experimento.png" width="50%"></p>
 
 Quando um treinamento é executado, as etapas de pré-processamento globais são aplicadas ao *dataset* inicial, gerando o *dataset* pré-processado. Os *datasets* de treinamento e validação são gerados concatenando-se o resultado do processamento de cada uma de suas fatias, que consiste simplesmente em aplicar as respectivas etapas de processamento ao *dataset* pré-processado e anexar uma coluna contendo o respectivo loader.
 
@@ -158,13 +158,13 @@ No início de cada *epoch* também é comum se embaralhar o *dataset* de treinam
 
 ## Composição do Relatório
 
-O relatório de cada experimento é formado pelos seguintes arquivos:
+Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao lado de cada arquivo aponta para o respectivo arquivo no relatório de execução do experimento [animal_classification_4classes_imbalanced.py](../src/examples/training/animal_classification_4classes_imbalanced.py), assim como as imagens.
 
-- modelsummary.txt
+- modelsummary.txt &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/modelsummary.txt"><img src="images/link_icon.png" width="2%"></a>
 
   É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
 
-- preprocessed.xlsx
+- preprocessed.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela obtida ao se aplicar as etapas de pré-processamento global ao *dataset* original.
 
@@ -172,7 +172,9 @@ O relatório de cada experimento é formado pelos seguintes arquivos:
 
   Gráfico contendo quantos elementos de cada classe estão contidos no *dataset* pré-processado.
 
-- training_set.xlsx
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed_histogram.png" width="50%"></p>
+
+- training_set.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo o *dataset* de treinamento, no formato de três colunas: `input`, `loader`, `label`.
 
@@ -180,23 +182,29 @@ O relatório de cada experimento é formado pelos seguintes arquivos:
 
   Histograma mostrando quantos elementos de cada classe estão contidos no *dataset* de treinamento, subdivididos pelo *loader* utilizado.
 
-- validation_set.xlsx
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set_histogram.png" width="50%"></p>
+
+- validation_set.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo o *dataset* de validação, no formato de três colunas: `input`, `loader`, `label`.
 
 - validation_set_histogram.png
 
-  Histograma mostrando quantos elementos de cada classe estão contidos no *dataset* de validação, subdivididos pelo *loader* utilizado.
+  Histograma mostrando quantos elementos de cada classe estão contidos no *dataset* de validação, subdivididos pelo *loader* utilizado. Vale observar que não faz sentido utilizar outros *loaders* 
+
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set_histogram.png" width="50%"></p>
 
 - history.png
 
   Gráfico mostrando a evolução ao longo do treinamento: da função de perda no *dataset* de treinamento (*training loss*), da função de perda no *dataset* de validação (*validation loss*) e a acurácia da rede ao classificar o *dataset* de validação.
 
-- history.csv
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/history.png" width="50%"></p>
+
+- history.csv <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/history.csv"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo os dados do gráfico acima.
 
-- best.h5
+- best.h5 <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/best.h5"><img src="images/link_icon.png" width="2%"></a>
 
   A melhor rede neural obtida durante o treinamento, isso é, aquela que obteve o menor valor para a função de perda no *dataset* de validação.
 
@@ -204,11 +212,19 @@ O relatório de cada experimento é formado pelos seguintes arquivos:
 
   Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da melhor rede obtida, classificando o *dataset* de treinamento.
 
+    <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set_best_confusion.png" width="50%"></p>
+
 - validation_set_best_confusion.png
 
   Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da melhor rede obtida, classificando o *dataset* de validação.
 
-- final.h5
+  <details>
+  <summary>Matriz de confusão</summary>
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set_best_confusion.png" width="50%"></p>
+  </details>
+  &nbsp;
+
+- final.h5 <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/final.h5"><img src="images/link_icon.png" width="2%"></a>
 
   A última rede neural obtida durante o treinamento, não necessariamente a melhor.
 
@@ -216,9 +232,21 @@ O relatório de cada experimento é formado pelos seguintes arquivos:
 
   Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da última rede obtida, classificando o *dataset* de treinamento.
 
+  <details>
+  <summary>Matriz de confusão</summary>
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set_final_confusion.png" width="50%"></p>
+  </details>
+  &nbsp;
+
 - validation_set_final_confusion.png
 
   Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da última rede obtida, classificando o *dataset* de validação.
+
+  <details>
+  <summary>Matriz de confusão</summary>
+  <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set_final_confusion.png" width="50%"></p>
+  </details>
+  &nbsp;
 
 Um exemplo de relatório pode ser visto em em [/src/examples/training/reports/]().
 

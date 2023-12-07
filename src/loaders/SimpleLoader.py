@@ -40,7 +40,7 @@ class SimpleLoader(BaseLoader):
         return img
 
     def __str__(self) -> str:
-        return f'BaseLoader(resize={self.resize})'
+        return f'SimpleLoader(resize={self.resize})'
 
     def description(self) -> str:
         resizeStr = f' and resizes it to {self.resize[0]} rows by {self.resize[1]} columns.' if self.resize is not None else ''
