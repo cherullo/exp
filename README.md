@@ -24,17 +24,17 @@ A fim de resolver questões de path e imports, é preciso utilizar a seguinte li
 python src/run_sample.py [ARQUIVO PYTHON]
 ```
 
- - Selecionar as primeiras linhas de um dataset: [examples/filtering/first_count.py]()
+ - Selecionar as primeiras linhas de um dataset: [examples/filtering/first_count.py](src/examples/filtering/first_count.py)
 
-- Selecionar as linhas onde uma coluna possui determinado valor: [examples/filtering/filter_by_column.py]()
+- Selecionar as linhas onde uma coluna possui determinado valor: [examples/filtering/filter_by_column.py](src/examples/filtering/filter_by_column.py)
 
-- Como trocar o valor de uma coluna: [examples/filtering/change_column.py]()
+- Como trocar o valor de uma coluna: [examples/filtering/change_column_value.py](src/examples/filtering/change_column_value.py)
 
-- Como treinar uma rede para classificar vacas e ovelhas: [examples/training/animal_classification_2classes.py]()
+- Como treinar uma rede para classificar vacas e ovelhas: [examples/training/animal_classification_2classes.py](src/examples/training/animal_classification_2classes.py)
 
-- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas: [examples/training/animal_classification_4classes.py]()
+- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas: [examples/training/animal_classification_4classes.py](src/examples/training/animal_classification_4classes.py)
 
-- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas, usando *loaders* para compensar a falta de imagens em uma das classes: [examples/training/animal_classification_4classes_imbalanced.py]()
+- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas, usando *loaders* para compensar a falta de imagens em uma das classes: [examples/training/animal_classification_4classes_imbalanced.py](src/examples/training/animal_classification_4classes_imbalanced.py)
 
 ## Documentação
 
