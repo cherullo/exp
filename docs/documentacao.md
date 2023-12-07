@@ -164,7 +164,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
   É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
 
-- preprocessed.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed.xlsx"><img src="images/link_icon.png" width="2%"></a>
+- preprocessed.xlsx &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela obtida ao se aplicar as etapas de pré-processamento global ao *dataset* original.
 
@@ -174,7 +174,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
   <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed_histogram.png" width="50%"></p>
 
-- training_set.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
+- training_set.xlsx &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo o *dataset* de treinamento, no formato de três colunas: `input`, `loader`, `label`.
 
@@ -184,7 +184,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
   <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/training_set_histogram.png" width="50%"></p>
 
-- validation_set.xlsx <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
+- validation_set.xlsx &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo o *dataset* de validação, no formato de três colunas: `input`, `loader`, `label`.
 
@@ -200,11 +200,11 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
   <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/history.png" width="50%"></p>
 
-- history.csv <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/history.csv"><img src="images/link_icon.png" width="2%"></a>
+- history.csv &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/history.csv"><img src="images/link_icon.png" width="2%"></a>
 
   Tabela contendo os dados do gráfico acima.
 
-- best.h5 <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/best.h5"><img src="images/link_icon.png" width="2%"></a>
+- best.h5 &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/best.h5"><img src="images/link_icon.png" width="2%"></a>
 
   A melhor rede neural obtida durante o treinamento, isso é, aquela que obteve o menor valor para a função de perda no *dataset* de validação.
 
@@ -224,7 +224,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
   </details>
   &nbsp;
 
-- final.h5 <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/final.h5"><img src="images/link_icon.png" width="2%"></a>
+- final.h5 &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/final.h5"><img src="images/link_icon.png" width="2%"></a>
 
   A última rede neural obtida durante o treinamento, não necessariamente a melhor.
 

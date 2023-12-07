@@ -8,13 +8,15 @@ Para começar a utilizar o framework, recomendamos realizar as etapas de instala
 
 ## Instalação
 
-O *framework* requer Python 3 com Tensorflow 2 ou superior. Recomendamos a utilização de um *[virtual environment](https://docs.python.org/3/library/venv.html)* e a instalação das dependências através do arquivo [requirements.txt](requirements.txt):
+O *framework* requer Python 3 com Tensorflow 2 ou superior. Sua instalação atualmente se faz copiando o diretório [/src/exp](src/exp/) para a raiz do seu projeto, ou adicionando ele ao seu PYTHONPATH.
+
+As dependências do *framework* em si podem ser instaladas através do arquivo [requirements.txt](requirements.txt):
 
 ```
 pip install -r requirements.txt
 ```
 
-Como existem diversas maneiras de se instalar o Tensorflow, não incluímos essa dependência diretamente no requirements.txt.
+Recomendamos a utilização de um *[virtual environment](https://docs.python.org/3/library/venv.html)* para melhor gerenciar o ambiente de desenvolvimento. Como existem diversas maneiras de se instalar o Tensorflow, não incluímos essa dependência diretamente no requirements.txt.
 
 ## Exemplos
 
