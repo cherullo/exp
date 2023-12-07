@@ -187,7 +187,7 @@ class Experiment():
 
         custom_callbacks = [
             #tf.keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15),
-            tf.keras.callbacks.ModelCheckpoint(self.report_path.get('best.h5'), monitor='val_loss', save_best_only=True, mode='min'),
+            tf.keras.callbacks.ModelCheckpoint(self.report_path.get('best.h5'), monitor='val_acc', save_best_only=True, mode='max'),
             tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=7, min_lr=1e-9),
             tf.keras.callbacks.CSVLogger(self.report_path.get('history.csv'))
             ]

@@ -19,7 +19,7 @@ class BrightLoader(SimpleLoader):
         Returns:
             np.ndarray: The image ndarray.
         """
-        img = super().Load(file)
+        img = super().load(file)
         
         img = (img * self.alpha) + self.beta
 
