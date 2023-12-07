@@ -1,5 +1,5 @@
 import pytest
-from helpers import Hasher
+from exp.arch import Hasher
 
 STR1 = 'Shikamaru'
 STR2 = 'Neji'

@@ -2,9 +2,9 @@ import tensorflow as tf
 import pandas
 import numpy as np
 
-from arch import BaseDatasetGenerator
-import arch.dataset_columns as cols
-from models import OneHot
+from exp.arch import BaseDatasetGenerator
+import exp.arch.dataset_columns as cols
+from exp.models import OneHot
 
 class DatasetGenerator(BaseDatasetGenerator):
     def __init__(self,

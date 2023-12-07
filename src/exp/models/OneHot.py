@@ -1,6 +1,6 @@
 import numpy as np
 from tensorflow.keras.utils import to_categorical
-from arch import Base
+from exp.arch import Base
 
 class OneHot(Base):
     """Class receives a panda.Series object 

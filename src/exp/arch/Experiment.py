@@ -9,14 +9,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 
-from arch import BaseDatasetGenerator, BaseLoader, BaseModel, BaseStep
-from arch import Hasher 
-from generators import DatasetGenerator
+from exp.arch import BaseDatasetGenerator, BaseLoader, BaseModel, BaseStep
+from exp.arch import Hasher 
+from exp.arch import dataset_columns as dataset_columns
+from exp.generators import DatasetGenerator
+from exp.helpers import main_helper
+from exp.models.OneHot import OneHot
+
 from .SampleExtractor import SampleExtractor
 from .ReportPath import ReportPath
-import arch.dataset_columns as dataset_columns
-from helpers import main_helper
-from models.OneHot import OneHot
 
 def _process_steps(df: pandas.DataFrame, steps: List[BaseStep]) -> pandas.DataFrame:
     for step in steps:

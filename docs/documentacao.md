@@ -248,7 +248,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
   </details>
   &nbsp;
 
-O relatório utilizado como exemplo pode ser visto em em [/src/examples//training/reports/animal_classification_4classes_imbalanced-41fb392e/](/src/examples//training/reports/animal_classification_4classes_imbalanced-41fb392e/).
+O relatório utilizado como exemplo pode ser visto em em [/src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/](/src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/).
 
 # Cenários de Uso
 

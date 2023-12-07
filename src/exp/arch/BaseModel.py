@@ -1,7 +1,7 @@
 from abc import abstractmethod
 import tensorflow as tf
 
-from arch import Base
+from .Base import Base
 
 class BaseModel(Base):
     """ 
