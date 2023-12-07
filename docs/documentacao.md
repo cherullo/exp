@@ -8,57 +8,57 @@ Neste contexto, o número de variáveis envolvidas na definição de um experime
 
 # Objetivos
 
-O principal objetivo do framework exp é apoiar o processo iterativo de desenvolvimento de redes neurais através da estruturação dos experimentos em duas partes: sua descrição em Python, e seu respectivo relatório de treinamento.
+O principal objetivo do *framework* exp é apoiar o processo iterativo de desenvolvimento de redes neurais através da estruturação dos experimentos em duas partes: sua descrição em Python, e seu respectivo relatório de treinamento.
 
-O framework permite que o pesquisador descreva, de maneira sucinta e extensível, as etapas de processamento de dados e os parâmetros do modelo da rede neural e de seu treinamento. Através desta descrição, o framework realiza o treinamento da rede neural e gera seu respectivo relatório.
+O *framework* permite que o pesquisador descreva, de maneira sucinta e extensível, as etapas de processamento de dados e os parâmetros do modelo da rede neural e de seu treinamento. Através desta descrição, o *framework* realiza o treinamento da rede neural e gera seu respectivo relatório.
 
-O objetivo secundário do framework é facilitar que diversos experimentos sejam realizados simultaneamente, garantindo que os resultados dos experimentos não sejam sobrescritos e que os mesmos sejam facilmente reproduzíveis.
+O objetivo secundário do *framework* é facilitar que diversos experimentos sejam realizados simultaneamente, garantindo que os resultados dos experimentos não sejam sobrescritos e que os mesmos sejam facilmente reproduzíveis.
 
-Finalmente, o foco atual do framework é apoiar o treinamento de [redes neurais convolucionais para classificação de imagens](https://www.ibm.com/br-pt/topics/convolutional-neural-networks).
+Finalmente, o foco atual do *framework* é apoiar o treinamento de [redes neurais convolucionais para classificação de imagens](https://www.ibm.com/br-pt/topics/convolutional-neural-networks).
 
 # Requisitos
 
-A fim de alcançar os objetivos definidos acima e considerando-se o contexto da prática de desenvolvimento de redes neurais, o framework foi desenvolvido observando-se os seguintes requisitos funcionais e não funcionais.
+A fim de alcançar os objetivos definidos acima e considerando-se o contexto da prática de desenvolvimento de redes neurais, o *framework* foi desenvolvido observando-se os seguintes requisitos funcionais e não funcionais.
 
 ## Requisitos Funcionais
 
-**[RF1]** O framework deve permitir a descrição de todas as etapas de pré-processamento de dados do experimento.
+**[RF1]** O *framework* deve permitir a descrição de todas as etapas de pré-processamento de dados do experimento.
 
-**[RF2]** O framework deve permitir que o pesquisador defina qual rede neural será treinada, bem como os parâmetros pertinentes ao processo de treinamento.
+**[RF2]** O *framework* deve permitir que o pesquisador defina qual rede neural será treinada, bem como os parâmetros pertinentes ao processo de treinamento.
 
-**[RF3]** O framework deve suportar que o treinamento seja realizado utilizando-se técnicas de *data augmentation*, isso é, transformações nos dados realizadas a fim de aumentar a quantidade de dados disponíveis.
+**[RF3]** O *framework* deve suportar que o treinamento seja realizado utilizando-se técnicas de *data augmentation*, isso é, transformações nos dados realizadas a fim de aumentar a quantidade de dados disponíveis.
 
-**[RF4]** Guiado pela descrição do experimento, o framework deve realizar as etapas de pré-processamento de dados e o treinamento da rede neural.
+**[RF4]** Guiado pela descrição do experimento, o *framework* deve realizar as etapas de pré-processamento de dados e o treinamento da rede neural.
 
-**[RF5]** Ao término de cada experimento, o framework deve gerar um relatório legível contendo tudo o que foi realizado, como todas as etapas de pré-processamento, as caracterísicas da rede, a evolução do treinamento e seus resultados.
+**[RF5]** Ao término de cada experimento, o *framework* deve gerar um relatório legível contendo tudo o que foi realizado, como todas as etapas de pré-processamento, as caracterísicas da rede, a evolução do treinamento e seus resultados.
 
 ## Requisitos Não-Funcionais
 
-**[RNF1]** O framework deve ser escrito em Python 3.
+**[RNF1]** O *framework* deve ser escrito em Python 3.
 
 **[RNF2]** Durante as etapas de pré-processamento, os dados tabulares deverão ser manipulados utilizando a biblioteca [pandas](https://pandas.pydata.org/). O mesmo se aplica às classes escritas pelos usuários.
 
 **[RNF3]** As imagens deverão ser manipuladas utilizando matrizes [numpy](https://numpy.org). 
 
-**[RNF4]** O framework deve ser extensível, para permitir que o desenvolvedor o adapte às especificidades de seu projeto.
+**[RNF4]** O *framework* deve ser extensível, para permitir que o desenvolvedor o adapte às especificidades de seu projeto.
 
-**[RNF5]** O framework deve permitir que diversos experimentos sejam especificados e executados simultaneamente, compartilhando um mesmo repositório de versionamento.
+**[RNF5]** O *framework* deve permitir que diversos experimentos sejam especificados e executados simultaneamente, compartilhando um mesmo repositório de versionamento.
 
-**[RNF6]** Os experimentos criados utilizando o framework devem ser reproduzíveis, isso é, deve ser possível repetir um experimento futuramente mesmo que este contenha etapas aleatórias.
+**[RNF6]** Os experimentos criados utilizando o *framework* devem ser reproduzíveis, isso é, deve ser possível repetir um experimento futuramente mesmo que este contenha etapas aleatórias.
 
 # Visão Geral de Uso
 
 Ao se utilizar o framework, cada experimento é representado por uma instância da classe [`Experiment`](especificacao_tecnica.md#classe-experiment). Essa classe é o cerne do framework, pois permite configurar todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
 
-A execução do experimento é feita através do  método [`Experiment.run`](especificacao_tecnica.md#experimentrundry-bool). Durante a execução do experimento, o framework calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). 
+A execução do experimento é feita através do  método [`Experiment.run`](especificacao_tecnica.md#experimentrundry-bool). Durante a execução do experimento, o *framework* calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). 
 
-O cálculo do *hash* é possível pois todas as classes do framework derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), dotada dos seguintes métodos:
+O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), dotada dos seguintes métodos:
 
 - [`add_hash`](especificacao_tecnica.md#baseadd_hashhasher-hasher): agrega o *hash* desta instância à uma instância da classe [`Hasher`](especificacao_tecnica.md#classe-hasher).
 - [`__str__`](especificacao_tecnica.md#base__str__---str): retorna uma *string* contendo a chamada ao construtor da classe que gerou esta instância.
 - [`description`](especificacao_tecnica.md#basedescription---str): retorna uma descrição textual do que esta instância faz.
 
-Isso permite ao framework não só calcular o *hash* de todas as configurações do experimento, mas também gerar um relatório textual contendo uma descrição legível do que foi feito em cada etapa do experimento, bem como o código necessário para recriar essas etapas.
+Isso permite ao *framework* não só calcular o *hash* de todas as configurações do experimento, mas também gerar um relatório textual contendo uma descrição legível do que foi feito em cada etapa do experimento, bem como o código necessário para recriar essas etapas.
 
 Após a execução do experimento, esse relatório é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
 ```
@@ -79,7 +79,7 @@ Em linhas gerais, um experimento é composto pelos seguintes itens, todos defini
 1. Um subconjunto do *dataset* para validação.
 1. Um modelo básico de rede neural a ser treinada.
 
-Para definir o arquivo Excel de entrada, o usuário do framework só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias.
+Para definir o arquivo Excel de entrada, o usuário do *framework* só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias.
 
 Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe abstrata [`BaseStep`](especificacao_tecnica.md#classe-basestepbase) através do atributo [`Experiment.preprocessing_steps`](especificacao_tecnica.md#experimentpreprocessing_steps-listbasestep). Cada instância deve realizar uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. 
 
@@ -252,7 +252,7 @@ O relatório utilizado como exemplo pode ser visto em em [/src/examples//trainin
 
 # Cenários de Uso
 
-Abaixo listamos alguns cenários de utilização onde entendemos que o uso do framework exp é apropriado, e outros cenários onde seu uso não é recomendado.
+Abaixo listamos alguns cenários de utilização onde entendemos que o uso do *framework* exp é apropriado, e outros cenários onde seu uso não é recomendado.
 
 ## Cenários Adequados
 
@@ -260,7 +260,7 @@ Abaixo listamos alguns cenários de utilização onde entendemos que o uso do fr
 
 *Datasets* desbalanceados são aqueles que contém um número muito diferente de elementos nas diferentes classes. Por exemplo, um pesquisador pode estar treinando uma rede para distinguir entre motos e bicicletas, possuindo 1000 fotos de motos, mas apenas 50 fotos de bicicletas. Este é um cenário desafiador, mas bastante comum na academia.
 
-Duas características do framework o tornam adequado para o treinamento de redes neurais utilizando-se *datasets* desbalanceados:
+Duas características do *framework* o tornam adequado para o treinamento de redes neurais utilizando-se *datasets* desbalanceados:
 
 1. A possibilidade de se adicionar a mesma imagem diversas vezes ao *dataset* de treinamento utilizando  diferentes *loaders* permite que diversas técnicas de *data augmentation* sejam aplicadas facilmente ao experimento. 
 
@@ -280,6 +280,6 @@ Talvez seja possível abusar do conceito de *encoding* dos *labels*, substituind
 
 ### Utilizar outras fontes de dados
 
-Hoje o framework espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe [`Experiment`](especificacao_tecnica.md#classe-experiment) para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
+Hoje o *framework* espera receber os *datasets* em forma tabular, e que as imagens estejam disponíveis para carga no sistema de arquivos, outras fontes de dados não são suportadas. Seria fácil refatorar a classe [`Experiment`](especificacao_tecnica.md#classe-experiment) para que ela receba uma tabela `pandas` já carregada, ao invés do nome do arquivo Excel em disco.
 
 Para permitir carregar imagens de outras formas que não do sistema de arquivos, seria necessário refatorar a classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e suas derivadas conforme descrito em [melhorias](melhorias.md).

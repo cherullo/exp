@@ -1,15 +1,15 @@
 # Especificação Técnica
 
-O framework exp é desenvolvido em Python, seguindo uma abordagem orientada a objetos. Foi feito um esforço para que todas os parâmetros de todos os métodos fossem devidamente anotados com seus respectivos tipos, gerando, assim, dependência explícita entre as classes e os módulos do framework.
+O *framework* exp é desenvolvido em Python, seguindo uma abordagem orientada a objetos. Foi feito um esforço para que todas os parâmetros de todos os métodos fossem devidamente anotados com seus respectivos tipos, gerando, assim, dependência explícita entre as classes e os módulos do framework.
 
-Neste documento iremos descrever como o código do framework exp é organizado, seus módulos e classes, com as seguintes exceções:
+Neste documento iremos descrever como o código do *framework* exp é organizado, seus módulos e classes, com as seguintes exceções:
 - Por uma questão de brevidade, documentaremos aqui apenas as classes públicas dos módulos. 
 - O diretório [`src/helpers`](../src/helpers/) contém arquivos auxiliares que não compõe um módulo do framework.
 - O diretório [`src/examples`](../src/examples/) contém os exemplos de uso do framework. Cada exemplo é documentado em seu próprio arquivo fonte e portanto omitido.
 
 ## Arquitetura
 
-O framework é organizado em 5 módulos principais: `arch`, `generators`, `loaders`, `models` e `preprocessing_steps`, descritos a seguir:
+O *framework* é organizado em 5 módulos principais: `arch`, `generators`, `loaders`, `models` e `preprocessing_steps`, descritos a seguir:
 
 - [`arch`](#módulo-arch): é o módulo que contém as classes básicas, fundamentais do framework, isso é, as classes abstratas, prefixadas com `Base`, a classe [`Hasher`](#classe-hasher), e a própria classe [`Experiment`](#classe-experiment).
 
@@ -33,7 +33,7 @@ Isso acontece porque a classe [`DatasetGenerator`](#classe-datasetgeneratorbaseg
   <img src="images/class_diagram.png" width="80%">
 </p>
 
-As principais oportunidades de extensão que o framework oferece consistem em implementar classes derivadas das classes abstratas [`BaseDatasetGenerator`](#classe-basedatasetgeneratorbase), [`BaseLoader`](#classe-baseloaderbase), [`BaseModel`](#classe-basemodelbase) e [`BaseStep`](#classe-basestepbase), com funcionalidades bem definidas e reusáveis.
+As principais oportunidades de extensão que o *framework* oferece consistem em implementar classes derivadas das classes abstratas [`BaseDatasetGenerator`](#classe-basedatasetgeneratorbase), [`BaseLoader`](#classe-baseloaderbase), [`BaseModel`](#classe-basemodelbase) e [`BaseStep`](#classe-basestepbase), com funcionalidades bem definidas e reusáveis.
 
 ## Referência de Classes
 
@@ -67,7 +67,7 @@ Classe que será utilizada para codificar e decodificar as classes do *dataset* 
 
 ##### `BaseDatasetGenerator.dataset: pandas.DataFrame`
 
-O *dataset* gerenciado por esta instância. Esse atributo existe para permitir ao framework informar o *dataset* processado à uma instância de *generator* configurada pelo usuário.
+O *dataset* gerenciado por esta instância. Esse atributo existe para permitir ao *framework* informar o *dataset* processado à uma instância de *generator* configurada pelo usuário.
 
 ##### `BaseDatasetGenerator.__len__() -> int`
         
@@ -174,9 +174,9 @@ Número de *epochs* de treinamento.
 
 Qual gerenciador de *epoch* será utilizado durante o treinamento. Se não for informado, uma instância classe [DatasetGenerator](#classe-datasetgeneratorbasedatasetgenerator) com os valores padrão será utilizada.
 
-Se uma instância personalizada for atribuída, não é preciso (nem possível) definir o atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). Esse atributo deve permanecer como `None` que o framework atribuirá o *dataset* correto durante o treinamento.
+Se uma instância personalizada for atribuída, não é preciso (nem possível) definir o atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). Esse atributo deve permanecer como `None` que o *framework* atribuirá o *dataset* correto durante o treinamento.
 
-Além disso, se o *generator* informado não tiver uma valor definido no atributo [encoding](#basedatasetgeneratorencoding), o framework criará automaticamente uma instância da classe [OneHot](#classe-onehotbase) contemplando todas as classes únicas presentes no *dataset*.
+Além disso, se o *generator* informado não tiver uma valor definido no atributo [encoding](#basedatasetgeneratorencoding), o *framework* criará automaticamente uma instância da classe [OneHot](#classe-onehotbase) contemplando todas as classes únicas presentes no *dataset*.
 
 ##### `Experiment.run(dry: bool)`
 

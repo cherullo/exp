@@ -1,6 +1,6 @@
 # exp
 
-O exp é um framework modular de apoio aos experimentos em treinamento de redes neurais convolucionais. Seu objetivo é fornecer documentação e reproducibilidade aos experimentos realizados.
+O exp é um *framework* modular de apoio aos experimentos em treinamento de redes neurais convolucionais. Seu objetivo é fornecer documentação e reproducibilidade aos experimentos realizados.
 
 Com ele é possível descrever de maneira sucinta as etapas de pré-processamento dos dados e os parâmetros de configuração da rede, e executar o treinamento, gerando um relatório que descreve todas as configurações do experimento e os resultados obtidos.
 
@@ -8,7 +8,7 @@ Para começar a utilizar o framework, recomendamos realizar as etapas de instala
 
 ## Instalação
 
-O framework requer Python 3 com Tensorflow 2 ou superior. Recomendamos a utilização de um *[virtual environment](https://docs.python.org/3/library/venv.html)* e a instalação das dependências através do arquivo [requirements.txt](requirements.txt):
+O *framework* requer Python 3 com Tensorflow 2 ou superior. Recomendamos a utilização de um *[virtual environment](https://docs.python.org/3/library/venv.html)* e a instalação das dependências através do arquivo [requirements.txt](requirements.txt):
 
 ```
 pip install -r requirements.txt
