@@ -1,0 +1,721 @@
+--- Experiment animal_classification_4classes_imbalanced (41fb392e) ---
+-----------------------------------------------------------------------
+
+Input: dataset/animals.xlsx
+Images Path: dataset/
+
+-- Preprocessing Steps:
+  FilterColumn("label", ["butterfly", "cow", "sheep", "squirrel"])    Keeps all rows where the column "label" has any of the following values: "butterfly", "cow", "sheep", "squirrel"
+
+
+-- Training Set Steps:
+
+  FilterColumn("label", ["cow"])    Keeps all rows where the column "label" has any of the following values: "cow"
+  FirstPercent(0.8)                 Selects the first 80.0% of images.
+    RotationLoader(angle=0.0, spread=10.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then rotates by 0.0 +- 10.0 degrees.
+
+  FilterColumn("label", ["sheep"])    Keeps all rows where the column "label" has any of the following values: "sheep"
+  FirstPercent(0.8)                   Selects the first 80.0% of images.
+    RotationLoader(angle=0.0, spread=10.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then rotates by 0.0 +- 10.0 degrees.
+
+  FilterColumn("label", ["squirrel"])    Keeps all rows where the column "label" has any of the following values: "squirrel"
+  FirstPercent(0.8)                      Selects the first 80.0% of images.
+    RotationLoader(angle=0.0, spread=10.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then rotates by 0.0 +- 10.0 degrees.
+
+  FilterColumn("label", ["butterfly"])    Keeps all rows where the column "label" has any of the following values: "butterfly"
+  FirstPercent(0.2)                       Selects the first 20.0% of images.
+    RotationLoader(angle=-10.0, spread=0.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then rotates by -10.0 +- 0.0 degrees.
+    RotationLoader(angle=10.0, spread=0.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then rotates by 10.0 +- 0.0 degrees.
+    BrightLoader(alpha=0.8, beta=0.0, resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns. and then multiplies each pixel by 0.8 and then adds 0.0.
+
+
+-- Validation Set Steps:
+
+  FilterColumn("label", ["cow"])    Keeps all rows where the column "label" has any of the following values: "cow"
+  LastPercent(0.2)                  Selects the last 20.0% of images.
+    SimpleLoader(resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+
+  FilterColumn("label", ["sheep"])    Keeps all rows where the column "label" has any of the following values: "sheep"
+  LastPercent(0.2)                    Selects the last 20.0% of images.
+    SimpleLoader(resize=(128, 128))   Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+
+  FilterColumn("label", ["squirrel"])    Keeps all rows where the column "label" has any of the following values: "squirrel"
+  LastPercent(0.2)                       Selects the last 20.0% of images.
+    SimpleLoader(resize=(128, 128))      Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+
+  FilterColumn("label", ["butterfly"])    Keeps all rows where the column "label" has any of the following values: "butterfly"
+  LastPercent(0.2)                        Selects the last 20.0% of images.
+    SimpleLoader(resize=(128, 128))       Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+
+
+-- Model: EfficientNetB0[loss=categorical_crossentropy, optimizer=Adam(learning_rate=0.001)]
+-- Model Summary:
+Model: "efficientnet-b0"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 224, 224, 3  0           []                               
+                                )]                                                                
+                                                                                                  
+ stem_conv (Conv2D)             (None, 112, 112, 32  864         ['input_1[0][0]']                
+                                )                                                                 
+                                                                                                  
+ stem_bn (BatchNormalization)   (None, 112, 112, 32  128         ['stem_conv[0][0]']              
+                                )                                                                 
+                                                                                                  
+ stem_activation (Activation)   (None, 112, 112, 32  0           ['stem_bn[0][0]']                
+                                )                                                                 
+                                                                                                  
+ block1a_dwconv (DepthwiseConv2  (None, 112, 112, 32  288        ['stem_activation[0][0]']        
+ D)                             )                                                                 
+                                                                                                  
+ block1a_bn (BatchNormalization  (None, 112, 112, 32  128        ['block1a_dwconv[0][0]']         
+ )                              )                                                                 
+                                                                                                  
+ block1a_activation (Activation  (None, 112, 112, 32  0          ['block1a_bn[0][0]']             
+ )                              )                                                                 
+                                                                                                  
+ block1a_se_squeeze (GlobalAver  (None, 32)          0           ['block1a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block1a_se_reshape (Reshape)   (None, 1, 1, 32)     0           ['block1a_se_squeeze[0][0]']     
+                                                                                                  
+ block1a_se_reduce (Conv2D)     (None, 1, 1, 8)      264         ['block1a_se_reshape[0][0]']     
+                                                                                                  
+ block1a_se_expand (Conv2D)     (None, 1, 1, 32)     288         ['block1a_se_reduce[0][0]']      
+                                                                                                  
+ block1a_se_excite (Multiply)   (None, 112, 112, 32  0           ['block1a_activation[0][0]',     
+                                )                                 'block1a_se_expand[0][0]']      
+                                                                                                  
+ block1a_project_conv (Conv2D)  (None, 112, 112, 16  512         ['block1a_se_excite[0][0]']      
+                                )                                                                 
+                                                                                                  
+ block1a_project_bn (BatchNorma  (None, 112, 112, 16  64         ['block1a_project_conv[0][0]']   
+ lization)                      )                                                                 
+                                                                                                  
+ block2a_expand_conv (Conv2D)   (None, 112, 112, 96  1536        ['block1a_project_bn[0][0]']     
+                                )                                                                 
+                                                                                                  
+ block2a_expand_bn (BatchNormal  (None, 112, 112, 96  384        ['block2a_expand_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ block2a_expand_activation (Act  (None, 112, 112, 96  0          ['block2a_expand_bn[0][0]']      
+ ivation)                       )                                                                 
+                                                                                                  
+ block2a_dwconv (DepthwiseConv2  (None, 56, 56, 96)  864         ['block2a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block2a_bn (BatchNormalization  (None, 56, 56, 96)  384         ['block2a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block2a_activation (Activation  (None, 56, 56, 96)  0           ['block2a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block2a_se_squeeze (GlobalAver  (None, 96)          0           ['block2a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block2a_se_reshape (Reshape)   (None, 1, 1, 96)     0           ['block2a_se_squeeze[0][0]']     
+                                                                                                  
+ block2a_se_reduce (Conv2D)     (None, 1, 1, 4)      388         ['block2a_se_reshape[0][0]']     
+                                                                                                  
+ block2a_se_expand (Conv2D)     (None, 1, 1, 96)     480         ['block2a_se_reduce[0][0]']      
+                                                                                                  
+ block2a_se_excite (Multiply)   (None, 56, 56, 96)   0           ['block2a_activation[0][0]',     
+                                                                  'block2a_se_expand[0][0]']      
+                                                                                                  
+ block2a_project_conv (Conv2D)  (None, 56, 56, 24)   2304        ['block2a_se_excite[0][0]']      
+                                                                                                  
+ block2a_project_bn (BatchNorma  (None, 56, 56, 24)  96          ['block2a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block2b_expand_conv (Conv2D)   (None, 56, 56, 144)  3456        ['block2a_project_bn[0][0]']     
+                                                                                                  
+ block2b_expand_bn (BatchNormal  (None, 56, 56, 144)  576        ['block2b_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block2b_expand_activation (Act  (None, 56, 56, 144)  0          ['block2b_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block2b_dwconv (DepthwiseConv2  (None, 56, 56, 144)  1296       ['block2b_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block2b_bn (BatchNormalization  (None, 56, 56, 144)  576        ['block2b_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block2b_activation (Activation  (None, 56, 56, 144)  0          ['block2b_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block2b_se_squeeze (GlobalAver  (None, 144)         0           ['block2b_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block2b_se_reshape (Reshape)   (None, 1, 1, 144)    0           ['block2b_se_squeeze[0][0]']     
+                                                                                                  
+ block2b_se_reduce (Conv2D)     (None, 1, 1, 6)      870         ['block2b_se_reshape[0][0]']     
+                                                                                                  
+ block2b_se_expand (Conv2D)     (None, 1, 1, 144)    1008        ['block2b_se_reduce[0][0]']      
+                                                                                                  
+ block2b_se_excite (Multiply)   (None, 56, 56, 144)  0           ['block2b_activation[0][0]',     
+                                                                  'block2b_se_expand[0][0]']      
+                                                                                                  
+ block2b_project_conv (Conv2D)  (None, 56, 56, 24)   3456        ['block2b_se_excite[0][0]']      
+                                                                                                  
+ block2b_project_bn (BatchNorma  (None, 56, 56, 24)  96          ['block2b_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block2b_drop (FixedDropout)    (None, 56, 56, 24)   0           ['block2b_project_bn[0][0]']     
+                                                                                                  
+ block2b_add (Add)              (None, 56, 56, 24)   0           ['block2b_drop[0][0]',           
+                                                                  'block2a_project_bn[0][0]']     
+                                                                                                  
+ block3a_expand_conv (Conv2D)   (None, 56, 56, 144)  3456        ['block2b_add[0][0]']            
+                                                                                                  
+ block3a_expand_bn (BatchNormal  (None, 56, 56, 144)  576        ['block3a_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block3a_expand_activation (Act  (None, 56, 56, 144)  0          ['block3a_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block3a_dwconv (DepthwiseConv2  (None, 28, 28, 144)  3600       ['block3a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block3a_bn (BatchNormalization  (None, 28, 28, 144)  576        ['block3a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block3a_activation (Activation  (None, 28, 28, 144)  0          ['block3a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block3a_se_squeeze (GlobalAver  (None, 144)         0           ['block3a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block3a_se_reshape (Reshape)   (None, 1, 1, 144)    0           ['block3a_se_squeeze[0][0]']     
+                                                                                                  
+ block3a_se_reduce (Conv2D)     (None, 1, 1, 6)      870         ['block3a_se_reshape[0][0]']     
+                                                                                                  
+ block3a_se_expand (Conv2D)     (None, 1, 1, 144)    1008        ['block3a_se_reduce[0][0]']      
+                                                                                                  
+ block3a_se_excite (Multiply)   (None, 28, 28, 144)  0           ['block3a_activation[0][0]',     
+                                                                  'block3a_se_expand[0][0]']      
+                                                                                                  
+ block3a_project_conv (Conv2D)  (None, 28, 28, 40)   5760        ['block3a_se_excite[0][0]']      
+                                                                                                  
+ block3a_project_bn (BatchNorma  (None, 28, 28, 40)  160         ['block3a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block3b_expand_conv (Conv2D)   (None, 28, 28, 240)  9600        ['block3a_project_bn[0][0]']     
+                                                                                                  
+ block3b_expand_bn (BatchNormal  (None, 28, 28, 240)  960        ['block3b_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block3b_expand_activation (Act  (None, 28, 28, 240)  0          ['block3b_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block3b_dwconv (DepthwiseConv2  (None, 28, 28, 240)  6000       ['block3b_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block3b_bn (BatchNormalization  (None, 28, 28, 240)  960        ['block3b_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block3b_activation (Activation  (None, 28, 28, 240)  0          ['block3b_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block3b_se_squeeze (GlobalAver  (None, 240)         0           ['block3b_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block3b_se_reshape (Reshape)   (None, 1, 1, 240)    0           ['block3b_se_squeeze[0][0]']     
+                                                                                                  
+ block3b_se_reduce (Conv2D)     (None, 1, 1, 10)     2410        ['block3b_se_reshape[0][0]']     
+                                                                                                  
+ block3b_se_expand (Conv2D)     (None, 1, 1, 240)    2640        ['block3b_se_reduce[0][0]']      
+                                                                                                  
+ block3b_se_excite (Multiply)   (None, 28, 28, 240)  0           ['block3b_activation[0][0]',     
+                                                                  'block3b_se_expand[0][0]']      
+                                                                                                  
+ block3b_project_conv (Conv2D)  (None, 28, 28, 40)   9600        ['block3b_se_excite[0][0]']      
+                                                                                                  
+ block3b_project_bn (BatchNorma  (None, 28, 28, 40)  160         ['block3b_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block3b_drop (FixedDropout)    (None, 28, 28, 40)   0           ['block3b_project_bn[0][0]']     
+                                                                                                  
+ block3b_add (Add)              (None, 28, 28, 40)   0           ['block3b_drop[0][0]',           
+                                                                  'block3a_project_bn[0][0]']     
+                                                                                                  
+ block4a_expand_conv (Conv2D)   (None, 28, 28, 240)  9600        ['block3b_add[0][0]']            
+                                                                                                  
+ block4a_expand_bn (BatchNormal  (None, 28, 28, 240)  960        ['block4a_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block4a_expand_activation (Act  (None, 28, 28, 240)  0          ['block4a_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block4a_dwconv (DepthwiseConv2  (None, 14, 14, 240)  2160       ['block4a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block4a_bn (BatchNormalization  (None, 14, 14, 240)  960        ['block4a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block4a_activation (Activation  (None, 14, 14, 240)  0          ['block4a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block4a_se_squeeze (GlobalAver  (None, 240)         0           ['block4a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block4a_se_reshape (Reshape)   (None, 1, 1, 240)    0           ['block4a_se_squeeze[0][0]']     
+                                                                                                  
+ block4a_se_reduce (Conv2D)     (None, 1, 1, 10)     2410        ['block4a_se_reshape[0][0]']     
+                                                                                                  
+ block4a_se_expand (Conv2D)     (None, 1, 1, 240)    2640        ['block4a_se_reduce[0][0]']      
+                                                                                                  
+ block4a_se_excite (Multiply)   (None, 14, 14, 240)  0           ['block4a_activation[0][0]',     
+                                                                  'block4a_se_expand[0][0]']      
+                                                                                                  
+ block4a_project_conv (Conv2D)  (None, 14, 14, 80)   19200       ['block4a_se_excite[0][0]']      
+                                                                                                  
+ block4a_project_bn (BatchNorma  (None, 14, 14, 80)  320         ['block4a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block4b_expand_conv (Conv2D)   (None, 14, 14, 480)  38400       ['block4a_project_bn[0][0]']     
+                                                                                                  
+ block4b_expand_bn (BatchNormal  (None, 14, 14, 480)  1920       ['block4b_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block4b_expand_activation (Act  (None, 14, 14, 480)  0          ['block4b_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block4b_dwconv (DepthwiseConv2  (None, 14, 14, 480)  4320       ['block4b_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block4b_bn (BatchNormalization  (None, 14, 14, 480)  1920       ['block4b_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block4b_activation (Activation  (None, 14, 14, 480)  0          ['block4b_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block4b_se_squeeze (GlobalAver  (None, 480)         0           ['block4b_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block4b_se_reshape (Reshape)   (None, 1, 1, 480)    0           ['block4b_se_squeeze[0][0]']     
+                                                                                                  
+ block4b_se_reduce (Conv2D)     (None, 1, 1, 20)     9620        ['block4b_se_reshape[0][0]']     
+                                                                                                  
+ block4b_se_expand (Conv2D)     (None, 1, 1, 480)    10080       ['block4b_se_reduce[0][0]']      
+                                                                                                  
+ block4b_se_excite (Multiply)   (None, 14, 14, 480)  0           ['block4b_activation[0][0]',     
+                                                                  'block4b_se_expand[0][0]']      
+                                                                                                  
+ block4b_project_conv (Conv2D)  (None, 14, 14, 80)   38400       ['block4b_se_excite[0][0]']      
+                                                                                                  
+ block4b_project_bn (BatchNorma  (None, 14, 14, 80)  320         ['block4b_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block4b_drop (FixedDropout)    (None, 14, 14, 80)   0           ['block4b_project_bn[0][0]']     
+                                                                                                  
+ block4b_add (Add)              (None, 14, 14, 80)   0           ['block4b_drop[0][0]',           
+                                                                  'block4a_project_bn[0][0]']     
+                                                                                                  
+ block4c_expand_conv (Conv2D)   (None, 14, 14, 480)  38400       ['block4b_add[0][0]']            
+                                                                                                  
+ block4c_expand_bn (BatchNormal  (None, 14, 14, 480)  1920       ['block4c_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block4c_expand_activation (Act  (None, 14, 14, 480)  0          ['block4c_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block4c_dwconv (DepthwiseConv2  (None, 14, 14, 480)  4320       ['block4c_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block4c_bn (BatchNormalization  (None, 14, 14, 480)  1920       ['block4c_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block4c_activation (Activation  (None, 14, 14, 480)  0          ['block4c_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block4c_se_squeeze (GlobalAver  (None, 480)         0           ['block4c_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block4c_se_reshape (Reshape)   (None, 1, 1, 480)    0           ['block4c_se_squeeze[0][0]']     
+                                                                                                  
+ block4c_se_reduce (Conv2D)     (None, 1, 1, 20)     9620        ['block4c_se_reshape[0][0]']     
+                                                                                                  
+ block4c_se_expand (Conv2D)     (None, 1, 1, 480)    10080       ['block4c_se_reduce[0][0]']      
+                                                                                                  
+ block4c_se_excite (Multiply)   (None, 14, 14, 480)  0           ['block4c_activation[0][0]',     
+                                                                  'block4c_se_expand[0][0]']      
+                                                                                                  
+ block4c_project_conv (Conv2D)  (None, 14, 14, 80)   38400       ['block4c_se_excite[0][0]']      
+                                                                                                  
+ block4c_project_bn (BatchNorma  (None, 14, 14, 80)  320         ['block4c_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block4c_drop (FixedDropout)    (None, 14, 14, 80)   0           ['block4c_project_bn[0][0]']     
+                                                                                                  
+ block4c_add (Add)              (None, 14, 14, 80)   0           ['block4c_drop[0][0]',           
+                                                                  'block4b_add[0][0]']            
+                                                                                                  
+ block5a_expand_conv (Conv2D)   (None, 14, 14, 480)  38400       ['block4c_add[0][0]']            
+                                                                                                  
+ block5a_expand_bn (BatchNormal  (None, 14, 14, 480)  1920       ['block5a_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block5a_expand_activation (Act  (None, 14, 14, 480)  0          ['block5a_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block5a_dwconv (DepthwiseConv2  (None, 14, 14, 480)  12000      ['block5a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block5a_bn (BatchNormalization  (None, 14, 14, 480)  1920       ['block5a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block5a_activation (Activation  (None, 14, 14, 480)  0          ['block5a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block5a_se_squeeze (GlobalAver  (None, 480)         0           ['block5a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block5a_se_reshape (Reshape)   (None, 1, 1, 480)    0           ['block5a_se_squeeze[0][0]']     
+                                                                                                  
+ block5a_se_reduce (Conv2D)     (None, 1, 1, 20)     9620        ['block5a_se_reshape[0][0]']     
+                                                                                                  
+ block5a_se_expand (Conv2D)     (None, 1, 1, 480)    10080       ['block5a_se_reduce[0][0]']      
+                                                                                                  
+ block5a_se_excite (Multiply)   (None, 14, 14, 480)  0           ['block5a_activation[0][0]',     
+                                                                  'block5a_se_expand[0][0]']      
+                                                                                                  
+ block5a_project_conv (Conv2D)  (None, 14, 14, 112)  53760       ['block5a_se_excite[0][0]']      
+                                                                                                  
+ block5a_project_bn (BatchNorma  (None, 14, 14, 112)  448        ['block5a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block5b_expand_conv (Conv2D)   (None, 14, 14, 672)  75264       ['block5a_project_bn[0][0]']     
+                                                                                                  
+ block5b_expand_bn (BatchNormal  (None, 14, 14, 672)  2688       ['block5b_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block5b_expand_activation (Act  (None, 14, 14, 672)  0          ['block5b_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block5b_dwconv (DepthwiseConv2  (None, 14, 14, 672)  16800      ['block5b_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block5b_bn (BatchNormalization  (None, 14, 14, 672)  2688       ['block5b_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block5b_activation (Activation  (None, 14, 14, 672)  0          ['block5b_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block5b_se_squeeze (GlobalAver  (None, 672)         0           ['block5b_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block5b_se_reshape (Reshape)   (None, 1, 1, 672)    0           ['block5b_se_squeeze[0][0]']     
+                                                                                                  
+ block5b_se_reduce (Conv2D)     (None, 1, 1, 28)     18844       ['block5b_se_reshape[0][0]']     
+                                                                                                  
+ block5b_se_expand (Conv2D)     (None, 1, 1, 672)    19488       ['block5b_se_reduce[0][0]']      
+                                                                                                  
+ block5b_se_excite (Multiply)   (None, 14, 14, 672)  0           ['block5b_activation[0][0]',     
+                                                                  'block5b_se_expand[0][0]']      
+                                                                                                  
+ block5b_project_conv (Conv2D)  (None, 14, 14, 112)  75264       ['block5b_se_excite[0][0]']      
+                                                                                                  
+ block5b_project_bn (BatchNorma  (None, 14, 14, 112)  448        ['block5b_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block5b_drop (FixedDropout)    (None, 14, 14, 112)  0           ['block5b_project_bn[0][0]']     
+                                                                                                  
+ block5b_add (Add)              (None, 14, 14, 112)  0           ['block5b_drop[0][0]',           
+                                                                  'block5a_project_bn[0][0]']     
+                                                                                                  
+ block5c_expand_conv (Conv2D)   (None, 14, 14, 672)  75264       ['block5b_add[0][0]']            
+                                                                                                  
+ block5c_expand_bn (BatchNormal  (None, 14, 14, 672)  2688       ['block5c_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block5c_expand_activation (Act  (None, 14, 14, 672)  0          ['block5c_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block5c_dwconv (DepthwiseConv2  (None, 14, 14, 672)  16800      ['block5c_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block5c_bn (BatchNormalization  (None, 14, 14, 672)  2688       ['block5c_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block5c_activation (Activation  (None, 14, 14, 672)  0          ['block5c_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block5c_se_squeeze (GlobalAver  (None, 672)         0           ['block5c_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block5c_se_reshape (Reshape)   (None, 1, 1, 672)    0           ['block5c_se_squeeze[0][0]']     
+                                                                                                  
+ block5c_se_reduce (Conv2D)     (None, 1, 1, 28)     18844       ['block5c_se_reshape[0][0]']     
+                                                                                                  
+ block5c_se_expand (Conv2D)     (None, 1, 1, 672)    19488       ['block5c_se_reduce[0][0]']      
+                                                                                                  
+ block5c_se_excite (Multiply)   (None, 14, 14, 672)  0           ['block5c_activation[0][0]',     
+                                                                  'block5c_se_expand[0][0]']      
+                                                                                                  
+ block5c_project_conv (Conv2D)  (None, 14, 14, 112)  75264       ['block5c_se_excite[0][0]']      
+                                                                                                  
+ block5c_project_bn (BatchNorma  (None, 14, 14, 112)  448        ['block5c_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block5c_drop (FixedDropout)    (None, 14, 14, 112)  0           ['block5c_project_bn[0][0]']     
+                                                                                                  
+ block5c_add (Add)              (None, 14, 14, 112)  0           ['block5c_drop[0][0]',           
+                                                                  'block5b_add[0][0]']            
+                                                                                                  
+ block6a_expand_conv (Conv2D)   (None, 14, 14, 672)  75264       ['block5c_add[0][0]']            
+                                                                                                  
+ block6a_expand_bn (BatchNormal  (None, 14, 14, 672)  2688       ['block6a_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block6a_expand_activation (Act  (None, 14, 14, 672)  0          ['block6a_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block6a_dwconv (DepthwiseConv2  (None, 7, 7, 672)   16800       ['block6a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block6a_bn (BatchNormalization  (None, 7, 7, 672)   2688        ['block6a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block6a_activation (Activation  (None, 7, 7, 672)   0           ['block6a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block6a_se_squeeze (GlobalAver  (None, 672)         0           ['block6a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block6a_se_reshape (Reshape)   (None, 1, 1, 672)    0           ['block6a_se_squeeze[0][0]']     
+                                                                                                  
+ block6a_se_reduce (Conv2D)     (None, 1, 1, 28)     18844       ['block6a_se_reshape[0][0]']     
+                                                                                                  
+ block6a_se_expand (Conv2D)     (None, 1, 1, 672)    19488       ['block6a_se_reduce[0][0]']      
+                                                                                                  
+ block6a_se_excite (Multiply)   (None, 7, 7, 672)    0           ['block6a_activation[0][0]',     
+                                                                  'block6a_se_expand[0][0]']      
+                                                                                                  
+ block6a_project_conv (Conv2D)  (None, 7, 7, 192)    129024      ['block6a_se_excite[0][0]']      
+                                                                                                  
+ block6a_project_bn (BatchNorma  (None, 7, 7, 192)   768         ['block6a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block6b_expand_conv (Conv2D)   (None, 7, 7, 1152)   221184      ['block6a_project_bn[0][0]']     
+                                                                                                  
+ block6b_expand_bn (BatchNormal  (None, 7, 7, 1152)  4608        ['block6b_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block6b_expand_activation (Act  (None, 7, 7, 1152)  0           ['block6b_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block6b_dwconv (DepthwiseConv2  (None, 7, 7, 1152)  28800       ['block6b_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block6b_bn (BatchNormalization  (None, 7, 7, 1152)  4608        ['block6b_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block6b_activation (Activation  (None, 7, 7, 1152)  0           ['block6b_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block6b_se_squeeze (GlobalAver  (None, 1152)        0           ['block6b_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block6b_se_reshape (Reshape)   (None, 1, 1, 1152)   0           ['block6b_se_squeeze[0][0]']     
+                                                                                                  
+ block6b_se_reduce (Conv2D)     (None, 1, 1, 48)     55344       ['block6b_se_reshape[0][0]']     
+                                                                                                  
+ block6b_se_expand (Conv2D)     (None, 1, 1, 1152)   56448       ['block6b_se_reduce[0][0]']      
+                                                                                                  
+ block6b_se_excite (Multiply)   (None, 7, 7, 1152)   0           ['block6b_activation[0][0]',     
+                                                                  'block6b_se_expand[0][0]']      
+                                                                                                  
+ block6b_project_conv (Conv2D)  (None, 7, 7, 192)    221184      ['block6b_se_excite[0][0]']      
+                                                                                                  
+ block6b_project_bn (BatchNorma  (None, 7, 7, 192)   768         ['block6b_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block6b_drop (FixedDropout)    (None, 7, 7, 192)    0           ['block6b_project_bn[0][0]']     
+                                                                                                  
+ block6b_add (Add)              (None, 7, 7, 192)    0           ['block6b_drop[0][0]',           
+                                                                  'block6a_project_bn[0][0]']     
+                                                                                                  
+ block6c_expand_conv (Conv2D)   (None, 7, 7, 1152)   221184      ['block6b_add[0][0]']            
+                                                                                                  
+ block6c_expand_bn (BatchNormal  (None, 7, 7, 1152)  4608        ['block6c_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block6c_expand_activation (Act  (None, 7, 7, 1152)  0           ['block6c_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block6c_dwconv (DepthwiseConv2  (None, 7, 7, 1152)  28800       ['block6c_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block6c_bn (BatchNormalization  (None, 7, 7, 1152)  4608        ['block6c_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block6c_activation (Activation  (None, 7, 7, 1152)  0           ['block6c_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block6c_se_squeeze (GlobalAver  (None, 1152)        0           ['block6c_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block6c_se_reshape (Reshape)   (None, 1, 1, 1152)   0           ['block6c_se_squeeze[0][0]']     
+                                                                                                  
+ block6c_se_reduce (Conv2D)     (None, 1, 1, 48)     55344       ['block6c_se_reshape[0][0]']     
+                                                                                                  
+ block6c_se_expand (Conv2D)     (None, 1, 1, 1152)   56448       ['block6c_se_reduce[0][0]']      
+                                                                                                  
+ block6c_se_excite (Multiply)   (None, 7, 7, 1152)   0           ['block6c_activation[0][0]',     
+                                                                  'block6c_se_expand[0][0]']      
+                                                                                                  
+ block6c_project_conv (Conv2D)  (None, 7, 7, 192)    221184      ['block6c_se_excite[0][0]']      
+                                                                                                  
+ block6c_project_bn (BatchNorma  (None, 7, 7, 192)   768         ['block6c_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block6c_drop (FixedDropout)    (None, 7, 7, 192)    0           ['block6c_project_bn[0][0]']     
+                                                                                                  
+ block6c_add (Add)              (None, 7, 7, 192)    0           ['block6c_drop[0][0]',           
+                                                                  'block6b_add[0][0]']            
+                                                                                                  
+ block6d_expand_conv (Conv2D)   (None, 7, 7, 1152)   221184      ['block6c_add[0][0]']            
+                                                                                                  
+ block6d_expand_bn (BatchNormal  (None, 7, 7, 1152)  4608        ['block6d_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block6d_expand_activation (Act  (None, 7, 7, 1152)  0           ['block6d_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block6d_dwconv (DepthwiseConv2  (None, 7, 7, 1152)  28800       ['block6d_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block6d_bn (BatchNormalization  (None, 7, 7, 1152)  4608        ['block6d_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block6d_activation (Activation  (None, 7, 7, 1152)  0           ['block6d_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block6d_se_squeeze (GlobalAver  (None, 1152)        0           ['block6d_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block6d_se_reshape (Reshape)   (None, 1, 1, 1152)   0           ['block6d_se_squeeze[0][0]']     
+                                                                                                  
+ block6d_se_reduce (Conv2D)     (None, 1, 1, 48)     55344       ['block6d_se_reshape[0][0]']     
+                                                                                                  
+ block6d_se_expand (Conv2D)     (None, 1, 1, 1152)   56448       ['block6d_se_reduce[0][0]']      
+                                                                                                  
+ block6d_se_excite (Multiply)   (None, 7, 7, 1152)   0           ['block6d_activation[0][0]',     
+                                                                  'block6d_se_expand[0][0]']      
+                                                                                                  
+ block6d_project_conv (Conv2D)  (None, 7, 7, 192)    221184      ['block6d_se_excite[0][0]']      
+                                                                                                  
+ block6d_project_bn (BatchNorma  (None, 7, 7, 192)   768         ['block6d_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ block6d_drop (FixedDropout)    (None, 7, 7, 192)    0           ['block6d_project_bn[0][0]']     
+                                                                                                  
+ block6d_add (Add)              (None, 7, 7, 192)    0           ['block6d_drop[0][0]',           
+                                                                  'block6c_add[0][0]']            
+                                                                                                  
+ block7a_expand_conv (Conv2D)   (None, 7, 7, 1152)   221184      ['block6d_add[0][0]']            
+                                                                                                  
+ block7a_expand_bn (BatchNormal  (None, 7, 7, 1152)  4608        ['block7a_expand_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ block7a_expand_activation (Act  (None, 7, 7, 1152)  0           ['block7a_expand_bn[0][0]']      
+ ivation)                                                                                         
+                                                                                                  
+ block7a_dwconv (DepthwiseConv2  (None, 7, 7, 1152)  10368       ['block7a_expand_activation[0][0]
+ D)                                                              ']                               
+                                                                                                  
+ block7a_bn (BatchNormalization  (None, 7, 7, 1152)  4608        ['block7a_dwconv[0][0]']         
+ )                                                                                                
+                                                                                                  
+ block7a_activation (Activation  (None, 7, 7, 1152)  0           ['block7a_bn[0][0]']             
+ )                                                                                                
+                                                                                                  
+ block7a_se_squeeze (GlobalAver  (None, 1152)        0           ['block7a_activation[0][0]']     
+ agePooling2D)                                                                                    
+                                                                                                  
+ block7a_se_reshape (Reshape)   (None, 1, 1, 1152)   0           ['block7a_se_squeeze[0][0]']     
+                                                                                                  
+ block7a_se_reduce (Conv2D)     (None, 1, 1, 48)     55344       ['block7a_se_reshape[0][0]']     
+                                                                                                  
+ block7a_se_expand (Conv2D)     (None, 1, 1, 1152)   56448       ['block7a_se_reduce[0][0]']      
+                                                                                                  
+ block7a_se_excite (Multiply)   (None, 7, 7, 1152)   0           ['block7a_activation[0][0]',     
+                                                                  'block7a_se_expand[0][0]']      
+                                                                                                  
+ block7a_project_conv (Conv2D)  (None, 7, 7, 320)    368640      ['block7a_se_excite[0][0]']      
+                                                                                                  
+ block7a_project_bn (BatchNorma  (None, 7, 7, 320)   1280        ['block7a_project_conv[0][0]']   
+ lization)                                                                                        
+                                                                                                  
+ top_conv (Conv2D)              (None, 7, 7, 1280)   409600      ['block7a_project_bn[0][0]']     
+                                                                                                  
+ top_bn (BatchNormalization)    (None, 7, 7, 1280)   5120        ['top_conv[0][0]']               
+                                                                                                  
+ top_activation (Activation)    (None, 7, 7, 1280)   0           ['top_bn[0][0]']                 
+                                                                                                  
+ avg_pool (GlobalAveragePooling  (None, 1280)        0           ['top_activation[0][0]']         
+ 2D)                                                                                              
+                                                                                                  
+ top_dropout (Dropout)          (None, 1280)         0           ['avg_pool[0][0]']               
+                                                                                                  
+ probs (Dense)                  (None, 4)            5124        ['top_dropout[0][0]']            
+                                                                                                  
+==================================================================================================
+Total params: 4,054,688
+Trainable params: 4,012,672
+Non-trainable params: 42,016
+__________________________________________________________________________________________________
+
+-- Encoding: OneHot([butterfly, cow, sheep, squirrel], [1])
+-- Training epochs: 150
+-- Final Hash: 1e504653
+
+-- Final model training set report:
+              precision    recall  f1-score   support
+
+   butterfly       0.98      1.00      0.99        60
+         cow       0.88      0.90      0.89        80
+       sheep       0.84      0.95      0.89        80
+    squirrel       1.00      0.84      0.91        80
+
+    accuracy                           0.92       300
+   macro avg       0.93      0.92      0.92       300
+weighted avg       0.92      0.92      0.92       300
+
+-- Final model validation set report:
+              precision    recall  f1-score   support
+
+   butterfly       0.71      0.25      0.37        20
+         cow       0.31      0.45      0.37        20
+       sheep       0.41      0.35      0.38        20
+    squirrel       0.44      0.60      0.51        20
+
+    accuracy                           0.41        80
+   macro avg       0.47      0.41      0.41        80
+weighted avg       0.47      0.41      0.41        80
+
+-- Best model training set report:
+              precision    recall  f1-score   support
+
+   butterfly       0.96      0.92      0.94        60
+         cow       0.90      0.45      0.60        80
+       sheep       0.56      0.97      0.71        80
+    squirrel       0.86      0.69      0.76        80
+
+    accuracy                           0.75       300
+   macro avg       0.82      0.76      0.75       300
+weighted avg       0.81      0.75      0.74       300
+
+-- Best model validation set report:
+              precision    recall  f1-score   support
+
+   butterfly       0.80      0.20      0.32        20
+         cow       0.39      0.45      0.42        20
+       sheep       0.57      0.65      0.60        20
+    squirrel       0.41      0.60      0.49        20
+
+    accuracy                           0.48        80
+   macro avg       0.54      0.47      0.46        80
+weighted avg       0.54      0.47      0.46        80

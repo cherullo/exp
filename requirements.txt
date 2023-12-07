@@ -1,0 +1,18 @@
+# Dataset handling
+numpy==1.26.1
+pandas==2.1.1
+openpyxl==3.1.2
+
+# Training
+# tensorflow-cpu==2.10
+
+# Samples
+efficientnet==1.1.1
+
+# Image generation
+seaborn==0.13.0
+scikit-learn==1.3.2
+scikit-image==0.22.0 
+
+# Unit tests
+pytest==7.4.3
