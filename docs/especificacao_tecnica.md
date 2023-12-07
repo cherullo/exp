@@ -4,7 +4,7 @@ O *framework* exp é desenvolvido em Python, seguindo uma abordagem orientada a 
 
 Neste documento iremos descrever como o código do *framework* exp é organizado, seus módulos e classes, com as seguintes exceções:
 - Por uma questão de brevidade, documentaremos aqui apenas as classes públicas dos módulos. 
-- O diretório [`src/helpers`](../src/helpers/) contém arquivos auxiliares que não compõe um módulo do framework.
+- O diretório [`src/exp/helpers`](../src/exp/helpers/) contém arquivos auxiliares que não compõe um módulo do framework.
 - O diretório [`src/examples`](../src/examples/) contém os exemplos de uso do framework. Cada exemplo é documentado em seu próprio arquivo fonte e portanto omitido.
 
 ## Arquitetura
