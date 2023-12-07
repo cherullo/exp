@@ -228,6 +228,7 @@ class Experiment():
         plt.ylabel("loss")
         plt.ylim([0, 3])
         plt.xlabel("epoch")
+        plt.legend(loc='upper right')
         plt.title("Training")
         plt.savefig(self.report_path.get('history.png'), dpi=200, bbox_inches='tight')
 

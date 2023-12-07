@@ -33,19 +33,19 @@ Images Path: dataset/
 
   FilterColumn("label", ["cow"])    Keeps all rows where the column "label" has any of the following values: "cow"
   LastPercent(0.2)                  Selects the last 20.0% of images.
-    BaseLoader(resize=(128, 128))   Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+    SimpleLoader(resize=(128, 128)) Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
 
   FilterColumn("label", ["sheep"])    Keeps all rows where the column "label" has any of the following values: "sheep"
   LastPercent(0.2)                    Selects the last 20.0% of images.
-    BaseLoader(resize=(128, 128))     Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+    SimpleLoader(resize=(128, 128))   Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
 
   FilterColumn("label", ["squirrel"])    Keeps all rows where the column "label" has any of the following values: "squirrel"
   LastPercent(0.2)                       Selects the last 20.0% of images.
-    BaseLoader(resize=(128, 128))        Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+    SimpleLoader(resize=(128, 128))      Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
 
   FilterColumn("label", ["butterfly"])    Keeps all rows where the column "label" has any of the following values: "butterfly"
   LastPercent(0.2)                        Selects the last 20.0% of images.
-    BaseLoader(resize=(128, 128))         Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+    SimpleLoader(resize=(128, 128))       Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
 
 
 -- Model: EfficientNetB0[loss=categorical_crossentropy, optimizer=Adam(learning_rate=0.001)]
@@ -676,46 +676,46 @@ ________________________________________________________________________________
               precision    recall  f1-score   support
 
    butterfly       0.98      1.00      0.99        60
-         cow       0.88      0.88      0.88        80
-       sheep       0.86      0.88      0.87        80
-    squirrel       0.95      0.93      0.94        80
+         cow       0.88      0.90      0.89        80
+       sheep       0.84      0.95      0.89        80
+    squirrel       1.00      0.84      0.91        80
 
-    accuracy                           0.91       300
-   macro avg       0.92      0.92      0.92       300
-weighted avg       0.91      0.91      0.91       300
+    accuracy                           0.92       300
+   macro avg       0.93      0.92      0.92       300
+weighted avg       0.92      0.92      0.92       300
 
 -- Final model validation set report:
               precision    recall  f1-score   support
 
-   butterfly       0.50      0.25      0.33        20
-         cow       0.59      0.65      0.62        20
-       sheep       0.35      0.30      0.32        20
-    squirrel       0.42      0.65      0.51        20
+   butterfly       0.71      0.25      0.37        20
+         cow       0.31      0.45      0.37        20
+       sheep       0.41      0.35      0.38        20
+    squirrel       0.44      0.60      0.51        20
 
-    accuracy                           0.46        80
-   macro avg       0.47      0.46      0.45        80
-weighted avg       0.47      0.46      0.45        80
+    accuracy                           0.41        80
+   macro avg       0.47      0.41      0.41        80
+weighted avg       0.47      0.41      0.41        80
 
 -- Best model training set report:
               precision    recall  f1-score   support
 
-   butterfly       1.00      0.98      0.99        60
-         cow       0.86      0.76      0.81        80
-       sheep       0.80      0.82      0.81        80
-    squirrel       0.88      0.96      0.92        80
+   butterfly       0.96      0.92      0.94        60
+         cow       0.90      0.45      0.60        80
+       sheep       0.56      0.97      0.71        80
+    squirrel       0.86      0.69      0.76        80
 
-    accuracy                           0.88       300
-   macro avg       0.88      0.88      0.88       300
-weighted avg       0.88      0.88      0.88       300
+    accuracy                           0.75       300
+   macro avg       0.82      0.76      0.75       300
+weighted avg       0.81      0.75      0.74       300
 
 -- Best model validation set report:
               precision    recall  f1-score   support
 
-   butterfly       0.64      0.45      0.53        20
-         cow       0.58      0.55      0.56        20
-       sheep       0.38      0.25      0.30        20
-    squirrel       0.44      0.75      0.56        20
+   butterfly       0.80      0.20      0.32        20
+         cow       0.39      0.45      0.42        20
+       sheep       0.57      0.65      0.60        20
+    squirrel       0.41      0.60      0.49        20
 
-    accuracy                           0.50        80
-   macro avg       0.51      0.50      0.49        80
-weighted avg       0.51      0.50      0.49        80
+    accuracy                           0.48        80
+   macro avg       0.54      0.47      0.46        80
+weighted avg       0.54      0.47      0.46        80
