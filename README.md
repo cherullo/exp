@@ -30,7 +30,11 @@ python src/run_sample.py [ARQUIVO PYTHON]
 
 - Como trocar o valor de uma coluna: [examples/filtering/change_column.py]()
 
-- Como treinar uma rede para classificar vacas e ovelhas: [examples/training/animal_classification.py]()
+- Como treinar uma rede para classificar vacas e ovelhas: [examples/training/animal_classification_2classes.py]()
+
+- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas: [examples/training/animal_classification_4classes.py]()
+
+- Como treinar uma rede para classificar vacas, ovelhas, esquilos e borboletas, usando *loaders* para compensar a falta de imagens em uma das classes: [examples/training/animal_classification_4classes_imbalanced.py]()
 
 ## Documentação
 
