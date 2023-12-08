@@ -154,25 +154,37 @@ O *dataset generator* a ser utilizado em um experimento pode ser definido atrav�
 
 ## Geração dos Relatórios
 
-Durante a execução do experimento, o *framework* calcula o [*hash*](https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_hash) dele, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), que também auxilia a geração dos relatórios textuais. 
-
-Após a execução do experimento, um relatório composto por diversos arquivos é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
+No início da execução do experimento, o *framework* calcula o [*hash*](https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_hash) dele, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base). Ao longo de sua execução, um relatório composto por diversos arquivos vai sendo criado no seguinte diretório (configurável):
 ```
  reports/[NOME DO FONTE PYTHON]_[HASH DO EXPERIMENTO]/
 ```
 
-A raiz onde o diretório do experimento será criado (prefixo `reports/` no exemplo acima) pode ser configurada em [Experiment.base_report_path](especificacao_tecnica.md#experimentbase_report_path-str).
+O principal arquivo do relatório é o `model_summary.txt`. Ele contém todas as definições do experimento, bem como os resultados obtidos. Essa descrição textual contém tanto uma descrição em inglês das etapas realizadas (segunda coluna), quanto a chamada em Python que criou o respectivo objeto `Base` (primeira coluna), como podemos ver num exemplo abaixo:
+
+```
+-- Preprocessing Steps:
+
+  FilterColumn("label", ["cow"])           Keeps all rows where the column "label" has any of the following values: "cow"
+  FirstPercent(0.2)                        Selects the first 20.0% of images.
+  Shuffle(42)                              Shuffles the rows using seed = 42.
+     SimpleLoader(resize=(128, 128))       Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
+```
+
 Como o nome do relatório remete ao fonte do experimento e contém seu *hash*, não existe a possibilidade de um experimento sobrescrever os resultados de outro. E como o relatório contém todas as configurações do experimento, é fácil recriar um experimento pelo seu relatório, mesmo se o fonte original tenha sido alterado ou perdido. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
 
 Esse esquema permite que um ou mais pesquisadores criem e executem seus experimentos simultaneamente, gravando todos os experimentos e seus respectivos relatórios em um mesmo sistema de versionamento, sem que haja a preocupação de que os resultados de um experimento sejam perdidos, sobrescritos, ou necessitem de uma operação de *merge* no sistema de versionamento.
 
-Para avaliar a performance da rede, o *framework* realiza a classificação de todas as amostras dos *datasets* de treinamento e validação, construido os gráficos das [matrizes de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) e calculando as [métricas de classificação da rede](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html), a serem anexadas à parte textual do relatório.
+Ao final do experimento, o *framework* avalia a performance da rede através da classificação de todas as amostras dos *datasets* de treinamento e validação, construindo os gráficos das [matrizes de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) e calculando as [métricas de classificação da rede](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html), a serem anexadas à parte textual do relatório.
+
+*** CRIAR DIAGRAMA
+
+A raiz onde o diretório do experimento será criado (prefixo `reports/` no exemplo acima) pode ser configurada em [Experiment.base_report_path](especificacao_tecnica.md#experimentbase_report_path-str).
 
 ### Composição do Relatório
 
 Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao lado de cada arquivo aponta para o respectivo arquivo no relatório de execução do experimento [animal_classification_4classes_imbalanced.py](../src/examples/training/animal_classification_4classes_imbalanced.py), assim como as imagens.
 
-- modelsummary.txt &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/modelsummary.txt"><img src="images/link_icon.png" width="2%"></a>
+- model_summary.txt &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/modelsummary.txt"><img src="images/link_icon.png" width="2%"></a>
 
   É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
 

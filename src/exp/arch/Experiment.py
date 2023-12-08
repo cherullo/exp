@@ -287,12 +287,12 @@ class Experiment():
               func()
 
     def _export_summary(self):
-        file = self.report_path.get('modelsummary.txt')
+        file = self.report_path.get('model_summary.txt')
 
         self._run_redirecting_stdout(file, self._print_full_summary)
 
     def _complement_summary(self, model, training_set_report, validation_set_report):
-        file = self.report_path.get('modelsummary.txt')
+        file = self.report_path.get('model_summary.txt')
         with open(file, 'a') as f:
             f.write (f'\n-- {model} model training set report:\n')
             f.write (training_set_report)
