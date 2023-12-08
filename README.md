@@ -1,10 +1,12 @@
 # exp
 
-O exp é um *framework* modular de apoio aos experimentos em treinamento de redes neurais convolucionais. Seu objetivo é fornecer documentação e reproducibilidade aos experimentos realizados.
+O exp é um *framework* modular escrito em Python criado para apoiar os experimentos em treinamento de redes neurais convolucionais realizados por desenvolvedores e pesquisadores da área. Com ele é possível descrever de maneira sucinta e extensível as etapas de pré-processamento dos dados e os parâmetros de configuração da rede, abstraindo os detalhes da implementação. 
 
-Com ele é possível descrever de maneira sucinta as etapas de pré-processamento dos dados e os parâmetros de configuração da rede, e executar o treinamento, gerando um relatório que descreve todas as configurações do experimento e os resultados obtidos.
+O framework, por sua vez, é capaz de executar o treinamento e gerar um relatório que descreve todas as etapas, configurações e resultados obtidos neste experimento, com gráficos da função de perda, matrizes de confusão e histogramas de dataset, fornecendo os insumos necessários para que o pesquisador possa rapidamente elaborar a próxima iteração de seus experimentos, em um contexto onde vários pesquisadores podem estar realizando diversos experimentos simultaneamente.
 
-Para começar a utilizar o framework, recomendamos realizar as etapas de instalação abaixo e experimentar com os exemplos disponíveis.
+Além da conveniência na geração de relatórios, o *framework* exp também se propõe a garantir a reproducibilidade dos experimentos realizados, criando relatórios que descrevem detalhadamente o trabalho realizado, incluindo até mesmo as *seeds* aleatórias utilizadas durante as diversas etapas do treinamento de redes neurais, como por exemplo o *shuffling* do dataset, o processo de *data augmentation*, dentre outros.
+
+Para começar a utilizar o framework, recomendamos realizar as etapas de instalação abaixo e explorar os exemplos disponíveis.
 
 ## Instalação
 
