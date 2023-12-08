@@ -46,7 +46,7 @@ A fim de alcançar os objetivos definidos acima e considerando-se o contexto da 
 
 **[RNF6]** Os experimentos criados utilizando o *framework* devem ser reproduzíveis, isso é, deve ser possível repetir um experimento futuramente mesmo que este contenha etapas aleatórias.
 
-# Visão Geral de Uso
+# Visão Geral
 
 Ao se utilizar o framework, cada experimento é representado por uma instância da classe [`Experiment`](especificacao_tecnica.md#classe-experiment). Essa classe é o cerne do framework, pois permite definir todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
 
@@ -58,7 +58,7 @@ A etapa de [geração dos *datasets*](#geração-dos-datasets) consiste em carre
 
 A segunda etapa consiste na execução do [treinamento da rede neural](#treinamento-da-rede-neural), baseado nos *datasets* criados anteriormente, sendo a etapa a mais demorada da execução de um experimento.
 
-Finalmente, ao terminar o treinamento, o *framework* [gera uma série de relatórios](#geração-dos-relatórios) descrevendo o próprio experimento e a performance da rede treinada.
+Finalmente, ao longo de sua execução, mas principalmente ao terminar o treinamento, o *framework* [gera uma série de relatórios](#geração-dos-relatórios) descrevendo o próprio experimento e a performance da rede treinada.
 
 ## Geração dos Datasets
 
@@ -134,13 +134,17 @@ O mesmo processo é realizado para gerar o *dataset* de validação. Podemos vis
 - `loader`: contém o *loader* a ser utilizado para carregar a referida imagem;
 - `label`: contém o *label*, ou classe a que esta imagem pertence.
 
-Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos [`Experiment.image_column`](especificacao_tecnica.md#experimentimage_column-str) e [`Experiment.label_column`](especificacao_tecnica.md#experimentlabel_column-str). As demais colunas do *dataset* são descartadas. O treinamento é realizado utilizando esse formato padronizado de dados.
+Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos [`Experiment.image_column`](especificacao_tecnica.md#experimentimage_column-str) e [`Experiment.label_column`](especificacao_tecnica.md#experimentlabel_column-str). As demais colunas do *dataset* são descartadas. 
+
+Como apontado no diagrama acima, o *dataset* pré-processado e os *datasets* de treinamento e validação são gravados no diretório de saída do relatório, bem como seus histogramas, para conferência pelos pesquisadores. 
 
 ## Treinamento da Rede Neural
 
-O treinamento de redes neurais é realizado ao longo de diversas *epochs*. A cada *epoch*, todas as amostras do *dataset* de treinamento são fornecidas à rede para que esta aperfeiçoe seu aprendizado. A fim de se respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número de amostras fixo e relativamente pequeno. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado. Chamamos de *dataset generator* a classe responsável por realizar essa subdivisão do *dataset* de treinamento em *batches*. Ao final de cada *epoch*, a performance da rede é avaliada no *dataset* de validação.
+O treinamento de redes neurais é realizado ao longo de diversas *epochs*. A cada *epoch*, todas as amostras do *dataset* de treinamento são fornecidas à rede para que esta aperfeiçoe seu aprendizado. A fim de se respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número de amostras fixo e relativamente pequeno. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado. Chamamos de *dataset generator* a classe responsável por realizar essa subdivisão do *dataset* de treinamento em *batches*. 
 
-*** CRIAR DIAGRAMA
+![](images/training-bpmn.png)
+
+A cada *epoch*, o framework avalia a acurácia da rede em classificar o *dataset* de validação. Se a rede no estado atual obtiver a melhor acurácia até então, ela será gravada no arquivo `best.h5`, no diretório do relatório. O histórico dessa avaliação é gravado no arquivo `history.csv` e plotado no arquivo `history.png`. Ao final do treinamento, a rede é gravada no arquivo `final.h5`, independente de sua performance.
 
 No *framework*, o número de *epochs* a serem treinadas no experimento é definida através do atributo [Experiment.epochs](especificacao_tecnica.md#experimentepochs-int), e o modelo de rede neural a ser treinado é definido pelo atributo [Experiment.model](especificacao_tecnica.md#experimentmodel-basemodel),  devendo ser uma instância de classe derivada de [BaseModel](especificacao_tecnica.md#classe-basemodelbase).
 
@@ -150,14 +154,15 @@ O *dataset generator* a ser utilizado em um experimento pode ser definido atrav�
 
 ## Geração dos Relatórios
 
-Essa etapa ainda não pode ser configurada por experimento. Entretanto, durante sua execução, o *framework* calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), que também auxilia a geração dos relatórios textuais. 
+Durante a execução do experimento, o *framework* calcula o [*hash*](https://pt.wikipedia.org/wiki/Fun%C3%A7%C3%A3o_hash) dele, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), que também auxilia a geração dos relatórios textuais. 
 
-Após a execução do experimento, esse relatório, composto por diversos arquivos, é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
+Após a execução do experimento, um relatório composto por diversos arquivos é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
 ```
  reports/[NOME DO FONTE PYTHON]_[HASH DO EXPERIMENTO]/
 ```
 
-Como o nome do relatório remete ao fonte do experimento, e como o relatório contém todas as configurações do experimento, é fácil relacionar qual fonte gerou qual experimento, mesmo se o fonte for alterado posteriormente. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
+A raiz onde o diretório do experimento será criado (prefixo `reports/` no exemplo acima) pode ser configurada em [Experiment.base_report_path](especificacao_tecnica.md#experimentbase_report_path-str).
+Como o nome do relatório remete ao fonte do experimento e contém seu *hash*, não existe a possibilidade de um experimento sobrescrever os resultados de outro. E como o relatório contém todas as configurações do experimento, é fácil recriar um experimento pelo seu relatório, mesmo se o fonte original tenha sido alterado ou perdido. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
 
 Esse esquema permite que um ou mais pesquisadores criem e executem seus experimentos simultaneamente, gravando todos os experimentos e seus respectivos relatórios em um mesmo sistema de versionamento, sem que haja a preocupação de que os resultados de um experimento sejam perdidos, sobrescritos, ou necessitem de uma operação de *merge* no sistema de versionamento.
 
@@ -215,6 +220,10 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
   A melhor rede neural obtida durante o treinamento, isso é, aquela que obteve o menor valor para a função de perda no *dataset* de validação.
 
+- final.h5 &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/final.h5"><img src="images/link_icon.png" width="2%"></a>
+
+  A última rede neural obtida durante o treinamento, não necessariamente a melhor.  
+
 - training_set_best_confusion.png
 
   Gráfico mostrando a [matriz de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) da melhor rede obtida, classificando o *dataset* de treinamento.
@@ -230,10 +239,6 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
   <p align="center"><img src="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/validation_set_best_confusion.png" width="50%"></p>
   </details>
   &nbsp;
-
-- final.h5 &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/final.h5"><img src="images/link_icon.png" width="2%"></a>
-
-  A última rede neural obtida durante o treinamento, não necessariamente a melhor.
 
 - training_set_final_confusion.png
 
