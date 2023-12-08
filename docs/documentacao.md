@@ -87,7 +87,7 @@ def _process_steps(dataset: pandas.DataFrame, steps: List[Step]) -> pandas.DataF
     return dataset
 ```
 
-O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de [`BaseStep`](especificacao_tecnica.md#classe-basestepbase)) associadas a um *loader*. *Loaders* são classes derivadas da classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) e encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
+O pré-processamento global irá gerar um *dataset* pré-processado, que será utilizado na geração dos subconjuntos de treinamento e validação. Tanto o *dataset* de treinamento quanto de validação são formados por diversas "fatias". Cada fatia é composta por uma sequência de etapas de pré-processamento (novamente uma lista instâncias de classes derivadas de [`BaseStep`](especificacao_tecnica.md#classe-basestepbase)) associadas a um *loader*. *Loaders* são classes derivadas da classe [`BaseLoader`](especificacao_tecnica.md#classe-baseloaderbase) encarregadas de ler uma imagem do disco aplicando uma transformação nela. 
 
 Essas fatias são definidas pelo usuário através de sucessivas chamadas aos métodos [`Experiment.add_train_set`](especificacao_tecnica.md#experimentadd_train_setsteps-listbasestep-loaders-baseloader) e [`Experiment.add_validation_set`](especificacao_tecnica.md#experimentadd_validation_setsteps-listbasestep-loaders-baseloader), com as assinaturas abaixo:
 
@@ -170,7 +170,7 @@ O principal arquivo do relatório é o `model_summary.txt`. Ele contém todas as
      SimpleLoader(resize=(128, 128))       Loads the image from disk with values in the range [0, 255] and resizes it to 128 rows by 128 columns.
 ```
 
-Como o nome do relatório remete ao fonte do experimento e contém seu *hash*, não existe a possibilidade de um experimento sobrescrever os resultados de outro. E como o relatório contém todas as configurações do experimento, é fácil recriar um experimento pelo seu relatório, mesmo se o fonte original tenha sido alterado ou perdido. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
+Como o nome do diretório que contém o relatório remete ao fonte do experimento e contém seu *hash*, não existe a possibilidade de um experimento sobrescrever os resultados de outro. E como o relatório textual contém todas as configurações do experimento, é fácil recriar um experimento pelo seu relatório, mesmo se o fonte original tenha sido alterado ou perdido. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
 
 Esse esquema permite que um ou mais pesquisadores criem e executem seus experimentos simultaneamente, gravando todos os experimentos e seus respectivos relatórios em um mesmo sistema de versionamento, sem que haja a preocupação de que os resultados de um experimento sejam perdidos, sobrescritos, ou necessitem de uma operação de *merge* no sistema de versionamento.
 
