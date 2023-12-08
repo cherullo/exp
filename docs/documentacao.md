@@ -71,7 +71,7 @@ Em linhas gerais, a etapa de geração dos *datasets* de um experimento depende 
 
 A geração acontece seguindo o diagrama abaixo:
 
-*** CRIAR DIAGRAMA
+![](images/preprocess-bpmn.png)
 
 Para definir o arquivo Excel de entrada, o usuário do *framework* só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias, e ela poderá ser modificada livremente durante seu processamento, incluindo a criação e remoção de colunas e linhas.
 
