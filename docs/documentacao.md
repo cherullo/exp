@@ -176,7 +176,7 @@ Esse esquema permite que um ou mais pesquisadores criem e executem seus experime
 
 Ao final do experimento, o *framework* avalia a performance da rede através da classificação de todas as amostras dos *datasets* de treinamento e validação, construindo os gráficos das [matrizes de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) e calculando as [métricas de classificação da rede](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html), a serem anexadas à parte textual do relatório.
 
-*** CRIAR DIAGRAMA
+![](images/results-bpmn.png)
 
 A raiz onde o diretório do experimento será criado (prefixo `reports/` no exemplo acima) pode ser configurada em [Experiment.base_report_path](especificacao_tecnica.md#experimentbase_report_path-str).
 
@@ -186,7 +186,7 @@ Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao la
 
 - model_summary.txt &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/modelsummary.txt"><img src="images/link_icon.png" width="2%"></a>
 
-  É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
+  É a parte textual do relatório. Contém: o nome do arquivo de *dataset*; o diretório onde as imagens das amostras estão gravadas; as etapas de pré-processamento global; as etapas de pré-processamento e os *loaders* dos *datasets* de treinanento e validação; a descrição completa do modelo de rede neural utilizada; as configurações do treinamento; a performance da rede treinada em classificar os elementos nos *datasets* de treinamento e validação.
 
 - preprocessed.xlsx &nbsp; <a href="../src/examples/training/reports/animal_classification_4classes_imbalanced-41fb392e/preprocessed.xlsx"><img src="images/link_icon.png" width="2%"></a>
 
