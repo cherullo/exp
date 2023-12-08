@@ -27,13 +27,28 @@ O *framework* é organizado em 5 módulos principais: `arch`, `generators`, `loa
 
 Não existem muitas dependências entre módulos pois cada classe possui uma responsabilidade bem definida e independente. Todos os módulos dependem do módulo [`arch`](#módulo-arch) pois este contém as classes abstratas implementadas nos módulos. A única exceção é a dependência que o módulo [`arch`](#módulo-arch) tem do módulo [`generators`](#módulo-generators). 
 
-Isso acontece porque a classe [`DatasetGenerator`](#classe-datasetgeneratorbasegenerator) é o gerenciador de *epoch* padrão do framework, e precisa ser instanciado automaticamente quanto um gerador não é informado. Essa situação pode ser claramente visualizada no diagrama de classes abaixo:
+Isso acontece porque a classe [`DatasetGenerator`](#classe-datasetgeneratorbasegenerator) é o *dataset generator* padrão do framework, e precisa ser instanciado automaticamente quanto um gerador não é informado. Essa situação pode ser claramente visualizada no diagrama de classes abaixo:
 
 <p align="center">
   <img src="images/class_diagram.png" width="80%">
 </p>
 
 As principais oportunidades de extensão que o *framework* oferece consistem em implementar classes derivadas das classes abstratas [`BaseDatasetGenerator`](#classe-basedatasetgeneratorbase), [`BaseLoader`](#classe-baseloaderbase), [`BaseModel`](#classe-basemodelbase) e [`BaseStep`](#classe-basestepbase), com funcionalidades bem definidas e reusáveis.
+
+### Classe Base
+
+A classe `Base` é uma classe abstrata, que deve ser derivada por todas as classes utilizadas no *framework*. Ela é dotada dos seguintes métodos:
+
+- [`add_hash`](especificacao_tecnica.md#baseadd_hashhasher-hasher): agrega o *hash* desta instância à uma instância da classe [`Hasher`](especificacao_tecnica.md#classe-hasher).
+- [`__str__`](especificacao_tecnica.md#base__str__---str): retorna uma *string* contendo a chamada ao construtor da classe que gerou esta instância.
+- [`description`](especificacao_tecnica.md#basedescription---str): retorna uma descrição textual do que esta instância faz.
+
+Como todas as outras classes abtratas também derivam da `Base`, o *framework* consegue:
+- Calcular o *hash* de todas as configurações do experimento;
+- Gerar um relatório textual contendo uma descrição legível do que foi feito em cada etapa do experimento;
+- Gerar o código necessário para recriar todas as etapas;
+
+E isso também vale para as classes criadas pelo usuário para estender as funcionalidades do *framework*.
 
 ## Referência de Classes
 
@@ -59,7 +74,7 @@ Abstrato. Adiciona o estado configurável desta instância ao [Hasher](#classe-h
 
 #### Classe BaseDatasetGenerator(Base)
 
-Classe abstrata de todos os gerenciadores de *epoch*.
+Classe abstrata de todos os *dataset generators*.
 
 ##### `BaseDatasetGenerator.encoding`
 
@@ -172,7 +187,7 @@ Número de *epochs* de treinamento.
 
 ##### `Experiment.train_set_generator: BaseDatasetGenerator`
 
-Qual gerenciador de *epoch* será utilizado durante o treinamento. Se não for informado, uma instância classe [DatasetGenerator](#classe-datasetgeneratorbasedatasetgenerator) com os valores padrão será utilizada.
+Qual *dataset generator* será utilizado durante o treinamento. Se não for informado, uma instância classe [DatasetGenerator](#classe-datasetgeneratorbasedatasetgenerator) com os valores padrão será utilizada.
 
 Se uma instância personalizada for atribuída, não é preciso (nem possível) definir o atributo [dataset](#basedatasetgeneratordataset-pandasdataframe). Esse atributo deve permanecer como `None` que o *framework* atribuirá o *dataset* correto durante o treinamento.
 
@@ -233,7 +248,7 @@ Processa um *dataset* por todas as etapas de pré-processamento que foram adicio
 
 ### Módulo generators
 
-Contém os gerenciadores de *epoch* padrão do framework. Os generators são classes que carregam e preparam cada entrada do *dataset* (imagem e classe) para o treinamento, de acordo com uma politica de seleção e agrupamento de linhas. Mais informações na seção [Regime de Treinamento](documentacao.md#regime-de-treinamento) da documentação.
+Contém os *dataset generators* padrão do framework. Os generators são classes que carregam e preparam cada entrada do *dataset* (imagem e classe) para o treinamento, de acordo com uma politica de seleção e agrupamento de linhas. Mais informações na seção [Regime de Treinamento](documentacao.md#regime-de-treinamento) da documentação.
 
 Observe que o *dataset* aqui já está totalmente processado, e possui apenas as colunas `input`, `loader` e `label`, como explicado ao final da seção [Descrição de um Experimento](documentacao.md#descrição-de-um-experimento) da documentação.
 

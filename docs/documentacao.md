@@ -48,38 +48,32 @@ A fim de alcançar os objetivos definidos acima e considerando-se o contexto da 
 
 # Visão Geral de Uso
 
-Ao se utilizar o framework, cada experimento é representado por uma instância da classe [`Experiment`](especificacao_tecnica.md#classe-experiment). Essa classe é o cerne do framework, pois permite configurar todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
+Ao se utilizar o framework, cada experimento é representado por uma instância da classe [`Experiment`](especificacao_tecnica.md#classe-experiment). Essa classe é o cerne do framework, pois permite definir todos os aspectos do experimento e executá-lo. Por questões de organização, sugerimos que cada experimento seja  definido em um arquivo fonte Python separado. 
 
-A execução do experimento é feita através do  método [`Experiment.run`](especificacao_tecnica.md#experimentrundry-bool). Durante a execução do experimento, o *framework* calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). 
+Após criar e definir o experimento, sua execução é iniciada através do método [`Experiment.run`](especificacao_tecnica.md#experimentrundry-bool). Todo experimento é composto por três grandes etapas: a geração dos *datasets*, o treinamento da rede neural e a geração dos relatórios.
 
-O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), dotada dos seguintes métodos:
+![](images/global-bpmn.png)
 
-- [`add_hash`](especificacao_tecnica.md#baseadd_hashhasher-hasher): agrega o *hash* desta instância à uma instância da classe [`Hasher`](especificacao_tecnica.md#classe-hasher).
-- [`__str__`](especificacao_tecnica.md#base__str__---str): retorna uma *string* contendo a chamada ao construtor da classe que gerou esta instância.
-- [`description`](especificacao_tecnica.md#basedescription---str): retorna uma descrição textual do que esta instância faz.
+A etapa de [geração dos *datasets*](#geração-dos-datasets) consiste em carregar e filtrar uma tabela no formato Excel contendo as amostras que serão utilizadas durante o treinamento da rede neural. Essas amostras serão divididas em dois subconjuntos: [o *dataset* de treinamento e o *dataset* de validação](https://en.wikipedia.org/wiki/Training,_validation,_and_test_data_sets). Como veremos, o *framework* permite definir essas etapas de pré-processamento de maneira extensível.
 
-Isso permite ao *framework* não só calcular o *hash* de todas as configurações do experimento, mas também gerar um relatório textual contendo uma descrição legível do que foi feito em cada etapa do experimento, bem como o código necessário para recriar essas etapas.
+A segunda etapa consiste na execução do [treinamento da rede neural](#treinamento-da-rede-neural), baseado nos *datasets* criados anteriormente, sendo a etapa a mais demorada da execução de um experimento.
 
-Após a execução do experimento, esse relatório é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
-```
- reports/[NOME DO FONTE PYTHON]_[HASH DO EXPERIMENTO]/
-```
+Finalmente, ao terminar o treinamento, o *framework* [gera uma série de relatórios](#geração-dos-relatórios) descrevendo o próprio experimento e a performance da rede treinada.
 
-Como o nome do relatório remete ao fonte do experimento, e como o relatório contém todas as configurações do experimento, é fácil relacionar qual fonte gerou qual experimento, mesmo se o fonte for alterado posteriormente. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
+## Geração dos Datasets
 
-Esse esquema permite que um ou mais pesquisadores criem e executem seus experimentos simultaneamente, gravando todos os experimentos e seus respectivos relatórios em um mesmo sistema de versionamento, sem que haja a preocupação de que os resultados de um experimento sejam perdidos, sobrescritos, ou necessitem de uma operação de *merge* no sistema de versionamento.
+Em linhas gerais, a etapa de geração dos *datasets* de um experimento depende da definição dos seguintes itens:
 
-## Descrição de um Experimento
-
-Em linhas gerais, um experimento é composto pelos seguintes itens, todos definidos pelo usuário:
-
-1. Um arquivo Excel de *dataset*, onde cada linha representa um *sample* de dados para treinamento.
+1. Um arquivo Excel de *dataset*, onde cada linha representa uma amostra de dados.
 1. Uma sequência de etapas de pré-processamento global a ser aplicada em todo do *dataset*.
-1. Um subconjunto do *dataset* para treinamento.
-1. Um subconjunto do *dataset* para validação.
-1. Um modelo básico de rede neural a ser treinada.
+1. Um subconjunto do *dataset* pré-processado para treinamento.
+1. Um subconjunto do *dataset* pré-processado para validação.
 
-Para definir o arquivo Excel de entrada, o usuário do *framework* só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias.
+A geração acontece seguindo o diagrama abaixo:
+
+*** CRIAR DIAGRAMA
+
+Para definir o arquivo Excel de entrada, o usuário do *framework* só precisa fornecer o nome do arquivo em disco. Isso é feito através do atributo [`Experiment.input`](especificacao_tecnica.md#experimentinput-str). Neste instante, as colunas desta tabela são arbitrárias, e ela poderá ser modificada livremente durante seu processamento, incluindo a criação e remoção de colunas e linhas.
 
 Para definir a sequência de etapas de pré-processamento global, o usuário deve fornecer uma lista de instâncias de classes derivadas da classe abstrata [`BaseStep`](especificacao_tecnica.md#classe-basestepbase) através do atributo [`Experiment.preprocessing_steps`](especificacao_tecnica.md#experimentpreprocessing_steps-listbasestep). Cada instância deve realizar uma alteração simples à tabela (como renomear uma coluna, trocar valores, selecionar linhas, etc), e elas serão aplicadas sucessivamente ao dataset carregado, na ordem em que aparecem na lista. 
 
@@ -105,13 +99,7 @@ Essas fatias são definidas pelo usuário através de sucessivas chamadas aos m�
         pass
 ``` 
 
-Observe que vários *loaders* podem ser passados em cada chamada. Isso é equivalente à chamar o método uma vez para cada *loader*, passando a mesma lista de etapas de pré-processamento. Podemos visualizar esta configuração graficamente abaixo:
-
-<p align="center"><img src="images/Experimento.png" width="50%"></p>
-
-Quando um treinamento é executado, as etapas de pré-processamento globais são aplicadas ao *dataset* inicial, gerando o *dataset* pré-processado. Os *datasets* de treinamento e validação são gerados concatenando-se o resultado do processamento de cada uma de suas fatias, que consiste simplesmente em aplicar as respectivas etapas de processamento ao *dataset* pré-processado e anexar uma coluna contendo o respectivo loader.
-
-A geração do *dataset* de treinamento pode ser simplificadamente entendida pelo seguinte código Python:
+Observe que vários *loaders* podem ser passados em cada chamada. Isso é equivalente à chamar o método uma vez para cada *loader*, passando a mesma lista de etapas de pré-processamento. Os *datasets* de treinamento e validação são gerados concatenando-se o resultado do processamento de cada uma de suas fatias, o que consiste simplesmente em aplicar as respectivas etapas de processamento ao *dataset* pré-processado e anexar uma coluna contendo o respectivo loader. Esse processo pode ser simplificadamente descrito pelo seguinte código Python:
 
 ```python
 # Carrega o dataset do disco
@@ -136,27 +124,46 @@ for steps, loaders in training_slices:
         training_set.append (slice_set)
 ```
 
-O mesmo processo é realizado para gerar o *dataset* de validação. Finalmente, para iniciar o treinamento, os datasets de treinamento e validação precisam são transformados em tabelas consolidadas, com formato padronizado, contendo apenas três colunas: 
+O mesmo processo é realizado para gerar o *dataset* de validação. Podemos visualizar a configuração da geração de *datasets* graficamente abaixo:
+
+<p align="center"><img src="images/Experimento.png" width="40%"></p>
+
+ Finalmente, para iniciar o treinamento, os datasets de treinamento e validação precisam ser transformados em tabelas consolidadas, com formato padronizado, contendo apenas três colunas: 
 
 - `input`: contém o nome do arquivo de imagem;
 - `loader`: contém o *loader* a ser utilizado para carregar a referida imagem;
 - `label`: contém o *label*, ou classe a que esta imagem pertence.
 
-Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos [`Experiment.image_column`](especificacao_tecnica.md#experimentimage_column-str) e [`Experiment.label_column`](especificacao_tecnica.md#experimentlabel_column-str). As demais colunas do *dataset* são descartadas.
+Como visto acima, a coluna `loader` é adicionada automaticamente. Já as colunas `input` e `label` precisam estar presentes nos *datasets* de treinamento e validação após a realização de todo o pré-processamento. Os nomes destas colunas não precisam ser necessariamente `input` e `label`: seus nomes podem ser especificados, respectivamente, através dos atributos [`Experiment.image_column`](especificacao_tecnica.md#experimentimage_column-str) e [`Experiment.label_column`](especificacao_tecnica.md#experimentlabel_column-str). As demais colunas do *dataset* são descartadas. O treinamento é realizado utilizando esse formato padronizado de dados.
 
-O treinamento é realizado utilizando esse formato padronizado de dados para alimentar a rede neural, cujo modelo a ser treinado deve ser uma instância de classe derivada de [`BaseModel`](especificacao_tecnica.md#classe-basemodelbase), informado através do atributo [`Experiment.model`](especificacao_tecnica.md#experimentmodel-basemodel).
+## Treinamento da Rede Neural
 
-## Regime de Treinamento
+O treinamento de redes neurais é realizado ao longo de diversas *epochs*. A cada *epoch*, todas as amostras do *dataset* de treinamento são fornecidas à rede para que esta aperfeiçoe seu aprendizado. A fim de se respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número de amostras fixo e relativamente pequeno. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado. Chamamos de *dataset generator* a classe responsável por realizar essa subdivisão do *dataset* de treinamento em *batches*. Ao final de cada *epoch*, a performance da rede é avaliada no *dataset* de validação.
 
-Por padrão, o treinamento de redes neurais é feito efetuando-se diversas *epochs*. Em cada *epoch*, todas as imagens no *dataset* de treinamento são fornecidas à rede, aperfeiçoando seu aprendizado. Em seguida, a performance da rede é avaliada no *dataset* de validação.
+*** CRIAR DIAGRAMA
 
-A fim de respeitar os limites de memória do computador, o *dataset* de treinamento é organizado em *batches* com um número fixo, menor de imagens. Assim, cada *epoch* é dividida em etapas, e em cada etapa um *batch* é processado.
+No *framework*, o número de *epochs* a serem treinadas no experimento é definida através do atributo [Experiment.epochs](especificacao_tecnica.md#experimentepochs-int), e o modelo de rede neural a ser treinado é definido pelo atributo [Experiment.model](especificacao_tecnica.md#experimentmodel-basemodel),  devendo ser uma instância de classe derivada de [BaseModel](especificacao_tecnica.md#classe-basemodelbase).
 
-No início de cada *epoch* também é comum se embaralhar o *dataset* de treinamento, a fim de evitar vícios oriundos da organização original dos dados. No framework, a classe [`DatasetGenerator`](especificacao_tecnica.md#classe-datasetgeneratorbasedatasetgenerator) é responsável por padrão em organizar o *dataset* de treinamento em batches de 16 imagens e por embaralhá-lo no início de cada *epoch*.
+O *dataset generator* a ser utilizado em um experimento pode ser definido através do atributo [`Experiment.train_set_generator`](especificacao_tecnica.md#experimenttrain_set_generator-basedatasetgenerator). Por padrão, o *framework* utiliza como *dataset generator* uma instância da classe [`DatasetGenerator`](especificacao_tecnica.md#classe-datasetgeneratorbasedatasetgenerator), configurada para criar batches de 16 amostras e para embaralhar o *dataset* no início de cada *epoch*.
 
-É possível configurar esse comportamento criando-se manualmente uma instância desta classe e atribuindo em [`Experiment.train_set_generator`](especificacao_tecnica.md#experimenttrain_set_generator-basedatasetgenerator). Outros comportamentos mais elaborados podem ser obtidos escrevendo uma nova classe derivada de [`BaseDatasetGenerator`](especificacao_tecnica.md#classe-basedatasetgeneratorbase). Por exemplo, a classe [`StratifiedDatasetGenerator`](especificacao_tecnica.md#classe-stratifieddatasetgeneratorbasedatasetgenerator) implementa a estratégia de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), muito utilizada para treinamentos em *datasets* desbalanceados.
+ Outros comportamentos mais elaborados podem ser obtidos escrevendo uma nova classe derivada de [`BaseDatasetGenerator`](especificacao_tecnica.md#classe-basedatasetgeneratorbase). Por exemplo, a classe [`StratifiedDatasetGenerator`](especificacao_tecnica.md#classe-stratifieddatasetgeneratorbasedatasetgenerator) implementa a estratégia de [*stratified batching*](https://www.baeldung.com/cs/ml-stratified-sampling), muito utilizada para treinamentos em *datasets* desbalanceados.
 
-## Composição do Relatório
+## Geração dos Relatórios
+
+Essa etapa ainda não pode ser configurada por experimento. Entretanto, durante sua execução, o *framework* calcula o *hash* do experimento, isso é, o *hash* de todos os parâmetros e configurações realizadas no objeto [`Experiment`](especificacao_tecnica.md#classe-experiment). O cálculo do *hash* é possível pois todas as classes do *framework* derivam da classe abstrata [`Base`](especificacao_tecnica.md#classe-base), que também auxilia a geração dos relatórios textuais. 
+
+Após a execução do experimento, esse relatório, composto por diversos arquivos, é criado no seguinte diretório (configurável), juntamente com os resultados do experimento:
+```
+ reports/[NOME DO FONTE PYTHON]_[HASH DO EXPERIMENTO]/
+```
+
+Como o nome do relatório remete ao fonte do experimento, e como o relatório contém todas as configurações do experimento, é fácil relacionar qual fonte gerou qual experimento, mesmo se o fonte for alterado posteriormente. Entretanto, não recomendamos que um arquivo de experimento seja alterado após sua execução. Para a próxima iteração do desenvolvimento, recomendamos que o experimento seja duplicado e então alterado.
+
+Esse esquema permite que um ou mais pesquisadores criem e executem seus experimentos simultaneamente, gravando todos os experimentos e seus respectivos relatórios em um mesmo sistema de versionamento, sem que haja a preocupação de que os resultados de um experimento sejam perdidos, sobrescritos, ou necessitem de uma operação de *merge* no sistema de versionamento.
+
+Para avaliar a performance da rede, o *framework* realiza a classificação de todas as amostras dos *datasets* de treinamento e validação, construido os gráficos das [matrizes de confusão](https://pt.wikipedia.org/wiki/Matriz_de_confus%C3%A3o) e calculando as [métricas de classificação da rede](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html), a serem anexadas à parte textual do relatório.
+
+### Composição do Relatório
 
 Nesta seção descreveremos os arquivos que compõe o relatório. Os links ao lado de cada arquivo aponta para o respectivo arquivo no relatório de execução do experimento [animal_classification_4classes_imbalanced.py](../src/examples/training/animal_classification_4classes_imbalanced.py), assim como as imagens.
 
