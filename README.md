@@ -8,7 +8,7 @@ Para começar a utilizar o framework, recomendamos realizar as etapas de instala
 
 ## Instalação
 
-O *framework* requer Python 3 com Tensorflow 2 ou superior. Sua instalação atualmente se faz copiando o diretório [/src/exp](src/exp/) para a raiz do seu projeto, ou adicionando ele ao seu PYTHONPATH.
+O *framework* requer Python 3 com Tensorflow 2 ou superior. Sua instalação atualmente se faz copiando o diretório [/src/exp](src/exp/) para a raiz do seu projeto, ou adicionando ele ao  [PYTHONPATH](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPATH) do seu ambiente.
 
 As dependências do *framework* em si podem ser instaladas através do arquivo [requirements.txt](requirements.txt):
 
